@@ -1,98 +1,90 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, ReactNode } from 'react';
 import classNames from 'classnames';
 
 interface ChipsterProps {
-  items: string[];
-  setItems: (items: string[]) => void;
-  placeholder?: string;
+  children?: ReactNode;
+  onAdd?: (value: string) => void;
+  placeholder?: string | ReactNode;
   className?: string;
-  chipClassName?: string;
   inputClassName?: string;
-  removeButtonClassName?: string;
 }
 
-const Chipster: React.FC<ChipsterProps> = ({
-  items,
-  setItems,
-  placeholder = 'Enter values...',
+export const Chipster: React.FC<ChipsterProps> = ({
+  children,
+  onAdd,
+  placeholder = 'Type and press Enter',
   className,
-  chipClassName,
   inputClassName,
-  removeButtonClassName,
 }) => {
   const [currentInput, setCurrentInput] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && currentInput.trim()) {
+    if (e.key === 'Enter' && currentInput.trim() && onAdd) {
       e.preventDefault();
-      setItems([...items, currentInput.trim()]);
+      onAdd(currentInput.trim());
       setCurrentInput('');
-    } else if (e.key === 'Backspace' && currentInput === '' && items.length > 0) {
-      setItems(items.slice(0, -1));
-    }
-  };
-
-  const removeItem = (indexToRemove: number) => {
-    setItems(items.filter((_, index) => index !== indexToRemove));
-  };
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [items]);
-
-  const handleContainerClick = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
     }
   };
 
   return (
     <div 
-      ref={containerRef}
       className={classNames(
-        'flex flex-wrap bg-red-500 items-center p-2 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500',
+        'flex flex-wrap items-center p-1.5 border bg-white border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500',
         className
       )}
-      onClick={handleContainerClick}
+      onClick={() => inputRef.current?.focus()}
     >
-      {items.map((item, index) => (
-        <span 
-          key={index} 
-          className={classNames(
-            'inline-flex items-center bg-blue-100 text-blue-800 rounded-full px-2 py-1 text-sm m-1',
-            chipClassName
-          )}
-        >
-          {item}
-          <button 
-            onClick={() => removeItem(index)} 
-            className={classNames(
-              'ml-1 text-blue-600 hover:text-blue-800 focus:outline-none',
-              removeButtonClassName
-            )}
-          >
-            &times;
-          </button>
-        </span>
-      ))}
+      {children}
       <input
         ref={inputRef}
         type="text"
         value={currentInput}
         onChange={(e) => setCurrentInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={items.length === 0 ? placeholder : ''}
+        placeholder={typeof placeholder === 'string' ? placeholder : ''}
         className={classNames(
           'flex-grow outline-none text-sm p-1 min-w-[50px]',
           inputClassName
         )}
       />
+      {typeof placeholder !== 'string' && currentInput === '' && (
+        <div className="italic text-sm font-medium text-gray-400 tracking-tight">{placeholder}</div>
+      )}
     </div>
   );
 };
 
-export default Chipster;
+interface ItemProps {
+  children: ReactNode;
+  onRemove?: () => void;
+  className?: string;
+  removeButtonClassName?: string;
+}
+
+export const Item: React.FC<ItemProps> = ({
+  children,
+  onRemove,
+  className,
+  removeButtonClassName,
+}) => (
+  <span 
+    className={classNames(
+      'inline-flex items-center bg-gray-100 text-gray-800 font-semibold rounded-md border border-gray-300 px-2 py-1 text-sm m-1',
+      className
+    )}
+  >
+    {children}
+    {onRemove && (
+      <button 
+        onClick={onRemove} 
+        className={classNames(
+          'ml-1 text-gray-800 hover:text-gray-900 focus:outline-none',
+          removeButtonClassName
+        )}
+      >
+        &times;
+      </button>
+    )}
+  </span>
+);
