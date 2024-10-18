@@ -2,6 +2,11 @@ import React, { useRef, ReactNode, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { useChipster, ChipsterItem, ValidationRule } from './useChipster';
 
+interface AnimationConfig {
+  duration: number;
+  easing: string;
+}
+
 interface ChipsterProps {
   onAdd?: (value: string) => void;
   onRemove?: (id: string) => void;
@@ -19,7 +24,13 @@ interface ChipsterProps {
   renderItem?: (item: ChipsterItem, index: number, highlighted: boolean) => ReactNode;
   transform?: (value: string) => string;
   showErrorMessage?: boolean;
+  animationConfig?: AnimationConfig | false;
 }
+
+const defaultAnimationConfig: AnimationConfig = {
+  duration: 50,
+  easing: 'ease-in-out',
+};
 
 export const Chipster: React.FC<ChipsterProps> = ({
   onAdd,
@@ -38,6 +49,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
   renderItem,
   transform,
   showErrorMessage = true,
+  animationConfig = defaultAnimationConfig,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const { 
@@ -88,6 +100,35 @@ export const Chipster: React.FC<ChipsterProps> = ({
     }
   };
 
+  const handleRemoveItem = useCallback((id: string) => {
+    if (animationConfig) {
+      const chipElement = document.getElementById(`chip-${id}`);
+      if (chipElement) {
+        chipElement.style.opacity = '0';
+        chipElement.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+          removeItem(id);
+          onRemove?.(id);
+        }, animationConfig.duration);
+      } else {
+        removeItem(id);
+        onRemove?.(id);
+      }
+    } else {
+      removeItem(id);
+      onRemove?.(id);
+    }
+  }, [removeItem, onRemove, animationConfig]);
+
+  const getItemStyle = (item: ChipsterItem) => {
+    if (!animationConfig) return {};
+    return {
+      transition: `opacity ${animationConfig.duration}ms ${animationConfig.easing}, transform ${animationConfig.duration}ms ${animationConfig.easing}`,
+      opacity: 1,
+      transform: 'scale(1)',
+    };
+  };
+
   return (
     <div>
       <div 
@@ -95,28 +136,26 @@ export const Chipster: React.FC<ChipsterProps> = ({
           'flex flex-wrap items-center p-0.5 border bg-white border-gray-300 rounded-lg',
           'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
           { 'opacity-50 cursor-not-allowed': disabled },
-          { 'border-red-500': error },
+          { 'border-red-500 border-2': error },
           className
         )}
         onClick={() => !disabled && inputRef.current?.focus()}
       >
         {items.map((item, index) => (
-          renderItem ? (
-            renderItem(item, index, index === highlightedIndex)
-          ) : (
-            <Item
-              key={item.id}
-              highlighted={index === highlightedIndex}
-              disabled={disabled}
-              icon={item.icon}
-              onRemove={() => {
-                removeItem(item.id);
-                onRemove?.(item.id);
-              }}
-            >
-              {item.text}
-            </Item>
-          )
+          <div key={item.id} id={`chip-${item.id}`} style={getItemStyle(item)}>
+            {renderItem ? (
+              renderItem(item, index, index === highlightedIndex)
+            ) : (
+              <Item
+                highlighted={index === highlightedIndex}
+                disabled={disabled}
+                icon={item.icon}
+                onRemove={() => handleRemoveItem(item.id)}
+              >
+                {item.text}
+              </Item>
+            )}
+          </div>
         ))}
         <input
           ref={inputRef}
