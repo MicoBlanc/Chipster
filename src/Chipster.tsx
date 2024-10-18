@@ -1,27 +1,8 @@
-import React, { useRef, ReactNode, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import classNames from 'classnames';
-import { useChipster, ChipsterItem, ValidationRule } from './useChipster';
-import { ChipsterAnimationConfig, defaultAnimationConfig, getAnimationStyle, AnimationPreset, animations } from './animations';
-
-interface ChipsterProps {
-  onAdd?: (value: string) => void;
-  onRemove?: (id: string) => void;
-  placeholder?: string | ReactNode;
-  className?: string;
-  inputClassName?: string;
-  errorClassName?: string;
-  disabled?: boolean;
-  validationRules?: ValidationRule[];
-  getIcon?: (value: string) => React.ReactNode;
-  maxItems?: number;
-  maxItemsMessage?: string;
-  allowDuplicates?: boolean;
-  caseSensitive?: boolean;
-  renderItem?: (item: ChipsterItem, index: number, highlighted: boolean) => ReactNode;
-  transform?: (value: string) => string;
-  showErrorMessage?: boolean;
-  animationConfig?: ChipsterAnimationConfig | AnimationPreset | false;
-}
+import { useChipster } from './useChipster';
+import { getAnimationStyle, animations } from './animations';
+import { ChipsterProps, ItemProps } from './types';
 
 export const Chipster: React.FC<ChipsterProps> = ({
   onAdd,
@@ -40,7 +21,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
   renderItem,
   transform,
   showErrorMessage = true,
-  animationConfig = defaultAnimationConfig,
+  exitAnimation,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const { 
@@ -50,7 +31,8 @@ export const Chipster: React.FC<ChipsterProps> = ({
     addItem, 
     removeItem, 
     highlightItem,
-    validateInput 
+    validateInput,
+    clearValidation
   } = useChipster({ 
     validationRules, 
     getIcon, 
@@ -66,8 +48,12 @@ export const Chipster: React.FC<ChipsterProps> = ({
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    validateInput(newValue);
-  }, [validateInput]);
+    if (newValue.trim().length > 0) {
+      validateInput(newValue);
+    } else {
+      clearValidation();
+    }
+  }, [validateInput, clearValidation]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
@@ -90,9 +76,9 @@ export const Chipster: React.FC<ChipsterProps> = ({
     }
   };
 
-  const actualAnimationConfig = typeof animationConfig === 'string' 
-    ? animations[animationConfig] 
-    : animationConfig;
+  const actualExitAnimation = exitAnimation && (typeof exitAnimation === 'string' 
+    ? animations[exitAnimation] 
+    : exitAnimation);
 
   const handleAddItem = useCallback((text: string) => {
     const newItemId = addItem(text);
@@ -100,14 +86,14 @@ export const Chipster: React.FC<ChipsterProps> = ({
   }, [addItem]);
 
   const handleRemoveItem = useCallback((id: string, index: number) => {
-    if (actualAnimationConfig) {
+    if (actualExitAnimation) {
       const chipElement = document.getElementById(`chip-${id}`);
       if (chipElement) {
-        Object.assign(chipElement.style, getAnimationStyle(actualAnimationConfig.exit, true));
+        Object.assign(chipElement.style, getAnimationStyle(actualExitAnimation.exit, true));
         setTimeout(() => {
           removeItem(id);
           onRemove?.(id);
-        }, actualAnimationConfig.exit.duration);
+        }, actualExitAnimation.exit.duration);
       } else {
         removeItem(id);
         onRemove?.(id);
@@ -116,7 +102,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
       removeItem(id);
       onRemove?.(id);
     }
-  }, [removeItem, onRemove, actualAnimationConfig]);
+  }, [removeItem, onRemove, actualExitAnimation]);
 
   return (
     <div>
@@ -169,19 +155,6 @@ export const Chipster: React.FC<ChipsterProps> = ({
   );
 };
 
-interface ItemProps {
-  children: ReactNode;
-  onRemove?: () => void;
-  className?: string;
-  removeButtonClassName?: string;
-  highlighted?: boolean;
-  disabled?: boolean;
-  icon?: ReactNode; 
-  tabIndex?: number;
-  role?: string;
-  'aria-selected'?: boolean;
-  'data-chip-index'?: number;
-}
 
 export const Item: React.FC<ItemProps> = ({
   children,

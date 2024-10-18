@@ -1,7 +1,7 @@
 import React from 'react';
-import { Chipster } from './Chipster';
 import { FaUser, FaEnvelope, FaPhone } from 'react-icons/fa';
-import { ValidationRule } from './useChipster';  // Import ValidationRule type
+import { ValidationRule } from './types';
+import { Chipster } from './chipster';
 
 function App() {
   const validationRules: ValidationRule[] = [
@@ -24,7 +24,7 @@ function App() {
           onAdd={(value) => console.log('Added:', value)}
           onRemove={(id) => console.log('Removed item with id:', id)}
           placeholder="Add items..."
-          animationConfig="fadeSlideLeft"
+          exitAnimation="fadeSlideLeft"
           validationRules={validationRules}
           getIcon={getIcon}
           maxItems={10}

@@ -1,26 +1,5 @@
 import { useState, useCallback } from 'react';
-
-export interface ChipsterItem {
-  id: string;
-  text: string;
-  icon?: React.ReactNode;
-}
-
-export interface ValidationRule {
-  test: (value: string) => boolean;
-  message?: string;
-}
-
-export interface UseChipsterOptions {
-  validationRules?: ValidationRule[];
-  getIcon?: (value: string) => React.ReactNode;
-  maxItems?: number;
-  maxItemsMessage?: string;
-  allowDuplicates?: boolean;
-  caseSensitive?: boolean;
-  transform?: (value: string) => string;
-  showErrorMessage?: boolean;
-}
+import { ChipsterItem, UseChipsterOptions } from './types';
 
 export function useChipster(options: UseChipsterOptions = {}) {
   const [items, setItems] = useState<ChipsterItem[]>([]);
@@ -79,6 +58,10 @@ export function useChipster(options: UseChipsterOptions = {}) {
     setHighlightedIndex(index);
   }, []);
 
+  const clearValidation = useCallback(() => {
+    setError(null);
+  }, []);
+
   return {
     items,
     error,
@@ -87,5 +70,6 @@ export function useChipster(options: UseChipsterOptions = {}) {
     removeItem,
     highlightItem,
     validateInput,
+    clearValidation,
   };
 }
