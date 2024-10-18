@@ -26,7 +26,7 @@ function App() {
           placeholder="Add items..."
           validationRules={validationRules}
           getIcon={getIcon}
-          maxItems={5}
+          maxItems={10}
           allowDuplicates={false}
           caseSensitive={false}
           transform={transform}

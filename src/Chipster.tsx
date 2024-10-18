@@ -1,4 +1,4 @@
-import React, { useRef, ReactNode } from 'react';
+import React, { useRef, ReactNode, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { useChipster, ChipsterItem, ValidationRule } from './useChipster';
 
@@ -13,6 +13,7 @@ interface ChipsterProps {
   validationRules?: ValidationRule[];
   getIcon?: (value: string) => React.ReactNode;
   maxItems?: number;
+  maxItemsMessage?: string;
   allowDuplicates?: boolean;
   caseSensitive?: boolean;
   renderItem?: (item: ChipsterItem, index: number, highlighted: boolean) => ReactNode;
@@ -31,16 +32,27 @@ export const Chipster: React.FC<ChipsterProps> = ({
   validationRules,
   getIcon,
   maxItems,
+  maxItemsMessage,
   allowDuplicates = false,
   caseSensitive = true,
   renderItem,
   transform,
   showErrorMessage = true,
 }) => {
-  const { items, error, highlightedIndex, addItem, removeItem, highlightItem } = useChipster({ 
+  const [inputValue, setInputValue] = useState('');
+  const { 
+    items, 
+    error, 
+    highlightedIndex, 
+    addItem, 
+    removeItem, 
+    highlightItem,
+    validateInput 
+  } = useChipster({ 
     validationRules, 
     getIcon, 
     maxItems, 
+    maxItemsMessage,
     allowDuplicates, 
     caseSensitive,
     transform,
@@ -48,17 +60,23 @@ export const Chipster: React.FC<ChipsterProps> = ({
   });
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+    validateInput(newValue);
+  }, [validateInput]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
 
     if (e.key === 'Enter' && inputRef.current) {
       e.preventDefault();
-      const success = addItem(inputRef.current.value);
+      const success = addItem(inputValue);
       if (success) {
-        onAdd?.(inputRef.current.value);
-        inputRef.current.value = '';
+        onAdd?.(inputValue);
+        setInputValue('');
       }
-    } else if (e.key === 'Backspace' && inputRef.current && inputRef.current.value === '') {
+    } else if (e.key === 'Backspace' && inputValue === '') {
       e.preventDefault();
       if (highlightedIndex !== null) {
         const itemToRemove = items[highlightedIndex];
@@ -74,7 +92,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
     <div>
       <div 
         className={classNames(
-          'flex flex-wrap items-center p-0.5 h-10 border bg-white border-gray-300 rounded-lg',
+          'flex flex-wrap items-center p-0.5 border bg-white border-gray-300 rounded-lg',
           'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
           { 'opacity-50 cursor-not-allowed': disabled },
           { 'ring-2 ring-red-500': error },
@@ -103,16 +121,18 @@ export const Chipster: React.FC<ChipsterProps> = ({
         <input
           ref={inputRef}
           type="text"
+          value={inputValue}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder={typeof placeholder === 'string' ? placeholder : ''}
           className={classNames(
-            'flex-grow outline-none text-sm p-1 min-w-[50px] h-full focus:ring-0',
+            'flex-grow outline-none text-sm p-1 min-w-[50px] focus:ring-0',
             { 'cursor-not-allowed': disabled },
             inputClassName
           )}
           disabled={disabled}
         />
-        {typeof placeholder !== 'string' && inputRef.current?.value === '' && (
+        {typeof placeholder !== 'string' && inputValue === '' && (
           <div className="italic text-sm font-medium text-gray-800 tracking-tight">{placeholder}</div>
         )}
       </div>

@@ -15,6 +15,7 @@ export interface UseChipsterOptions {
   validationRules?: ValidationRule[];
   getIcon?: (value: string) => React.ReactNode;
   maxItems?: number;
+  maxItemsMessage?: string;
   allowDuplicates?: boolean;
   caseSensitive?: boolean;
   transform?: (value: string) => string;
@@ -26,19 +27,19 @@ export function useChipster(options: UseChipsterOptions = {}) {
   const [error, setError] = useState<string | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
 
-  const addItem = useCallback((text: string) => {
-    let processedText = options.transform ? options.transform(text) : text.trim();
-    
+  const validateInput = useCallback((value: string) => {
+    let processedValue = options.transform ? options.transform(value) : value.trim();
+
     if (options.maxItems && items.length >= options.maxItems) {
-      setError(`Maximum of ${options.maxItems} items allowed`);
+      setError(options.maxItemsMessage || `Maximum of ${options.maxItems} items allowed`);
       return false;
     }
 
     if (!options.allowDuplicates) {
       const isDuplicate = items.some(item => 
         options.caseSensitive 
-          ? item.text === processedText 
-          : item.text.toLowerCase() === processedText.toLowerCase()
+          ? item.text === processedValue 
+          : item.text.toLowerCase() === processedValue.toLowerCase()
       );
       if (isDuplicate) {
         setError('Duplicate items are not allowed');
@@ -48,18 +49,26 @@ export function useChipster(options: UseChipsterOptions = {}) {
 
     if (options.validationRules) {
       for (const rule of options.validationRules) {
-        if (!rule.test(processedText)) {
+        if (!rule.test(processedValue)) {
           setError(options.showErrorMessage ? (rule.message || 'Invalid input') : '');
           return false;
         }
       }
     }
 
-    const icon = options.getIcon ? options.getIcon(processedText) : undefined;
-    setItems(prev => [...prev, { id: Date.now().toString(), text: processedText, icon }]);
     setError(null);
     return true;
   }, [items, options]);
+
+  const addItem = useCallback((text: string) => {
+    if (validateInput(text)) {
+      const processedText = options.transform ? options.transform(text) : text.trim();
+      const icon = options.getIcon ? options.getIcon(processedText) : undefined;
+      setItems(prev => [...prev, { id: Date.now().toString(), text: processedText, icon }]);
+      return true;
+    }
+    return false;
+  }, [items, options, validateInput]);
 
   const removeItem = useCallback((id: string) => {
     setItems(prev => prev.filter(item => item.id !== id));
@@ -77,5 +86,6 @@ export function useChipster(options: UseChipsterOptions = {}) {
     addItem,
     removeItem,
     highlightItem,
+    validateInput,
   };
 }
