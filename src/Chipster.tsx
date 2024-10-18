@@ -1,11 +1,7 @@
 import React, { useRef, ReactNode, useState, useCallback } from 'react';
 import classNames from 'classnames';
 import { useChipster, ChipsterItem, ValidationRule } from './useChipster';
-
-interface AnimationConfig {
-  duration: number;
-  easing: string;
-}
+import { ChipsterAnimationConfig, defaultAnimationConfig, getAnimationStyle, AnimationPreset, animations } from './animations';
 
 interface ChipsterProps {
   onAdd?: (value: string) => void;
@@ -24,13 +20,8 @@ interface ChipsterProps {
   renderItem?: (item: ChipsterItem, index: number, highlighted: boolean) => ReactNode;
   transform?: (value: string) => string;
   showErrorMessage?: boolean;
-  animationConfig?: AnimationConfig | false;
+  animationConfig?: ChipsterAnimationConfig | AnimationPreset | false;
 }
-
-const defaultAnimationConfig: AnimationConfig = {
-  duration: 50,
-  easing: 'ease-in-out',
-};
 
 export const Chipster: React.FC<ChipsterProps> = ({
   onAdd,
@@ -83,7 +74,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
 
     if (e.key === 'Enter' && inputRef.current) {
       e.preventDefault();
-      const success = addItem(inputValue);
+      const success = handleAddItem(inputValue);
       if (success) {
         onAdd?.(inputValue);
         setInputValue('');
@@ -92,24 +83,31 @@ export const Chipster: React.FC<ChipsterProps> = ({
       e.preventDefault();
       if (highlightedIndex !== null) {
         const itemToRemove = items[highlightedIndex];
-        removeItem(itemToRemove.id);
-        onRemove?.(itemToRemove.id);
+        handleRemoveItem(itemToRemove.id, highlightedIndex);
       } else if (items.length > 0) {
         highlightItem(items.length - 1);
       }
     }
   };
 
-  const handleRemoveItem = useCallback((id: string) => {
-    if (animationConfig) {
+  const actualAnimationConfig = typeof animationConfig === 'string' 
+    ? animations[animationConfig] 
+    : animationConfig;
+
+  const handleAddItem = useCallback((text: string) => {
+    const newItemId = addItem(text);
+    return !!newItemId;
+  }, [addItem]);
+
+  const handleRemoveItem = useCallback((id: string, index: number) => {
+    if (actualAnimationConfig) {
       const chipElement = document.getElementById(`chip-${id}`);
       if (chipElement) {
-        chipElement.style.opacity = '0';
-        chipElement.style.transform = 'scale(0.8)';
+        Object.assign(chipElement.style, getAnimationStyle(actualAnimationConfig.exit, true));
         setTimeout(() => {
           removeItem(id);
           onRemove?.(id);
-        }, animationConfig.duration);
+        }, actualAnimationConfig.exit.duration);
       } else {
         removeItem(id);
         onRemove?.(id);
@@ -118,16 +116,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
       removeItem(id);
       onRemove?.(id);
     }
-  }, [removeItem, onRemove, animationConfig]);
-
-  const getItemStyle = (item: ChipsterItem) => {
-    if (!animationConfig) return {};
-    return {
-      transition: `opacity ${animationConfig.duration}ms ${animationConfig.easing}, transform ${animationConfig.duration}ms ${animationConfig.easing}`,
-      opacity: 1,
-      transform: 'scale(1)',
-    };
-  };
+  }, [removeItem, onRemove, actualAnimationConfig]);
 
   return (
     <div>
@@ -142,7 +131,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
         onClick={() => !disabled && inputRef.current?.focus()}
       >
         {items.map((item, index) => (
-          <div key={item.id} id={`chip-${item.id}`} style={getItemStyle(item)}>
+          <div key={item.id} id={`chip-${item.id}`}>
             {renderItem ? (
               renderItem(item, index, index === highlightedIndex)
             ) : (
@@ -150,7 +139,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
                 highlighted={index === highlightedIndex}
                 disabled={disabled}
                 icon={item.icon}
-                onRemove={() => handleRemoveItem(item.id)}
+                onRemove={() => handleRemoveItem(item.id, index)}
               >
                 {item.text}
               </Item>

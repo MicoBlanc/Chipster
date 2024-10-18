@@ -24,7 +24,7 @@ function App() {
           onAdd={(value) => console.log('Added:', value)}
           onRemove={(id) => console.log('Removed item with id:', id)}
           placeholder="Add items..."
-          animationConfig={{ duration: 100, easing: 'ease-out' }}
+          animationConfig="fadeSlideLeft"
           validationRules={validationRules}
           getIcon={getIcon}
           maxItems={10}
