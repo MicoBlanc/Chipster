@@ -1,92 +1,115 @@
-import React, { useState, useRef, ReactNode } from 'react';
+import React, { useRef, ReactNode } from 'react';
 import classNames from 'classnames';
+import { useChipster, ValidationResult, ChipsterItem } from './useChipster';
 
 interface ChipsterProps {
-  children?: ReactNode;
   onAdd?: (value: string) => void;
-  onRemove?: (index: number) => void;
+  onRemove?: (id: string) => void;
   placeholder?: string | ReactNode;
   className?: string;
   inputClassName?: string;
+  errorClassName?: string;
   disabled?: boolean;
+  validate?: (value: string) => ValidationResult;
+  getIcon?: (value: string) => React.ReactNode;
+  maxItems?: number;
+  allowDuplicates?: boolean;
+  caseSensitive?: boolean;
+  renderItem?: (item: ChipsterItem, index: number, highlighted: boolean) => ReactNode;
 }
 
 export const Chipster: React.FC<ChipsterProps> = ({
-  children,
   onAdd,
   onRemove,
   placeholder = 'Type and press Enter',
   className,
   inputClassName,
+  errorClassName,
   disabled = false,
+  validate,
+  getIcon,
+  maxItems,
+  allowDuplicates = false,
+  caseSensitive = true,
+  renderItem,
 }) => {
-  const [currentInput, setCurrentInput] = useState<string>('');
-  const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
+  const { items, error, highlightedIndex, addItem, removeItem, highlightItem } = useChipster({ 
+    validate, 
+    getIcon, 
+    maxItems, 
+    allowDuplicates, 
+    caseSensitive 
+  });
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
 
-    console.log('Key pressed:', e.key);
-    console.log('Current input:', currentInput);
-    console.log('Highlighted index:', highlightedIndex);
-
-    if (e.key === 'Enter' && currentInput.trim() && onAdd) {
+    if (e.key === 'Enter' && inputRef.current) {
       e.preventDefault();
-      onAdd(currentInput.trim());
-      setCurrentInput('');
-      setHighlightedIndex(null);
-    } else if (e.key === 'Backspace' && currentInput === '') {
+      const success = addItem(inputRef.current.value);
+      if (success) {
+        onAdd?.(inputRef.current.value);
+        inputRef.current.value = '';
+      }
+    } else if (e.key === 'Backspace' && inputRef.current && inputRef.current.value === '') {
       e.preventDefault();
-      const childCount = React.Children.count(children);
-      
-      if (childCount > 0) {
-        if (highlightedIndex === null) {
-          setHighlightedIndex(childCount - 1);
-        } else {
-          onRemove?.(highlightedIndex);
-          setHighlightedIndex(null);
-        }
+      if (highlightedIndex !== null) {
+        const itemToRemove = items[highlightedIndex];
+        removeItem(itemToRemove.id);
+        onRemove?.(itemToRemove.id);
+      } else if (items.length > 0) {
+        highlightItem(items.length - 1);
       }
     }
-
-    console.log('After operation - Highlighted index:', highlightedIndex);
   };
 
   return (
-    <div 
-      className={classNames(
-        'flex flex-wrap items-center p-1 border bg-white border-gray-300 rounded-lg',
-        'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
-        { 'opacity-50 cursor-not-allowed': disabled },
-        className
-      )}
-      onClick={() => !disabled && inputRef.current?.focus()}
-    >
-      {React.Children.map(children, (child, index) => {
-        console.log(`Rendering child ${index}, highlighted: ${index === highlightedIndex}`);
-        return React.cloneElement(child as React.ReactElement, {
-          highlighted: index === highlightedIndex,
-          disabled: disabled
-        });
-      })}
-      <input
-        ref={inputRef}
-        type="text"
-        value={currentInput}
-        onChange={(e) => !disabled && setCurrentInput(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={typeof placeholder === 'string' ? placeholder : ''}
+    <div>
+      <div 
         className={classNames(
-          'flex-grow outline-none text-sm p-1 min-w-[50px] focus:ring-0',
-          { 'cursor-not-allowed': disabled },
-          inputClassName
+          'flex flex-wrap items-center p-1 border bg-white border-gray-300 rounded-lg',
+          'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
+          { 'opacity-50 cursor-not-allowed': disabled },
+          className
         )}
-        disabled={disabled}
-      />
-      {typeof placeholder !== 'string' && currentInput === '' && (
-        <div className="italic text-sm font-medium text-gray-800 tracking-tight">{placeholder}</div>
-      )}
+        onClick={() => !disabled && inputRef.current?.focus()}
+      >
+        {items.map((item, index) => (
+          renderItem ? (
+            renderItem(item, index, index === highlightedIndex)
+          ) : (
+            <Item
+              key={item.id}
+              highlighted={index === highlightedIndex}
+              disabled={disabled}
+              icon={item.icon}
+              onRemove={() => {
+                removeItem(item.id);
+                onRemove?.(item.id);
+              }}
+            >
+              {item.text}
+            </Item>
+          )
+        ))}
+        <input
+          ref={inputRef}
+          type="text"
+          onKeyDown={handleKeyDown}
+          placeholder={typeof placeholder === 'string' ? placeholder : ''}
+          className={classNames(
+            'flex-grow outline-none text-sm p-1 min-w-[50px] focus:ring-0',
+            { 'cursor-not-allowed': disabled },
+            inputClassName
+          )}
+          disabled={disabled}
+        />
+        {typeof placeholder !== 'string' && inputRef.current?.value === '' && (
+          <div className="italic text-sm font-medium text-gray-800 tracking-tight">{placeholder}</div>
+        )}
+      </div>
+      {error && <div className={classNames('text-red-500 text-sm mt-1', errorClassName)}>{error}</div>}
     </div>
   );
 };
