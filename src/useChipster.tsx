@@ -68,7 +68,7 @@ export function useChipster(options: UseChipsterOptions = {}) {
       return true;
     }
     return false;
-  }, [items, options, validateInput]);
+  }, [options, validateInput]);
 
   const removeItem = useCallback((id: string) => {
     setItems(prev => prev.filter(item => item.id !== id));

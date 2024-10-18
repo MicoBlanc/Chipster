@@ -95,7 +95,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
           'flex flex-wrap items-center p-0.5 border bg-white border-gray-300 rounded-lg',
           'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
           { 'opacity-50 cursor-not-allowed': disabled },
-          { 'ring-2 ring-red-500': error },
+          { 'border-red-500': error },
           className
         )}
         onClick={() => !disabled && inputRef.current?.focus()}
@@ -149,6 +149,10 @@ interface ItemProps {
   highlighted?: boolean;
   disabled?: boolean;
   icon?: ReactNode; 
+  tabIndex?: number;
+  role?: string;
+  'aria-selected'?: boolean;
+  'data-chip-index'?: number;
 }
 
 export const Item: React.FC<ItemProps> = ({
@@ -159,14 +163,22 @@ export const Item: React.FC<ItemProps> = ({
   highlighted = false,
   disabled = false,
   icon, // New prop
+  tabIndex,
+  role,
+  'aria-selected': ariaSelected,
+  'data-chip-index': dataChipIndex,
 }) => (
   <span 
     className={classNames(
       'inline-flex items-center bg-gray-100 text-gray-800 font-semibold rounded-md border border-gray-300 px-2 py-1 text-xs m-1',
-      { 'ring-2 ring-black ring-offset-1': highlighted },
+      { 'ring-2 ring-black': highlighted },
       { 'opacity-50': disabled },
       className
     )}
+    tabIndex={tabIndex}
+    role={role}
+    aria-selected={ariaSelected}
+    data-chip-index={dataChipIndex}
   >
     {icon && <span className="mr-1">{icon}</span>}
     {children}
