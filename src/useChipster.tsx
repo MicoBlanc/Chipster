@@ -6,17 +6,19 @@ export interface ChipsterItem {
   icon?: React.ReactNode;
 }
 
-export interface ValidationResult {
-  isValid: boolean;
-  errorMessage?: string;
+export interface ValidationRule {
+  test: (value: string) => boolean;
+  message?: string;
 }
 
 export interface UseChipsterOptions {
-  validate?: (value: string) => ValidationResult;
+  validationRules?: ValidationRule[];
   getIcon?: (value: string) => React.ReactNode;
   maxItems?: number;
   allowDuplicates?: boolean;
   caseSensitive?: boolean;
+  transform?: (value: string) => string;
+  showErrorMessage?: boolean;
 }
 
 export function useChipster(options: UseChipsterOptions = {}) {
@@ -25,7 +27,7 @@ export function useChipster(options: UseChipsterOptions = {}) {
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
 
   const addItem = useCallback((text: string) => {
-    const trimmedText = text.trim();
+    let processedText = options.transform ? options.transform(text) : text.trim();
     
     if (options.maxItems && items.length >= options.maxItems) {
       setError(`Maximum of ${options.maxItems} items allowed`);
@@ -35,8 +37,8 @@ export function useChipster(options: UseChipsterOptions = {}) {
     if (!options.allowDuplicates) {
       const isDuplicate = items.some(item => 
         options.caseSensitive 
-          ? item.text === trimmedText 
-          : item.text.toLowerCase() === trimmedText.toLowerCase()
+          ? item.text === processedText 
+          : item.text.toLowerCase() === processedText.toLowerCase()
       );
       if (isDuplicate) {
         setError('Duplicate items are not allowed');
@@ -44,16 +46,17 @@ export function useChipster(options: UseChipsterOptions = {}) {
       }
     }
 
-    if (options.validate) {
-      const validationResult = options.validate(trimmedText);
-      if (!validationResult.isValid) {
-        setError(validationResult.errorMessage || 'Invalid input');
-        return false;
+    if (options.validationRules) {
+      for (const rule of options.validationRules) {
+        if (!rule.test(processedText)) {
+          setError(options.showErrorMessage ? (rule.message || 'Invalid input') : '');
+          return false;
+        }
       }
     }
 
-    const icon = options.getIcon ? options.getIcon(trimmedText) : undefined;
-    setItems(prev => [...prev, { id: Date.now().toString(), text: trimmedText, icon }]);
+    const icon = options.getIcon ? options.getIcon(processedText) : undefined;
+    setItems(prev => [...prev, { id: Date.now().toString(), text: processedText, icon }]);
     setError(null);
     return true;
   }, [items, options]);

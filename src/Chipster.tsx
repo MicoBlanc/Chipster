@@ -1,6 +1,6 @@
 import React, { useRef, ReactNode } from 'react';
 import classNames from 'classnames';
-import { useChipster, ValidationResult, ChipsterItem } from './useChipster';
+import { useChipster, ChipsterItem, ValidationRule } from './useChipster';
 
 interface ChipsterProps {
   onAdd?: (value: string) => void;
@@ -10,12 +10,14 @@ interface ChipsterProps {
   inputClassName?: string;
   errorClassName?: string;
   disabled?: boolean;
-  validate?: (value: string) => ValidationResult;
+  validationRules?: ValidationRule[];
   getIcon?: (value: string) => React.ReactNode;
   maxItems?: number;
   allowDuplicates?: boolean;
   caseSensitive?: boolean;
   renderItem?: (item: ChipsterItem, index: number, highlighted: boolean) => ReactNode;
+  transform?: (value: string) => string;
+  showErrorMessage?: boolean;
 }
 
 export const Chipster: React.FC<ChipsterProps> = ({
@@ -26,19 +28,23 @@ export const Chipster: React.FC<ChipsterProps> = ({
   inputClassName,
   errorClassName,
   disabled = false,
-  validate,
+  validationRules,
   getIcon,
   maxItems,
   allowDuplicates = false,
   caseSensitive = true,
   renderItem,
+  transform,
+  showErrorMessage = true,
 }) => {
   const { items, error, highlightedIndex, addItem, removeItem, highlightItem } = useChipster({ 
-    validate, 
+    validationRules, 
     getIcon, 
     maxItems, 
     allowDuplicates, 
-    caseSensitive 
+    caseSensitive,
+    transform,
+    showErrorMessage,
   });
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -68,9 +74,10 @@ export const Chipster: React.FC<ChipsterProps> = ({
     <div>
       <div 
         className={classNames(
-          'flex flex-wrap items-center p-1 border bg-white border-gray-300 rounded-lg',
+          'flex flex-wrap items-center p-0.5 h-10 border bg-white border-gray-300 rounded-lg',
           'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
           { 'opacity-50 cursor-not-allowed': disabled },
+          { 'ring-2 ring-red-500': error },
           className
         )}
         onClick={() => !disabled && inputRef.current?.focus()}
@@ -99,7 +106,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
           onKeyDown={handleKeyDown}
           placeholder={typeof placeholder === 'string' ? placeholder : ''}
           className={classNames(
-            'flex-grow outline-none text-sm p-1 min-w-[50px] focus:ring-0',
+            'flex-grow outline-none text-sm p-1 min-w-[50px] h-full focus:ring-0',
             { 'cursor-not-allowed': disabled },
             inputClassName
           )}
@@ -109,7 +116,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
           <div className="italic text-sm font-medium text-gray-800 tracking-tight">{placeholder}</div>
         )}
       </div>
-      {error && <div className={classNames('text-red-500 text-sm mt-1', errorClassName)}>{error}</div>}
+      {error && showErrorMessage && <div className={classNames('text-red-500 text-sm mt-1', errorClassName)}>{error}</div>}
     </div>
   );
 };
@@ -135,7 +142,7 @@ export const Item: React.FC<ItemProps> = ({
 }) => (
   <span 
     className={classNames(
-      'inline-flex items-center bg-gray-100 text-gray-800 font-semibold rounded-md border border-gray-300 px-2 py-1 text-sm m-1',
+      'inline-flex items-center bg-gray-100 text-gray-800 font-semibold rounded-md border border-gray-300 px-2 py-1 text-xs m-1',
       { 'ring-2 ring-black ring-offset-1': highlighted },
       { 'opacity-50': disabled },
       className

@@ -1,23 +1,21 @@
 import React from 'react';
 import { Chipster } from './Chipster';
 import { FaUser, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { ValidationRule } from './useChipster';  // Import ValidationRule type
 
 function App() {
-  const validate = (value: string) => {
-    if (value.length < 3) {
-      return { isValid: false, errorMessage: 'Input must be at least 3 characters long' };
-    }
-    if (value.length > 50) {
-      return { isValid: false, errorMessage: 'Input must not exceed 20 characters' };
-    }
-    return { isValid: true };
-  };
+  const validationRules: ValidationRule[] = [
+    { test: (value: string) => value.length >= 3, message: 'Must be at least 3 characters' },
+    { test: (value: string) => value.length <= 50, message: 'Must not exceed 50 characters' },
+  ];
 
   const getIcon = (value: string) => {
     if (value.includes('@')) return <FaEnvelope />;
     if (value.match(/^\d+$/)) return <FaPhone />;
     return <FaUser />;
   };
+
+  const transform = (value: string) => value.trim().toLowerCase();
 
   return (
     <div className='bg-gray-100 flex items-center justify-center w-full h-screen'>
@@ -26,11 +24,13 @@ function App() {
           onAdd={(value) => console.log('Added:', value)}
           onRemove={(id) => console.log('Removed item with id:', id)}
           placeholder="Add items..."
-          validate={validate}
+          validationRules={validationRules}
           getIcon={getIcon}
           maxItems={5}
           allowDuplicates={false}
           caseSensitive={false}
+          transform={transform}
+          showErrorMessage={true}
         />
       </div>
     </div>
