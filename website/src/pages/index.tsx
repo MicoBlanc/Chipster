@@ -1,41 +1,30 @@
-import Head from 'next/head'
-import { useState } from 'react'
-import { Chipster } from 'chipster'
+import { Chipster } from 'chipster';
+import { ValidationRule } from 'chipster';
 
 export default function Home() {
-  const [items, setItems] = useState<string[]>([])
+  const validationRules: ValidationRule[] = [
+    { test: (value: string) => value.length >= 3, message: 'Must be at least 3 characters' },
+    { test: (value: string) => value.length <= 50, message: 'Must not exceed 50 characters' },
+  ];
 
-  const handleAdd = (value: string) => {
-    setItems(prevItems => [...prevItems, value])
-  }
-
-  const handleRemove = (id: string) => {
-    setItems(prevItems => prevItems.filter(item => item !== id))
-  }
+  const transform = (value: string) => value.trim().toLowerCase();
 
   return (
-    <>
-      <Head>
-        <title>Chipster Showcase</title>
-        <meta name="description" content="Showcase for the Chipster component" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className="p-8">
-        <h1 className="text-3xl font-bold mb-6">Chipster Component Showcase</h1>
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Basic Chipster</h2>
-          <Chipster
-            onAdd={handleAdd}
-            onRemove={handleRemove}
-            placeholder="Add a new item"
-          />
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-2">Current items:</h3>
-            <pre className="bg-gray-100 p-4 rounded">{JSON.stringify(items, null, 2)}</pre>
-          </div>
-        </section>
-      </main>
-    </>
-  )
+    <div className='bg-gray-100 flex items-center justify-center w-full h-screen'>
+      <div className="p-4 bg-gray-100 w-full max-w-xl">
+        <Chipster
+          onAdd={(value) => console.log('Added:', value)}
+          onRemove={(id) => console.log('Removed item with id:', id)}
+          placeholder="Add items..."
+          exitAnimation="fadeSlideLeft"
+          validationRules={validationRules}
+          maxItems={10}
+          allowDuplicates={false}
+          caseSensitive={false}
+          transform={transform}
+          showErrorMessage={true}
+        />
+      </div>
+    </div>
+  );
 }
