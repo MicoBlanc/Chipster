@@ -1,7 +1,6 @@
 import React from 'react';
-import { FaUser, FaEnvelope, FaPhone } from 'react-icons/fa';
 import { ValidationRule } from './types';
-import { Chipster } from './chipster';
+import { Chipster } from './Chipster';
 
 function App() {
   const validationRules: ValidationRule[] = [
@@ -9,11 +8,6 @@ function App() {
     { test: (value: string) => value.length <= 50, message: 'Must not exceed 50 characters' },
   ];
 
-  const getIcon = (value: string) => {
-    if (value.includes('@')) return <FaEnvelope />;
-    if (value.match(/^\d+$/)) return <FaPhone />;
-    return <FaUser />;
-  };
 
   const transform = (value: string) => value.trim().toLowerCase();
 
@@ -26,7 +20,6 @@ function App() {
           placeholder="Add items..."
           exitAnimation="fadeSlideLeft"
           validationRules={validationRules}
-          getIcon={getIcon}
           maxItems={10}
           allowDuplicates={false}
           caseSensitive={false}
