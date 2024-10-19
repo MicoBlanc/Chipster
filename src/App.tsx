@@ -1,6 +1,6 @@
 import React from 'react';
 import { ValidationRule } from './types';
-import { Chipster } from './Chipster';
+import { Chipster } from './chipster';
 
 function App() {
   const validationRules: ValidationRule[] = [
