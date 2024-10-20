@@ -108,7 +108,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
     <div>
       <div 
         className={classNames(
-          'flex flex-wrap items-center p-0.5 border bg-transparent border-gray-300 rounded-lg',
+          'flex flex-wrap items-center p-0.5 border bg-white shadow-sm border-gray-300 rounded-lg',
           'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
           { 'opacity-50 cursor-not-allowed': disabled },
           { 'border-red-500 border-2': error },
@@ -140,7 +140,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
           onKeyDown={handleKeyDown}
           placeholder={typeof placeholder === 'string' ? placeholder : ''}
           className={classNames(
-            'flex-grow outline-none text-sm p-1 min-w-[50px] focus:ring-0',
+            'flex-grow outline-none bg-transparent text-sm p-1 min-w-[50px] focus:ring-0',
             { 'cursor-not-allowed': disabled },
             inputClassName
           )}
