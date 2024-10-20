@@ -13,6 +13,7 @@ export default function Home() {
     <div className='bg-gray-100 flex items-center justify-center w-full h-screen'>
       <div className="p-4 bg-gray-100 w-full max-w-xl">
         <Chipster
+        className='bg-red-500 text-black'
           onAdd={(value) => console.log('Added:', value)}
           onRemove={(id) => console.log('Removed item with id:', id)}
           placeholder="Add items..."
