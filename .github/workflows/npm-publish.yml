@@ -19,6 +19,6 @@ jobs:
       - run: npm ci
       - run: npm run build --workspace=packages/chipster
       - run: npm test --workspace=packages/chipster
-      - run: npm publish --workspace=packages/chipster
+      - run: npm publish --workspace=packages/chipster --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
