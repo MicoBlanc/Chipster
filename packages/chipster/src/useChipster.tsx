@@ -1,10 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { ChipsterItem, UseChipsterOptions } from './types';
 
 export function useChipster(options: UseChipsterOptions = {}) {
   const [items, setItems] = useState<ChipsterItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsRef = useRef<HTMLUListElement>(null);
 
   const validateInput = useCallback((value: string) => {
     let processedValue = options.transform ? options.transform(value) : value.trim();
@@ -62,14 +65,46 @@ export function useChipster(options: UseChipsterOptions = {}) {
     setError(null);
   }, []);
 
+  const updateSuggestions = useCallback((input: string) => {
+    if (options.getSuggestions) {
+      const newSuggestions = options.getSuggestions(input);
+      setSuggestions(newSuggestions);
+      setShowSuggestions(newSuggestions.length > 0);
+    }
+  }, [options]);
+
+  const clearSuggestions = useCallback(() => {
+    setSuggestions([]);
+    setShowSuggestions(false);
+  }, []);
+
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
+      setShowSuggestions(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
   return {
     items,
     error,
     highlightedIndex,
+    suggestions,
+    showSuggestions,
+    suggestionsRef,
     addItem,
     removeItem,
     highlightItem,
     validateInput,
     clearValidation,
+    updateSuggestions,
+    clearSuggestions,
+    setShowSuggestions,
   };
 }

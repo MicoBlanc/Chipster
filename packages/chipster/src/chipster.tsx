@@ -11,6 +11,11 @@ export const Chipster: React.FC<ChipsterProps> = ({
   className,
   inputClassName,
   errorClassName,
+  chipClassName,
+  chipHighlightedClassName,
+  chipDisabledClassName,
+  chipIconClassName,
+  chipRemoveButtonClassName,
   disabled = false,
   validationRules,
   getIcon,
@@ -22,17 +27,25 @@ export const Chipster: React.FC<ChipsterProps> = ({
   transform,
   showErrorMessage = true,
   exitAnimation,
+  getSuggestions,
+  onInputChange,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const { 
     items, 
     error, 
     highlightedIndex, 
+    suggestions,
+    showSuggestions,
+    suggestionsRef,
     addItem, 
     removeItem, 
     highlightItem,
     validateInput,
-    clearValidation
+    clearValidation,
+    updateSuggestions,
+    clearSuggestions,
+    setShowSuggestions,
   } = useChipster({ 
     validationRules, 
     getIcon, 
@@ -42,18 +55,23 @@ export const Chipster: React.FC<ChipsterProps> = ({
     caseSensitive,
     transform,
     showErrorMessage,
+    getSuggestions,
   });
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     if (newValue.trim().length > 0) {
       validateInput(newValue);
+      updateSuggestions(newValue);
     } else {
       clearValidation();
+      clearSuggestions();
     }
-  }, [validateInput, clearValidation]);
+    onInputChange?.(newValue);
+  }, [validateInput, clearValidation, updateSuggestions, clearSuggestions, onInputChange]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
@@ -105,10 +123,10 @@ export const Chipster: React.FC<ChipsterProps> = ({
   }, [removeItem, onRemove, actualExitAnimation]);
 
   return (
-    <div>
+    <div ref={containerRef} className="relative">
       <div 
         className={classNames(
-          'flex flex-wrap items-center p-0.5 border bg-white shadow-sm border-gray-300 rounded-lg',
+          'relative flex flex-wrap items-center p-0.5 border bg-white shadow-sm border-gray-300 rounded-lg',
           'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
           { 'opacity-50 cursor-not-allowed': disabled },
           { 'border-red-500 border-2': error },
@@ -126,6 +144,11 @@ export const Chipster: React.FC<ChipsterProps> = ({
                 disabled={disabled}
                 icon={item.icon}
                 onRemove={() => handleRemoveItem(item.id, index)}
+                className={chipClassName}
+                highlightedClassName={chipHighlightedClassName}
+                disabledClassName={chipDisabledClassName}
+                iconClassName={chipIconClassName}
+                removeButtonClassName={chipRemoveButtonClassName}
               >
                 {item.text}
               </Item>
@@ -138,9 +161,10 @@ export const Chipster: React.FC<ChipsterProps> = ({
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
+          onFocus={() => setShowSuggestions(true)}
           placeholder={typeof placeholder === 'string' ? placeholder : ''}
           className={classNames(
-            'flex-grow outline-none bg-transparent text-sm p-1 min-w-[50px] focus:ring-0',
+            'flex-grow outline-none bg-transparent text-sm p-1 min-w-[50px] text-black focus:ring-0',
             { 'cursor-not-allowed': disabled },
             inputClassName
           )}
@@ -150,7 +174,35 @@ export const Chipster: React.FC<ChipsterProps> = ({
           <div className="italic text-sm font-medium text-gray-800 tracking-tight">{placeholder}</div>
         )}
       </div>
-      {error && showErrorMessage && <div className={classNames('text-red-500 text-sm mt-1', errorClassName)}>{error}</div>}
+      <div className="relative">
+        {error && showErrorMessage && (
+          <div className={classNames('text-red-500 text-sm mt-1', errorClassName)}>{error}</div>
+        )}
+        {showSuggestions && suggestions.length > 0 && (
+          <ul 
+            ref={suggestionsRef}
+            className={classNames(
+              'absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm',
+              'max-h-60 overflow-auto',
+              'top-1 left-0'
+            )}
+          >
+            {suggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                className="px-3 py-2 text-gray-700 font-medium text-sm hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  handleAddItem(suggestion);
+                  setInputValue('');
+                  clearSuggestions();
+                }}
+              >
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
@@ -160,10 +212,13 @@ export const Item: React.FC<ItemProps> = ({
   children,
   onRemove,
   className,
+  highlightedClassName,
+  disabledClassName,
+  iconClassName,
   removeButtonClassName,
   highlighted = false,
   disabled = false,
-  icon, // New prop
+  icon,
   tabIndex,
   role,
   'aria-selected': ariaSelected,
@@ -171,9 +226,9 @@ export const Item: React.FC<ItemProps> = ({
 }) => (
   <span 
     className={classNames(
-      'inline-flex items-center bg-gray-100 text-gray-800 font-semibold rounded-md border border-gray-300 px-2 py-1 text-xs m-1',
-      { 'ring-2 ring-black': highlighted },
-      { 'opacity-50': disabled },
+      'inline-flex items-center bg-gray-100 text-gray-800 font-semibold rounded-md border border-gray-300 px-2 py-1 text-xs m-0.5',
+      { [highlightedClassName || 'ring-2 ring-black']: highlighted },
+      { [disabledClassName || 'opacity-50']: disabled },
       className
     )}
     tabIndex={tabIndex}
@@ -181,7 +236,7 @@ export const Item: React.FC<ItemProps> = ({
     aria-selected={ariaSelected}
     data-chip-index={dataChipIndex}
   >
-    {icon && <span className="mr-1">{icon}</span>}
+    {icon && <span className={classNames('mr-1', iconClassName)}>{icon}</span>}
     {children}
     {onRemove && (
       <button 
@@ -198,3 +253,4 @@ export const Item: React.FC<ItemProps> = ({
     )}
   </span>
 );
+

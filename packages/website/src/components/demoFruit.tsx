@@ -15,7 +15,7 @@ const fruitEmojis = [
   { text: 'Watermelon', emoji: '🍉' },
 ];
 
-export default function Home() {
+export default function DemoFruit() {
   const [chipsterItems, setChipsterItems] = useState([]);
 
   console.log(chipsterItems)
