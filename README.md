@@ -1,14 +1,8 @@
 # Chipster - A Composable Input Component for Managing Multiple Entries
 
-### Problem Statement
-
-In many applications, users need to input multiple pieces of information (emails, tags, keywords) in a single field. Managing and validating each input while keeping the UI clean is challenging. Most existing solutions are limited in flexibility, difficult to style, or lack essential features like easy validation and customization.
-
----
+![chipster1](https://github.com/user-attachments/assets/7f7f09be-6e80-4d0e-81f5-fb395a92a0ff)
 
 Chipster is a **flexible, customizable input component** that allows users to input **multiple entries** (emails, tags, etc.) as removable badges. This component addresses key input management challenges by offering:
-
-### Features and Benefits
 
 - **Input Flexibility**: Add multiple inputs fluidly without cluttering the UI.
 - **Badge Management**: Easily manage removable badges.
@@ -128,4 +122,4 @@ Use built-in animations or define custom ones:
 />
 ```
 
-For more advanced usage and full API documentation, please refer to our [API Documentation](link-to-api-docs).
+For more advanced usage and full API documentation, please refer to our API Documentation **(work in progress)**
