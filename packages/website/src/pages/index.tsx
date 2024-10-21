@@ -1,6 +1,11 @@
 import { Chipster } from 'chipster';
 import { ValidationRule } from 'chipster';
 import { useState, useCallback } from 'react';
+import { ChipsterItem as OriginalChipsterItem } from 'chipster';
+
+interface CustomChipsterItem extends OriginalChipsterItem {
+  icon?: React.ReactNode;
+}
 
 const fruitEmojis = [
   { text: 'Apple', emoji: '🍎' },
@@ -16,9 +21,10 @@ const fruitEmojis = [
 ];
 
 export default function Home() {
-  const [chipsterItems, setChipsterItems] = useState([]);
+  const [chipsterItems, setChipsterItems] = useState<CustomChipsterItem[]>([]);
 
-  console.log(chipsterItems)
+
+  console.log('here is the items',chipsterItems)
 
   const validationRules: ValidationRule[] = [
     { test: (value: string) => value.length >= 2, message: 'Must be at least 2 characters' },
@@ -34,13 +40,8 @@ export default function Home() {
       .map(fruit => `${fruit.emoji} ${fruit.text}`);
   }, []);
 
-  const getIcon = useCallback((value: string) => {
-    const fruit = fruitEmojis.find(f => value.includes(f.text));
-    return fruit ? fruit.emoji : null;
-  }, []);
-
-  const handleItemsChange = useCallback((items) => {
-    setChipsterItems(items);
+  const handleItemsChange = useCallback((items: OriginalChipsterItem[]) => {
+    setChipsterItems(items as CustomChipsterItem[]);
     console.log('Current items:', items);
   }, []);
 
@@ -67,17 +68,18 @@ export default function Home() {
           transform={transform}
           showErrorMessage={true}
           getSuggestions={getSuggestions}
-          getIcon={getIcon}
           onItemsChange={handleItemsChange}
         />
-        <div className="hidden mt-4">
-          <h3 className="font-bold text-black">Selected Fruits:</h3>
-          <ul>
-            {chipsterItems.map((item, index) => (
-              <li key={index}>{item.icon} {item.text}</li>
-            ))}
-          </ul>
-        </div>
+        {chipsterItems.length > 0 && (
+          <div className="mt-4">
+            <h3 className="font-bold text-black">Selected Fruits:</h3>
+            <ul>
+              {chipsterItems.map((item, index) => (
+                <li key={index}>{item.icon} {item.text}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 import { useChipster } from './useChipster';
 import { getAnimationStyle, animations } from './animations';
@@ -60,6 +60,24 @@ export const Chipster: React.FC<ChipsterProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
+  const [activeDescendant, setActiveDescendant] = useState<string | undefined>();
+  const listboxRef = useRef<HTMLUListElement>(null);
+
+  const scrollActiveDescendantIntoView = useCallback(() => {
+    if (activeDescendant && listboxRef.current) {
+      const activeElement = listboxRef.current.querySelector(`#${activeDescendant}`);
+      if (activeElement) {
+        activeElement.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [activeDescendant]);
+
+  useEffect(() => {
+    scrollActiveDescendantIntoView();
+  }, [scrollActiveDescendantIntoView]);
+
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
@@ -76,13 +94,35 @@ export const Chipster: React.FC<ChipsterProps> = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
 
-    if (e.key === 'Enter' && inputRef.current) {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      const success = handleAddItem(inputValue);
-      if (success) {
-        onAdd?.(inputValue);
+      if (showSuggestions && selectedSuggestionIndex !== -1) {
+        handleAddItem(suggestions[selectedSuggestionIndex]);
         setInputValue('');
+        clearSuggestions();
+        setSelectedSuggestionIndex(-1);
+        setActiveDescendant(undefined);
+      } else {
+        const success = handleAddItem(inputValue);
+        if (success) {
+          onAdd?.(inputValue);
+          setInputValue('');
+        }
       }
+    } else if (e.key === 'ArrowDown' && showSuggestions) {
+      e.preventDefault();
+      const newIndex = selectedSuggestionIndex < suggestions.length - 1 ? selectedSuggestionIndex + 1 : selectedSuggestionIndex;
+      setSelectedSuggestionIndex(newIndex);
+      setActiveDescendant(`suggestion-${newIndex}`);
+    } else if (e.key === 'ArrowUp' && showSuggestions) {
+      e.preventDefault();
+      const newIndex = selectedSuggestionIndex > 0 ? selectedSuggestionIndex - 1 : 0;
+      setSelectedSuggestionIndex(newIndex);
+      setActiveDescendant(`suggestion-${newIndex}`);
+    } else if (e.key === 'Escape') {
+      clearSuggestions();
+      setSelectedSuggestionIndex(-1);
+      setActiveDescendant(undefined);
     } else if (e.key === 'Backspace' && inputValue === '') {
       e.preventDefault();
       if (highlightedIndex !== null) {
@@ -93,6 +133,10 @@ export const Chipster: React.FC<ChipsterProps> = ({
       }
     }
   };
+
+  useEffect(() => {
+    setSelectedSuggestionIndex(-1);
+  }, [suggestions]);
 
   const actualExitAnimation = exitAnimation && (typeof exitAnimation === 'string' 
     ? animations[exitAnimation] 
@@ -180,7 +224,9 @@ export const Chipster: React.FC<ChipsterProps> = ({
         )}
         {showSuggestions && suggestions.length > 0 && (
           <ul 
-            ref={suggestionsRef}
+            ref={listboxRef}
+            role="listbox"
+            id="suggestions-listbox"
             className={classNames(
               'absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm',
               'max-h-60 overflow-auto',
@@ -189,8 +235,17 @@ export const Chipster: React.FC<ChipsterProps> = ({
           >
             {suggestions.map((suggestion, index) => (
               <li
+                id={`suggestion-${index}`}
                 key={index}
-                className="px-3 py-2 text-gray-700 font-medium text-sm hover:bg-gray-100 cursor-pointer"
+                role="option"
+                aria-selected={index === selectedSuggestionIndex}
+                className={classNames(
+                  'px-3 py-2 text-gray-700 font-medium text-sm cursor-pointer',
+                  {
+                    'bg-gray-100': index === selectedSuggestionIndex,
+                    'hover:bg-gray-100': index !== selectedSuggestionIndex
+                  }
+                )}
                 onClick={() => {
                   handleAddItem(suggestion);
                   setInputValue('');
