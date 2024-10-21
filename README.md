@@ -1,46 +1,131 @@
-# Getting Started with Create React App
+# Chipster - A Composable Input Component for Managing Multiple Entries
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Problem Statement
 
-## Available Scripts
+In many applications, users need to input multiple pieces of information (emails, tags, keywords) in a single field. Managing and validating each input while keeping the UI clean is challenging. Most existing solutions are limited in flexibility, difficult to style, or lack essential features like easy validation and customization.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+Chipster is a **flexible, customizable input component** that allows users to input **multiple entries** (emails, tags, etc.) as removable badges. This component addresses key input management challenges by offering:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Features and Benefits
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **Input Flexibility**: Add multiple inputs fluidly without cluttering the UI.
+- **Badge Management**: Easily manage removable badges.
+- **Custom Validation**: Developers can add validation logic (e.g., for email or phone number formats).
+- **Accessibility**: Supports keyboard navigation and validation messages.
+- **Composable**: Badge components can be swapped for custom designs.
+- **Style Customization**: Compatible with Tailwind and custom CSS frameworks.
+---
 
-### `npm test`
+### Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Install Chipster via npm:
 
-### `npm run build`
+```bash
+npm install @micoblanc/chipster
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Basic Usage
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Import and use the Chipster component in your React application:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```jsx
+import React from 'react';
+import { Chipster } from '@micoblanc/chipster';
 
-### `npm run eject`
+function App() {
+  return (
+    <Chipster
+      placeholder="Enter tags..."
+      allowDuplicates={false}
+      showErrorMessage={true}
+      validationRules={[
+        (value) => value.length > 2 || 'Tag must be longer than 2 characters',
+      ]}
+      maxItems={5}
+      onAdd={(item) => console.log('Added:', item)}
+      onRemove={(item) => console.log('Removed:', item)}
+    />
+  );
+}
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### Props:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `placeholder`: Set custom placeholder text (string or JSX)
+- `allowDuplicates`: Allow or prevent duplicate entries (boolean)
+- `showErrorMessage`: Display validation error messages (boolean)
+- `validationRules`: Array of functions for input validation
+- `maxItems`: Set maximum number of items allowed
+- `onAdd`: Callback function when an item is added
+- `onRemove`: Callback function when an item is removed
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Suggestions (Autocomplete)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Enable autocomplete suggestions:
 
-## Learn More
+```jsx
+import React from 'react';
+import { Chipster } from '@micoblanc/chipster';
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const suggestions = ['apple', 'banana', 'cherry', 'date', 'elderberry'];
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+function App() {
+  return (
+    <Chipster
+      placeholder="Enter fruits..."
+      getSuggestions={(input) => 
+        suggestions.filter(item => 
+          item.toLowerCase().includes(input.toLowerCase())
+        )
+      }
+    />
+  );
+}
+```
+
+The `getSuggestions` prop accepts a function that returns an array of suggestions based on the current input.
+
+### Styling
+
+Chipster supports custom styling through className props:
+
+```jsx
+<Chipster
+  className="custom-container"
+  inputClassName="custom-input"
+  errorClassName="custom-error"
+  chipClassName="custom-chip"
+  chipHighlightedClassName="custom-chip-highlighted"
+  chipDisabledClassName="custom-chip-disabled"
+  chipIconClassName="custom-chip-icon"
+  chipRemoveButtonClassName="custom-chip-remove-button"
+  exitAnimation="fade" // or 'slide' or custom animation object
+/>
+```
+
+#### Animation
+
+Use built-in animations or define custom ones:
+
+```jsx
+// Built-in animation
+<Chipster exitAnimation="fade" />
+
+// Custom animation
+<Chipster
+  exitAnimation={{
+    exit: {
+      duration: 300,
+      easing: 'ease-out',
+      properties: {
+        opacity: 0,
+        transform: 'scale(0.8)',
+      },
+    },
+  }}
+/>
+```
+
+For more advanced usage and full API documentation, please refer to our [API Documentation](link-to-api-docs).
