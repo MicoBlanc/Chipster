@@ -1,0 +1,24 @@
+{
+  "name": "docs",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@micoblanc/chipster": "^1.0.0",
+    "next": "^13.5.7",
+    "nextra": "^2.13.2",
+    "nextra-theme-docs": "^2.13.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@heroicons/react": "^2.1.5",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.4.14"
+  }
+}

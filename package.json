@@ -8,7 +8,8 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "postinstall": "npm run build --workspace=packages/chipster"
+    "postinstall": "npm run build --workspace=packages/chipster",
+    "dev:docs": "npm run dev -w docs"
   },
   "devDependencies": {
     "turbo": "^1.10.0"
