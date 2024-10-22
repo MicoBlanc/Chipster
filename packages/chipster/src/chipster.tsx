@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import classNames from 'classnames';
 import { useChipster } from './useChipster';
@@ -163,6 +163,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
   transform,
   showErrorMessage = true,
   exitAnimation,
+  restrictToSuggestions = false,
   getSuggestions,
   onInputChange,
 }) => {
@@ -214,18 +215,31 @@ export const Chipster: React.FC<ChipsterProps> = ({
     scrollActiveDescendantIntoView();
   }, [scrollActiveDescendantIntoView]);
 
+  const filteredSuggestions = useMemo(() => {
+    if (!getSuggestions) return [];
+    let suggestionsArray = getSuggestions(inputValue);
+    if (!allowDuplicates) {
+      suggestionsArray = suggestionsArray.filter(
+        suggestion => !items.some(item => item.text === suggestion)
+      );
+    }
+    return suggestionsArray;
+  }, [getSuggestions, inputValue, allowDuplicates, items]);
+
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     if (newValue.trim().length > 0) {
-      validateInput(newValue);
+      if (!restrictToSuggestions) {
+        validateInput(newValue);
+      }
       updateSuggestions(newValue);
     } else {
       clearValidation();
       clearSuggestions();
     }
     onInputChange?.(newValue);
-  }, [validateInput, clearValidation, updateSuggestions, clearSuggestions, onInputChange]);
+  }, [validateInput, clearValidation, updateSuggestions, clearSuggestions, onInputChange, restrictToSuggestions]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
@@ -233,12 +247,12 @@ export const Chipster: React.FC<ChipsterProps> = ({
     if (e.key === 'Enter') {
       e.preventDefault();
       if (showSuggestions && selectedSuggestionIndex !== -1) {
-        handleAddItem(suggestions[selectedSuggestionIndex]);
+        handleAddItem(filteredSuggestions[selectedSuggestionIndex]);
         setInputValue('');
         clearSuggestions();
         setSelectedSuggestionIndex(-1);
         setActiveDescendant(undefined);
-      } else {
+      } else if (!restrictToSuggestions) {
         const success = handleAddItem(inputValue);
         if (success) {
           onAdd?.(inputValue);
@@ -247,7 +261,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
       }
     } else if (e.key === 'ArrowDown' && showSuggestions) {
       e.preventDefault();
-      const newIndex = selectedSuggestionIndex < suggestions.length - 1 ? selectedSuggestionIndex + 1 : selectedSuggestionIndex;
+      const newIndex = selectedSuggestionIndex < filteredSuggestions.length - 1 ? selectedSuggestionIndex + 1 : selectedSuggestionIndex;
       setSelectedSuggestionIndex(newIndex);
       setActiveDescendant(`suggestion-${newIndex}`);
     } else if (e.key === 'ArrowUp' && showSuggestions) {
@@ -291,7 +305,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
 
   useEffect(() => {
     setSelectedSuggestionIndex(-1);
-  }, [suggestions]);
+  }, [filteredSuggestions]);
 
   const actualExitAnimation = exitAnimation && (typeof exitAnimation === 'string' 
     ? animations[exitAnimation] 
@@ -366,14 +380,14 @@ export const Chipster: React.FC<ChipsterProps> = ({
       {error && showErrorMessage && (
         <div className={`chipster-error ${errorClassName}`}>{error}</div>
       )}
-      {showSuggestions && suggestions.length > 0 && (
+      {showSuggestions && filteredSuggestions.length > 0 && (
         <ul 
           ref={listboxRef}
           role="listbox"
           id="suggestions-listbox"
           className="chipster-suggestions"
         >
-          {suggestions.map((suggestion, index) => (
+          {filteredSuggestions.map((suggestion, index) => (
             <li
               id={`suggestion-${index}`}
               key={index}
@@ -434,3 +448,4 @@ export const Item: React.FC<ItemProps> = ({
     )}
   </StyledItem>
 );
+

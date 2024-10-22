@@ -37,6 +37,7 @@ export interface ChipsterProps extends UseChipsterOptions {
   chipDisabledClassName?: string;
   chipIconClassName?: string;
   chipRemoveButtonClassName?: string;
+  restrictToSuggestions?: boolean;
   suggestionStyle?: 'fullWidth' | 'minimal';
   disabled?: boolean;
   renderItem?: (item: ChipsterItem, index: number, highlighted: boolean) => React.ReactNode;

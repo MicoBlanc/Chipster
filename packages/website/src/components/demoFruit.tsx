@@ -52,6 +52,7 @@ export default function DemoFruit() {
           onRemove={(id) => console.log('Removed item with id:', id)}
           placeholder="Type a fruit name..."
           suggestionStyle="minimal"
+          restrictToSuggestions={true}
           exitAnimation="fadeSlideLeft"
           validationRules={validationRules}
           maxItems={5}
