@@ -259,13 +259,32 @@ export const Chipster: React.FC<ChipsterProps> = ({
       clearSuggestions();
       setSelectedSuggestionIndex(-1);
       setActiveDescendant(undefined);
+      highlightItem(null);
     } else if (e.key === 'Backspace' && inputValue === '') {
       e.preventDefault();
       if (highlightedIndex !== null) {
         const itemToRemove = items[highlightedIndex];
         handleRemoveItem(itemToRemove.id, highlightedIndex);
+        highlightItem(null);
       } else if (items.length > 0) {
         highlightItem(items.length - 1);
+      }
+    } else if (e.key === 'ArrowLeft' && inputValue === '') {
+      e.preventDefault();
+      if (highlightedIndex === null && items.length > 0) {
+        highlightItem(items.length - 1);
+      } else if (highlightedIndex !== null && highlightedIndex > 0) {
+        highlightItem(highlightedIndex - 1);
+      }
+    } else if (e.key === 'ArrowRight' && inputValue === '') {
+      e.preventDefault();
+      if (highlightedIndex !== null) {
+        if (highlightedIndex < items.length - 1) {
+          highlightItem(highlightedIndex + 1);
+        } else {
+          highlightItem(null);
+          inputRef.current?.focus();
+        }
       }
     }
   };
