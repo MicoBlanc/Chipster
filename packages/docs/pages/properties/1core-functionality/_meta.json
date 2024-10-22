@@ -1,0 +1,6 @@
+{
+  "placeholder": "Placeholder",
+  "onAdd": "onAdd",
+  "onRemove" : "onRemove",
+  "onItemsChange": "onItemsChange"
+}

@@ -1,0 +1,36 @@
+# onRemove
+
+The `onRemove` prop is a callback function that is called when an item is removed from the Chipster component.
+
+## Type
+typescript
+`(id: string) => void`
+
+## Usage
+```tsx filename="ChipsterExample.tsx" {13} copy
+import { useState } from 'react';
+import { Chipster } from '@micoblanc/chipster';
+
+function ChipsterExample() {
+
+const [items, setItems] = useState([]);
+
+const handleRemove = (id) => {
+	setItems(prevItems => prevItems.filter(item => item.id !== id));
+	console.log(Item with id ${id} removed);
+	// Perform any additional actions after removal
+};
+
+return (
+	<Chipster
+	 onRemove={handleRemove}
+	 // other props...
+	/>
+);
+}
+```
+## Notes
+
+- The `onRemove` function receives the `id` of the removed item as a string parameter.
+- Use this callback to update your application state or perform any cleanup actions when an item is removed.
+- This function is called after the item is removed from the Chipster's internal state.

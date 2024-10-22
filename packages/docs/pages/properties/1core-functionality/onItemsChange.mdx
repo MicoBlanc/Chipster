@@ -1,0 +1,36 @@
+# onItemsChange
+
+The `onItemsChange` prop is a callback function that is called whenever the items in the Chipster component change, either due to addition or removal.
+
+## Type
+typescript
+`(items: ChipsterItem[]) => void`
+
+## Usage
+```tsx filename="ChipsterExample.tsx" {7,13-16} copy
+import { useState } from 'react';
+import { Chipster, ChipsterItem } from '@micoblanc/chipster';
+
+function ChipsterExample() {
+
+const [items, setItems] = useState<ChipsterItem[]>([]);
+
+const handleItemsChange = (newItems: ChipsterItem[]) => {
+setItems(newItems);
+console.log('Current items:', newItems);
+// Perform any additional actions with the updated items
+};
+
+return (
+ <Chipster
+  onItemsChange={handleItemsChange}
+  // other props...
+ />
+);
+}
+```
+## Notes
+
+- The `onItemsChange` function receives an array of `ChipsterItem` objects as its parameter.
+- This callback is triggered after any change to the items, including additions, removals, and reordering.
+- Use this callback to keep your application state in sync with the Chipster component's internal state.

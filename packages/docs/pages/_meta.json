@@ -1,7 +1,7 @@
 {
   "index": "Get Started",
   "another": "Another Page",
-  "properties": "Properties",
+  "properties": "API Props",
   "about": {
     "title": "About",
     "type": "page"

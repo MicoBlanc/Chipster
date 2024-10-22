@@ -1,12 +1,16 @@
 .container {
   position: relative;
-  padding: 4rem;
+  padding: 3rem;
   background-color: #f3f4f6;
   border-radius: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chipster {
   display: flex;
+  width: 100%;
   flex-wrap: wrap;
   align-items: center;
   padding: 0.125rem;
@@ -15,6 +19,7 @@
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   border-radius: 0.5rem;
   transition: box-shadow 0.3s ease-in-out;
+  min-width: 24rem;
 }
 
 .chipster:focus-within {
