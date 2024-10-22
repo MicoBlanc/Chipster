@@ -26,11 +26,12 @@ export default function ChipsterExample() {
         onRemove={(item) => console.log('Removed:', item)}
         validationRules={validationRules}
         getIcon={(value) => value.includes('@') ? '✉️' : null}
-        maxItems={2}
+        maxItems={3}
         allowDuplicates={false}
         caseSensitive={false}
         transform={(value) => value.trim().toLowerCase()}
-        showErrorMessage={true}      />
+        showErrorMessage={true}      
+        />
     </div>
   );
 }

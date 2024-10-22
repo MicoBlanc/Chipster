@@ -1,0 +1,50 @@
+import ChipsterExample2 from "../../../components/ChipsterExample2"
+
+# Allow Duplicates
+
+The `allowDuplicates` prop determines whether the Chipster component allows duplicate items to be added.
+
+## Type
+typescript
+`boolean`
+
+## Usage
+```tsx filename="ChipsterExample.tsx" {6} copy
+import { Chipster } from '@micoblanc/chipster';
+
+function ChipsterExample() {
+  return (
+    <Chipster
+      allowDuplicates={false}
+      // other props...
+    />
+  );
+}
+```
+
+## Notes
+
+- When set to `true`, the component allows duplicate items to be added.
+- When set to `false`, the component prevents duplicate items from being added.
+- The default value is `false`.
+- This prop works in conjunction with the `caseSensitive` prop to determine what constitutes a duplicate.
+
+## Example
+
+Here's an example of how `allowDuplicates` is used in the demo component:
+
+<ChipsterExample2/>
+
+```tsx filename="ChipsterExample.tsx" {4} copy
+ return (
+      <Chipster
+        placeholder="Type a fruit name..."
+        allowDuplicates={false}
+        caseSensitive={true}
+        //other props
+      />
+  );
+}
+```
+
+In this example, `allowDuplicates` is set to `false`, meaning that the Chipster component will not allow duplicate fruit names to be added.

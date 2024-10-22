@@ -1,0 +1,6 @@
+{
+  "allowDuplicates": "allowDuplicates",
+  "maxItems": "maxItems",
+  "showErrorMessage" : "showErrorMessage",
+  "exitAnimation": "exitAnimation"
+}
