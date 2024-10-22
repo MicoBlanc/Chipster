@@ -1,8 +1,143 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
+import styled from 'styled-components';
 import classNames from 'classnames';
 import { useChipster } from './useChipster';
 import { getAnimationStyle, animations } from './animations';
 import { ChipsterProps, ItemProps } from './types';
+
+const ChipsterContainer = styled.div<{ suggestionStyle: 'fullWidth' | 'minimal' }>`
+  position: relative;
+
+  .chipster-container {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 4px;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    border-radius: 0.50rem;
+
+    &:focus-within {
+      outline: 2px solid #000000;
+      outline-offset: 2px;
+    }
+
+    &.chipster-container--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &.chipster-container--error {
+      border-color: #ef4444;
+      border-width: 2px;
+    }
+  }
+
+  .chipster-input {
+    flex-grow: 1;
+    outline: none;
+    background-color: transparent;
+    font-size: 0.875rem;
+    padding: 0.25rem;
+    min-width: 50px;
+    color: #000000;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  .chipster-error {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  .chipster-suggestions {
+    position: absolute;
+    z-index: 10;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    max-height: 15rem;
+    overflow-y: auto;
+    top: 100%;
+    left: 0;
+
+    ${props => props.suggestionStyle === 'fullWidth' ? `
+      width: 100%;
+    ` : `
+      width: auto;
+      min-width: 150px;
+    `}
+  }
+
+  .chipster-suggestion {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: #1f2937;
+    cursor: pointer;
+
+    &.chipster-suggestion--selected {
+      background-color: #f3f4f6;
+    }
+  }
+
+  .chipster-placeholder {
+    font-style: italic;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4b5563;
+    letter-spacing: -0.025em;
+  }
+`;
+
+const StyledItem = styled.span<{ highlighted: boolean; disabled: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  font-weight: 600;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  margin: 0.125rem;
+
+  ${props => props.highlighted && `
+    outline: 2px solid #000000;
+    outline-offset: 2px;
+  `}
+
+  ${props => props.disabled && `
+    opacity: 0.5;
+    cursor: not-allowed;
+  `}
+
+  .item-icon {
+    margin-right: 0.25rem;
+  }
+
+  .item-remove-button {
+    margin-left: 0.25rem;
+    color: #4b5563;
+    &:hover {
+      color: #1f2937;
+    }
+    &:focus {
+      outline: none;
+    }
+    ${props => props.disabled && `
+      cursor: not-allowed;
+    `}
+  }
+`;
 
 export const Chipster: React.FC<ChipsterProps> = ({
   onAdd,
@@ -17,6 +152,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
   chipIconClassName,
   chipRemoveButtonClassName,
   disabled = false,
+  suggestionStyle = 'fullWidth',
   validationRules,
   getIcon,
   maxItems,
@@ -167,15 +303,9 @@ export const Chipster: React.FC<ChipsterProps> = ({
   }, [removeItem, onRemove, actualExitAnimation]);
 
   return (
-    <div ref={containerRef} className="relative">
+    <ChipsterContainer suggestionStyle={suggestionStyle}>
       <div 
-        className={classNames(
-          'relative flex flex-wrap items-center p-0.5 border bg-white shadow-sm border-gray-300 rounded-lg',
-          'focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2',
-          { 'opacity-50 cursor-not-allowed': disabled },
-          { 'border-red-500 border-2': error },
-          className
-        )}
+        className={`chipster-container ${className} ${disabled ? 'chipster-container--disabled' : ''} ${error ? 'chipster-container--error' : ''}`}
         onClick={() => !disabled && inputRef.current?.focus()}
       >
         {items.map((item, index) => (
@@ -207,58 +337,42 @@ export const Chipster: React.FC<ChipsterProps> = ({
           onKeyDown={handleKeyDown}
           onFocus={() => setShowSuggestions(true)}
           placeholder={typeof placeholder === 'string' ? placeholder : ''}
-          className={classNames(
-            'flex-grow outline-none bg-transparent text-sm p-1 min-w-[50px] text-black focus:ring-0',
-            { 'cursor-not-allowed': disabled },
-            inputClassName
-          )}
+          className={`chipster-input ${inputClassName}`}
           disabled={disabled}
         />
         {typeof placeholder !== 'string' && inputValue === '' && (
-          <div className="italic text-sm font-medium text-gray-800 tracking-tight">{placeholder}</div>
+          <div className="chipster-placeholder">{placeholder}</div>
         )}
       </div>
-      <div className="relative">
-        {error && showErrorMessage && (
-          <div className={classNames('text-red-500 text-sm mt-1', errorClassName)}>{error}</div>
-        )}
-        {showSuggestions && suggestions.length > 0 && (
-          <ul 
-            ref={listboxRef}
-            role="listbox"
-            id="suggestions-listbox"
-            className={classNames(
-              'absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm',
-              'max-h-60 overflow-auto',
-              'top-1 left-0'
-            )}
-          >
-            {suggestions.map((suggestion, index) => (
-              <li
-                id={`suggestion-${index}`}
-                key={index}
-                role="option"
-                aria-selected={index === selectedSuggestionIndex}
-                className={classNames(
-                  'px-3 py-2 text-gray-700 font-medium text-sm cursor-pointer',
-                  {
-                    'bg-gray-100': index === selectedSuggestionIndex,
-                    'hover:bg-gray-100': index !== selectedSuggestionIndex
-                  }
-                )}
-                onClick={() => {
-                  handleAddItem(suggestion);
-                  setInputValue('');
-                  clearSuggestions();
-                }}
-              >
-                {suggestion}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+      {error && showErrorMessage && (
+        <div className={`chipster-error ${errorClassName}`}>{error}</div>
+      )}
+      {showSuggestions && suggestions.length > 0 && (
+        <ul 
+          ref={listboxRef}
+          role="listbox"
+          id="suggestions-listbox"
+          className="chipster-suggestions"
+        >
+          {suggestions.map((suggestion, index) => (
+            <li
+              id={`suggestion-${index}`}
+              key={index}
+              role="option"
+              aria-selected={index === selectedSuggestionIndex}
+              className={`chipster-suggestion ${index === selectedSuggestionIndex ? 'chipster-suggestion--selected' : ''}`}
+              onClick={() => {
+                handleAddItem(suggestion);
+                setInputValue('');
+                clearSuggestions();
+              }}
+            >
+              {suggestion}
+            </li>
+          ))}
+        </ul>
+      )}
+    </ChipsterContainer>
   );
 };
 
@@ -279,33 +393,25 @@ export const Item: React.FC<ItemProps> = ({
   'aria-selected': ariaSelected,
   'data-chip-index': dataChipIndex,
 }) => (
-  <span 
-    className={classNames(
-      'inline-flex items-center bg-gray-100 text-gray-800 font-semibold rounded-md border border-gray-300 px-2 py-1 text-xs m-0.5',
-      { [highlightedClassName || 'ring-2 ring-black']: highlighted },
-      { [disabledClassName || 'opacity-50']: disabled },
-      className
-    )}
+  <StyledItem
+    className={className}
+    highlighted={highlighted}
+    disabled={disabled}
     tabIndex={tabIndex}
     role={role}
     aria-selected={ariaSelected}
     data-chip-index={dataChipIndex}
   >
-    {icon && <span className={classNames('mr-1', iconClassName)}>{icon}</span>}
+    {icon && <span className={`item-icon ${iconClassName}`}>{icon}</span>}
     {children}
     {onRemove && (
       <button 
         onClick={onRemove} 
-        className={classNames(
-          'ml-1 text-gray-800 hover:text-gray-900 focus:outline-none',
-          { 'cursor-not-allowed': disabled },
-          removeButtonClassName
-        )}
+        className={`item-remove-button ${removeButtonClassName}`}
         disabled={disabled}
       >
         &times;
       </button>
     )}
-  </span>
+  </StyledItem>
 );
-

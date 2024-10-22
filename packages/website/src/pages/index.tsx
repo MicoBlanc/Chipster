@@ -2,6 +2,9 @@ import { Chipster } from 'chipster';
 import { ValidationRule } from 'chipster';
 import { useState, useCallback } from 'react';
 import { ChipsterItem as OriginalChipsterItem } from 'chipster';
+import DemoFruit from '@/components/demoFruit';
+import DemoEmailShare from '@/components/demoEmailShare';
+import DemoContentTags from '@/components/demoContentTags';
 
 interface CustomChipsterItem extends OriginalChipsterItem {
   icon?: React.ReactNode;
@@ -21,66 +24,16 @@ const fruitEmojis = [
 ];
 
 export default function Home() {
-  const [chipsterItems, setChipsterItems] = useState<CustomChipsterItem[]>([]);
-
-
-  console.log('here is the items',chipsterItems)
-
-  const validationRules: ValidationRule[] = [
-    { test: (value: string) => value.length >= 2, message: 'Must be at least 2 characters' },
-    { test: (value: string) => value.length <= 20, message: 'Must not exceed 20 characters' },
-  ];
-
-  const transform = (value: string) => value.trim();
-
-  const getSuggestions = useCallback((input: string) => {
-    const lowercasedInput = input.toLowerCase();
-    return fruitEmojis
-      .filter(fruit => fruit.text.toLowerCase().includes(lowercasedInput))
-      .map(fruit => `${fruit.emoji} ${fruit.text}`);
-  }, []);
-
-  const handleItemsChange = useCallback((items: OriginalChipsterItem[]) => {
-    setChipsterItems(items as CustomChipsterItem[]);
-    console.log('Current items:', items);
-  }, []);
 
   return (
     <div className='bg-gray-100 font-sans flex items-center justify-center w-full h-screen'>
-      <div className="p-4 bg-gray-100 w-full max-w-xl">
-        <Chipster
-          className="bg-white shadow-md rounded-lg p-1"
-          inputClassName="text-gray-700 placeholder-gray-400"
-          errorClassName="text-red-600 font-semibold"
-          chipClassName="bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200 transition-colors duration-200"
-          chipHighlightedClassName="ring-2 ring-gray-800"
-          chipDisabledClassName="opacity-50 cursor-not-allowed"
-          chipIconClassName="mr-1"
-          chipRemoveButtonClassName="ml-1"
-          onAdd={(value) => console.log('Added:', value)}
-          onRemove={(id) => console.log('Removed item with id:', id)}
-          placeholder="Type a fruit name..."
-          exitAnimation="fadeSlideLeft"
-          validationRules={validationRules}
-          maxItems={5}
-          allowDuplicates={false}
-          caseSensitive={false}
-          transform={transform}
-          showErrorMessage={true}
-          getSuggestions={getSuggestions}
-          onItemsChange={handleItemsChange}
-        />
-        {chipsterItems.length > 0 && (
-          <div className="mt-4">
-            <h3 className="font-bold text-black">Selected Fruits:</h3>
-            <ul>
-              {chipsterItems.map((item, index) => (
-                <li key={index}>{item.icon} {item.text}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+      
+      <div className='bg-red-500 w-full h-full flex flex-col'>
+        <DemoFruit />
+        <DemoContentTags />
+        <DemoEmailShare />
       </div>
+     
     </div>
   );
 }

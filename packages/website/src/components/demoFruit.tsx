@@ -34,19 +34,11 @@ export default function DemoFruit() {
       .map(fruit => `${fruit.emoji} ${fruit.text}`);
   }, []);
 
-  const getIcon = useCallback((value: string) => {
-    const fruit = fruitEmojis.find(f => value.includes(f.text));
-    return fruit ? fruit.emoji : null;
-  }, []);
-
-  const handleItemsChange = useCallback((items) => {
-    setChipsterItems(items);
-    console.log('Current items:', items);
-  }, []);
-
   return (
     <div className='bg-gray-100 font-sans flex items-center justify-center w-full h-screen'>
       <div className="p-4 bg-gray-100 w-full max-w-xl">
+      <h2 className="text-base font-semibold mb-2">Type a fruit name</h2>
+
         <Chipster
           className="bg-white shadow-md rounded-lg p-1"
           inputClassName="text-gray-700 placeholder-gray-400"
@@ -59,6 +51,7 @@ export default function DemoFruit() {
           onAdd={(value) => console.log('Added:', value)}
           onRemove={(id) => console.log('Removed item with id:', id)}
           placeholder="Type a fruit name..."
+          suggestionStyle="minimal"
           exitAnimation="fadeSlideLeft"
           validationRules={validationRules}
           maxItems={5}
@@ -67,17 +60,7 @@ export default function DemoFruit() {
           transform={transform}
           showErrorMessage={true}
           getSuggestions={getSuggestions}
-          getIcon={getIcon}
-          onItemsChange={handleItemsChange}
         />
-        <div className="hidden mt-4">
-          <h3 className="font-bold text-black">Selected Fruits:</h3>
-          <ul>
-            {chipsterItems.map((item, index) => (
-              <li key={index}>{item.icon} {item.text}</li>
-            ))}
-          </ul>
-        </div>
       </div>
     </div>
   );
