@@ -1,8 +1,8 @@
-# Custom Class Props
+# Custom Class Props and Styling Options
 
-Chipster provides several props for applying custom CSS classes to different parts of the component. These props allow for fine-grained styling control.
+Chipster provides several props for applying custom CSS classes to different parts of the component, as well as options for styling specific elements. These props allow for fine-grained styling control.
 
-## Available Custom Class Props
+## Available Custom Class Props and Styling Options
 
 | Prop Name | Description | Default |
 |-----------|-------------|---------|
@@ -14,10 +14,11 @@ Chipster provides several props for applying custom CSS classes to different par
 | `chipDisabledClassName` | Applied to disabled chips | `undefined` |
 | `chipIconClassName` | Applied to chip icons | `undefined` |
 | `chipRemoveButtonClassName` | Applied to chip remove buttons | `undefined` |
+| `suggestionStyle` | Controls the style of the suggestions dropdown | `'fullWidth'` |
 
 ## Usage
 
-Here's an example of how to use these custom class props:
+Here's an example of how to use these custom class props and styling options:
 
 ```jsx filename="CustomStyledChipster.jsx" copy
 import { Chipster } from '@micoblanc/chipster';
@@ -34,11 +35,13 @@ function CustomStyledChipster() {
       chipDisabledClassName={styles.chipDisabled}
       chipIconClassName={styles.chipIcon}
       chipRemoveButtonClassName={styles.chipRemoveButton}
+      suggestionStyle="minimal"
       // ... other props
     />
   );
 }
 ````
+
 
 ## Notes
 
@@ -65,9 +68,15 @@ Apply `errorClassName` to style error messages that appear when validation fails
 - `chipIconClassName`: Style for icons within chips
 - `chipRemoveButtonClassName`: Style for the remove button on each chip
 
+### Suggestions Dropdown
+Use `suggestionStyle` to control the appearance of the suggestions dropdown. It accepts two values:
+- `'fullWidth'`: The dropdown will span the full width of the Chipster component (default).
+- `'minimal'`: The dropdown will have a minimal width, adjusting to its content.
+
 ## Best Practices
 
 1. Use these props for minor style adjustments or to align Chipster with your app's design system.
 2. For more extensive customization, consider using the `renderItem` prop in combination with these class props.
 3. When using CSS Modules or similar, ensure your class names are unique to avoid conflicts with Chipster's internal styles.
 4. Test your custom styles in both light and dark themes if you're using the `theme` prop.
+5. Use the `suggestionStyle` prop to control the overall layout of the suggestions dropdown, and combine it with custom CSS for more detailed styling if needed.

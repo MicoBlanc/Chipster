@@ -45,8 +45,8 @@ export default function DemoEmailShare() {
   }, []);
 
   return (
-    <div className='bg-white font-sans flex items-center justify-center w-full h-auto overflow-hidden'>
-      <div className="p-4 bg-gray-100 w-full flex flex-col items-start max-w-xl rounded-xl overflow-hidden">
+    <div className='bg-whit font-sans flex items-center justify-center w-full h-full bg-red-300'>
+      <div className="p-4 w-full flex flex-col items-start rounded-xl">
         <h2 className="text-base font-semibold mb-1">Share with your team</h2>
         <Chipster
           onAdd={(value: string) => console.log('Added:', value)}

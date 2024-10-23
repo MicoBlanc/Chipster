@@ -6,6 +6,9 @@ const __dirname = dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: ['i.pravatar.cc'],
+  },
   webpack: (config, { isServer }) => {
     config.resolve.alias['chipster'] = resolve(__dirname, '../chipster/src');
 

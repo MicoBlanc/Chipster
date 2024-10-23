@@ -13,8 +13,7 @@ const popularTags = [
   { name: 'Health', icon: '🏥' },
 ];
 
-export default function DemoContentTags() {
-
+export default function HeroContainer() {
   const validationRules: ValidationRule[] = [
     { test: (value: string) => value.length >= 2, message: 'Tag must be at least 2 characters' },
     { test: (value: string) => value.length <= 20, message: 'Tag must not exceed 20 characters' },
@@ -30,9 +29,10 @@ export default function DemoContentTags() {
   }, []);
 
   return (
-    <div className='bg-gray-100 font-sans flex items-center justify-center w-full h-screen'>
+    <div className='bg-gray-100 font-sans flex items-center justify-center w-full min-h-screen'>
       <div className="p-4 bg-gray-100 w-full max-w-xl">
-        <h2 className="text-base font-semibold mb-1">Keywords</h2>
+        <h1 className="text-4xl font-bold mb-4">Chipster</h1>
+        <p className="text-xl mb-6">A flexible and powerful multi-entry input component for React.</p>
         <Chipster
           className="bg-white shadow-sm rounded-lg p-2"
           inputClassName="text-gray-700 placeholder-gray-400"
@@ -42,9 +42,9 @@ export default function DemoContentTags() {
           chipDisabledClassName="opacity-50 cursor-not-allowed"
           chipIconClassName="mr-2"
           chipRemoveButtonClassName="ml-2 text-green-500 hover:text-green-700"
-          onAdd={(value) => console.log('Added tag:', value)}
-          onRemove={(id) => console.log('Removed tag with id:', id)}
-          placeholder="Add tags to your content"
+          onAdd={(value: string) => console.log('Added tag:', value)}
+          onRemove={(id: string) => console.log('Removed tag with id:', id)}
+          placeholder="Try it out: Add some tags!"
           exitAnimation="fadeSlideLeft"
           validationRules={validationRules}
           maxItems={10}
