@@ -28,6 +28,7 @@ export interface ChipsterProps extends UseChipsterOptions {
   onAdd?: (value: string) => void;
   onRemove?: (id: string) => void;
   onItemsChange?: (items: ChipsterItem[]) => void;
+  theme?: 'light' | 'dark';
   placeholder?: string | React.ReactNode;
   className?: string;
   inputClassName?: string;

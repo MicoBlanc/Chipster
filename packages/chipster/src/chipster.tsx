@@ -1,143 +1,43 @@
 import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
-import styled from 'styled-components';
-import classNames from 'classnames';
 import { useChipster } from './useChipster';
 import { getAnimationStyle, animations } from './animations';
 import { ChipsterProps, ItemProps } from './types';
+import classNames from 'classnames';
+import styles from './chipster.module.css';
 
-const ChipsterContainer = styled.div<{ suggestionStyle: 'fullWidth' | 'minimal' }>`
-  position: relative;
-
-  .chipster-container {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 4px;
-    border: 1px solid #d1d5db;
-    background-color: #ffffff;
-    border-radius: 0.50rem;
-
-    &:focus-within {
-      outline: 2px solid #000000;
-      outline-offset: 2px;
+//utility functions
+const getContainerClasses = (className: string, disabled: boolean, error: string | null) => 
+  classNames(
+    styles.inputContainer,
+    className,
+    {
+      [styles.inputContainerDisabled]: disabled,
+      [styles.inputContainerError]: error,
     }
+  );
 
-    &.chipster-container--disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+const getInputClasses = (inputClassName: string) => 
+  classNames(styles.input, inputClassName);
+
+const getErrorClasses = (errorClassName: string) => 
+  classNames(styles.error, errorClassName);
+
+const getSuggestionsClasses = (suggestionStyle: 'fullWidth' | 'minimal') => 
+  classNames(
+    styles.suggestions,
+    {
+      [styles.suggestionsFull]: suggestionStyle === 'fullWidth',
+      [styles.suggestionsMinimal]: suggestionStyle === 'minimal',
     }
+  );
 
-    &.chipster-container--error {
-      border-color: #ef4444;
-      border-width: 2px;
+const getSuggestionClasses = (index: number, selectedSuggestionIndex: number) => 
+  classNames(
+    styles.suggestion,
+    {
+      [styles.suggestionSelected]: index === selectedSuggestionIndex,
     }
-  }
-
-  .chipster-input {
-    flex-grow: 1;
-    outline: none;
-    background-color: transparent;
-    font-size: 0.875rem;
-    padding: 0.25rem;
-    min-width: 50px;
-    color: #000000;
-
-    &:focus {
-      box-shadow: none;
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-    }
-  }
-
-  .chipster-error {
-    color: #ef4444;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-  }
-
-  .chipster-suggestions {
-    position: absolute;
-    z-index: 10;
-    background-color: #ffffff;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    max-height: 15rem;
-    overflow-y: auto;
-    top: 100%;
-    left: 0;
-
-    ${props => props.suggestionStyle === 'fullWidth' ? `
-      width: 100%;
-    ` : `
-      width: auto;
-      min-width: 150px;
-    `}
-  }
-
-  .chipster-suggestion {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    color: #1f2937;
-    cursor: pointer;
-
-    &.chipster-suggestion--selected {
-      background-color: #f3f4f6;
-    }
-  }
-
-  .chipster-placeholder {
-    font-style: italic;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #4b5563;
-    letter-spacing: -0.025em;
-  }
-`;
-
-const StyledItem = styled.span<{ highlighted: boolean; disabled: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  background-color: #f3f4f6;
-  color: #1f2937;
-  font-weight: 600;
-  border-radius: 0.375rem;
-  border: 1px solid #d1d5db;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  margin: 0.125rem;
-
-  ${props => props.highlighted && `
-    outline: 2px solid #000000;
-    outline-offset: 2px;
-  `}
-
-  ${props => props.disabled && `
-    opacity: 0.5;
-    cursor: not-allowed;
-  `}
-
-  .item-icon {
-    margin-right: 0.25rem;
-  }
-
-  .item-remove-button {
-    margin-left: 0.25rem;
-    color: #4b5563;
-    &:hover {
-      color: #1f2937;
-    }
-    &:focus {
-      outline: none;
-    }
-    ${props => props.disabled && `
-      cursor: not-allowed;
-    `}
-  }
-`;
+  );
 
 export const Chipster: React.FC<ChipsterProps> = ({
   onAdd,
@@ -336,9 +236,11 @@ export const Chipster: React.FC<ChipsterProps> = ({
   }, [removeItem, onRemove, actualExitAnimation]);
 
   return (
-    <ChipsterContainer suggestionStyle={suggestionStyle}>
+    <div className={styles.container}>
       <div 
-        className={`chipster-container ${className} ${disabled ? 'chipster-container--disabled' : ''} ${error ? 'chipster-container--error' : ''}`}
+        className={getContainerClasses(className, disabled, error)}
+        data-disabled={disabled || undefined}
+        data-error={error || undefined}
         onClick={() => !disabled && inputRef.current?.focus()}
       >
         {items.map((item, index) => (
@@ -370,22 +272,22 @@ export const Chipster: React.FC<ChipsterProps> = ({
           onKeyDown={handleKeyDown}
           onFocus={() => setShowSuggestions(true)}
           placeholder={typeof placeholder === 'string' ? placeholder : ''}
-          className={`chipster-input ${inputClassName}`}
+          className={getInputClasses(inputClassName ?? '')}
           disabled={disabled}
         />
         {typeof placeholder !== 'string' && inputValue === '' && (
-          <div className="chipster-placeholder">{placeholder}</div>
+          <div className={styles.placeholder}>{placeholder}</div>
         )}
       </div>
       {error && showErrorMessage && (
-        <div className={`chipster-error ${errorClassName}`}>{error}</div>
+        <div className={getErrorClasses(errorClassName || '')}>{error}</div>
       )}
       {showSuggestions && filteredSuggestions.length > 0 && (
         <ul 
           ref={listboxRef}
           role="listbox"
           id="suggestions-listbox"
-          className="chipster-suggestions"
+          className={getSuggestionsClasses(suggestionStyle)}
         >
           {filteredSuggestions.map((suggestion, index) => (
             <li
@@ -393,7 +295,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
               key={index}
               role="option"
               aria-selected={index === selectedSuggestionIndex}
-              className={`chipster-suggestion ${index === selectedSuggestionIndex ? 'chipster-suggestion--selected' : ''}`}
+              className={getSuggestionClasses(index, selectedSuggestionIndex)}
               onClick={() => {
                 handleAddItem(suggestion);
                 setInputValue('');
@@ -405,7 +307,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
           ))}
         </ul>
       )}
-    </ChipsterContainer>
+    </div>
   );
 };
 
@@ -425,27 +327,40 @@ export const Item: React.FC<ItemProps> = ({
   role,
   'aria-selected': ariaSelected,
   'data-chip-index': dataChipIndex,
-}) => (
-  <StyledItem
-    className={className}
-    highlighted={highlighted}
-    disabled={disabled}
-    tabIndex={tabIndex}
-    role={role}
-    aria-selected={ariaSelected}
-    data-chip-index={dataChipIndex}
-  >
-    {icon && <span className={`item-icon ${iconClassName}`}>{icon}</span>}
-    {children}
-    {onRemove && (
-      <button 
-        onClick={onRemove} 
-        className={`item-remove-button ${removeButtonClassName}`}
-        disabled={disabled}
-      >
-        &times;
-      </button>
-    )}
-  </StyledItem>
-);
+}) => {
+  const itemClasses = classNames(
+    styles.item,
+    className,
+    {
+      [styles.itemHighlighted]: highlighted,
+      [styles.itemDisabled]: disabled,
+    }
+  );
 
+  const iconClasses = classNames(styles.itemIcon, iconClassName);
+  const removeButtonClasses = classNames(styles.itemRemove, removeButtonClassName);
+
+  return (
+    <span
+      className={itemClasses}
+      data-highlighted={highlighted || undefined}
+      data-disabled={disabled || undefined}
+      tabIndex={tabIndex}
+      role={role}
+      aria-selected={ariaSelected}
+      data-chip-index={dataChipIndex}
+    >
+      {icon && <span className={iconClasses}>{icon}</span>}
+      {children}
+      {onRemove && (
+        <button 
+          onClick={onRemove} 
+          className={removeButtonClasses}
+          disabled={disabled}
+        >
+          &times;
+        </button>
+      )}
+    </span>
+  );
+};
