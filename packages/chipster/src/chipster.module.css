@@ -76,7 +76,7 @@
 .suggestion {
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  color: #1f2937;
+  color: #303030;
   cursor: pointer;
 }
 
@@ -96,7 +96,7 @@
   display: inline-flex;
   align-items: center;
   background-color: #f3f4f6;
-  color: #1f2937;
+  color: #303030;
   font-weight: 600;
   border-radius: 0.375rem;
   border: 1px solid #d1d5db;
@@ -107,7 +107,7 @@
 
 .itemHighlighted {
   outline: 2px solid #000000;
-  outline-offset: 2px;
+  outline-offset: 0px;
 }
 
 .itemDisabled {
@@ -134,4 +134,69 @@
 
 .itemRemove[disabled] {
   cursor: not-allowed;
+}
+
+/* Dark mode styles */
+.containerDark {
+  color: #f3f4f6;
+}
+
+.inputContainerDark {
+  border-color: #5e5e5e;
+  background-color: #000000;
+}
+
+.inputContainerDark:focus-within {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+
+}
+
+.inputDark {
+  color: #ffffff;
+}
+
+.placeholderDark {
+  color: #5e5e5e;
+}
+
+.errorDark {
+  color: #f87171;
+}
+
+.suggestionsDark {
+  background-color: #000000;
+  border-color: #5e5e5e;
+}
+
+.suggestionDark {
+  color: #ffffff;
+}
+
+.suggestionDark:hover,
+.suggestionSelectedDark {
+  background-color: #5e5e5e;
+}
+
+.itemDark {
+  background-color: #222222;
+  color: #ffffff;
+  border-color: #5e5e5e;
+}
+
+.itemHighlightedDark {
+  outline: 2px solid #ffffff;
+  outline-offset: 0px;
+}
+
+.itemIconDark {
+  color: #9ca3af;
+}
+
+.itemRemoveDark {
+  color: #9ca3af;
+}
+
+.itemRemoveDark:hover {
+  color: #f3f4f6;
 }

@@ -32,17 +32,15 @@ export default function DemoFruit() {
   }, []);
 
   return (
-    <div className='bg-red-100 font-sans flex items-center justify-center w-full h-screen'>
-      <div className="p-4 bg-blue-100 w-full max-w-xl">
-      <h2 className="text-base font-semibold mb-2">Type a fruit name</h2>
+    <div className='bg-black font-sans flex items-center justify-center w-full h-screen'>
+      <div className="p-4 bg-black w-full max-w-xl">
+      <h2 className="text-base font-semibold mb-2 text-white">Choose a Fruit</h2>
 
         <Chipster
-          className="bg-white rounded-lg p-1"
-          chipRemoveButtonClassName="ml-1"
+          theme="dark"
           onAdd={(value) => console.log('Added:', value)}
           onRemove={(id) => console.log('Removed item with id:', id)}
-          placeholder="Type a fruit name..."
-          
+          placeholder="Type a fruit name"
           exitAnimation="fadeSlideLeft"
           validationRules={validationRules}
           maxItems={5}

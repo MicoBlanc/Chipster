@@ -6,36 +6,43 @@ import classNames from 'classnames';
 import styles from './chipster.module.css';
 
 //utility functions
-const getContainerClasses = (className: string, disabled: boolean, error: string | null) => 
+const getContainerClasses = (className: string, disabled: boolean, error: string | null, theme: 'light' | 'dark') => 
   classNames(
     styles.inputContainer,
     className,
     {
       [styles.inputContainerDisabled]: disabled,
       [styles.inputContainerError]: error,
+      [styles.inputContainerDark]: theme === 'dark',
     }
   );
 
-const getInputClasses = (inputClassName: string) => 
-  classNames(styles.input, inputClassName);
+const getInputClasses = (inputClassName: string, theme: 'light' | 'dark') => 
+  classNames(styles.input, inputClassName, {
+    [styles.inputDark]: theme === 'dark',
+  });
 
-const getErrorClasses = (errorClassName: string) => 
-  classNames(styles.error, errorClassName);
+const getErrorClasses = (errorClassName: string, theme: 'light' | 'dark') => 
+  classNames(styles.error, errorClassName, {
+    [styles.errorDark]: theme === 'dark',
+  });
 
-const getSuggestionsClasses = (suggestionStyle: 'fullWidth' | 'minimal') => 
+const getSuggestionsClasses = (suggestionStyle: 'fullWidth' | 'minimal', theme: 'light' | 'dark') => 
   classNames(
     styles.suggestions,
     {
       [styles.suggestionsFull]: suggestionStyle === 'fullWidth',
       [styles.suggestionsMinimal]: suggestionStyle === 'minimal',
+      [styles.suggestionsDark]: theme === 'dark',
     }
   );
 
-const getSuggestionClasses = (index: number, selectedSuggestionIndex: number) => 
+const getSuggestionClasses = (index: number, selectedSuggestionIndex: number, theme: 'light' | 'dark') => 
   classNames(
     styles.suggestion,
     {
       [styles.suggestionSelected]: index === selectedSuggestionIndex,
+      [styles.suggestionDark]: theme === 'dark',
     }
   );
 
@@ -66,6 +73,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
   restrictToSuggestions = false,
   getSuggestions,
   onInputChange,
+  theme = 'light',
 }) => {
   const [inputValue, setInputValue] = useState('');
   const { 
@@ -236,9 +244,9 @@ export const Chipster: React.FC<ChipsterProps> = ({
   }, [removeItem, onRemove, actualExitAnimation]);
 
   return (
-    <div className={styles.container}>
+    <div className={classNames(styles.container, { [styles.containerDark]: theme === 'dark' })}>
       <div 
-        className={getContainerClasses(className, disabled, error)}
+        className={getContainerClasses(className, disabled, error, theme)}
         data-disabled={disabled || undefined}
         data-error={error || undefined}
         onClick={() => !disabled && inputRef.current?.focus()}
@@ -251,6 +259,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
               <Item
                 highlighted={index === highlightedIndex}
                 disabled={disabled}
+                theme={theme}
                 icon={item.icon}
                 onRemove={() => handleRemoveItem(item.id, index)}
                 className={chipClassName}
@@ -272,22 +281,22 @@ export const Chipster: React.FC<ChipsterProps> = ({
           onKeyDown={handleKeyDown}
           onFocus={() => setShowSuggestions(true)}
           placeholder={typeof placeholder === 'string' ? placeholder : ''}
-          className={getInputClasses(inputClassName ?? '')}
+          className={getInputClasses(inputClassName ?? '', theme)}
           disabled={disabled}
         />
         {typeof placeholder !== 'string' && inputValue === '' && (
-          <div className={styles.placeholder}>{placeholder}</div>
+          <div className={classNames(styles.placeholder, { [styles.placeholderDark]: theme === 'dark' })}>{placeholder}</div>
         )}
       </div>
       {error && showErrorMessage && (
-        <div className={getErrorClasses(errorClassName || '')}>{error}</div>
+        <div className={getErrorClasses(errorClassName || '', theme)}>{error}</div>
       )}
       {showSuggestions && filteredSuggestions.length > 0 && (
         <ul 
           ref={listboxRef}
           role="listbox"
           id="suggestions-listbox"
-          className={getSuggestionsClasses(suggestionStyle)}
+          className={getSuggestionsClasses(suggestionStyle, theme)}
         >
           {filteredSuggestions.map((suggestion, index) => (
             <li
@@ -295,7 +304,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
               key={index}
               role="option"
               aria-selected={index === selectedSuggestionIndex}
-              className={getSuggestionClasses(index, selectedSuggestionIndex)}
+              className={getSuggestionClasses(index, selectedSuggestionIndex, theme)}
               onClick={() => {
                 handleAddItem(suggestion);
                 setInputValue('');
@@ -312,7 +321,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
 };
 
 
-export const Item: React.FC<ItemProps> = ({
+export const Item: React.FC<ItemProps & { theme?: 'light' | 'dark' }> = ({
   children,
   onRemove,
   className,
@@ -327,18 +336,25 @@ export const Item: React.FC<ItemProps> = ({
   role,
   'aria-selected': ariaSelected,
   'data-chip-index': dataChipIndex,
+  theme = 'light',
 }) => {
   const itemClasses = classNames(
     styles.item,
     className,
     {
-      [styles.itemHighlighted]: highlighted,
+      [styles.itemHighlighted]: highlighted && theme === 'light',
+      [styles.itemHighlightedDark]: highlighted && theme === 'dark',
       [styles.itemDisabled]: disabled,
+      [styles.itemDark]: theme === 'dark',
     }
   );
 
-  const iconClasses = classNames(styles.itemIcon, iconClassName);
-  const removeButtonClasses = classNames(styles.itemRemove, removeButtonClassName);
+  const iconClasses = classNames(styles.itemIcon, iconClassName, {
+    [styles.itemIconDark]: theme === 'dark',
+  });
+  const removeButtonClasses = classNames(styles.itemRemove, removeButtonClassName, {
+    [styles.itemRemoveDark]: theme === 'dark',
+  });
 
   return (
     <span
@@ -364,3 +380,4 @@ export const Item: React.FC<ItemProps> = ({
     </span>
   );
 };
+
