@@ -1,4 +1,6 @@
 {
+  "renderItem": "renderItem",
   "getIcon": "getIcon",
-  "getSuggestions": "getSuggestions"
+  "getSuggestions": "getSuggestions",
+  "restrictToSuggestions": "restrictToSuggestions"
 }

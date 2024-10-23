@@ -1,5 +1,43 @@
-# 2
+# Get Icon
 
-The `placeholder` prop allows you to set the text or element that appears in the input field when it's empty.
+The `getIcon` prop allows you to specify a function that returns an icon for each chip based on its value.
 
-## Type
+## Definition
+
+| Property | Description |
+| -------- | ----------- |
+| Type     | `(value: string) => React.ReactNode` |
+| Default  | `undefined` |
+
+## Usage
+
+```jsx filename="ChipsterExample.jsx" {8-10} copy
+import { Chipster } from '@micoblanc/chipster';
+import { FaApple, FaBan } from 'react-icons/fa';
+
+function ChipsterExample() {
+  return (
+    <Chipster
+      placeholder="Enter a fruit..."
+      getIcon={(value) => {
+        return value.toLowerCase() === 'apple' ? <FaApple /> : <FaBan />;
+      }}
+      // other props...
+    />
+  );
+}
+````
+
+
+## Notes
+
+- The `getIcon` function is called for each chip when it's created.
+- It receives the chip's value as a string and should return a React node (e.g., an icon component, an image, or any other valid JSX).
+- If `getIcon` is not provided or returns `null`/`undefined`, no icon will be displayed for the chip.
+- This prop is useful for adding visual cues to chips based on their content.
+- The returned icon will be rendered to the left of the chip's text.
+
+## Related Props
+
+- [`chipIconClassName`](/props/styling/chipIconClassName): CSS class for styling the icon within chips.
+- [`renderItem`](/props/advanced/renderItem): Custom render function for chips, which can be used for more complex chip customization including icons.

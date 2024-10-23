@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { Chipster } from '@micoblanc/chipster';
-import styles from './ChipsterExample.module.css';
 
 const fruitEmojis = [
   { text: 'Apple', emoji: '🍎' },
@@ -16,7 +15,6 @@ const fruitEmojis = [
 ];
 
 export default function ChipsterExample2() {
-  const [chipsterItems, setChipsterItems] = useState([]);
 
   const validationRules = [
     { test: (value) => value.length >= 2, message: 'Must be at least 2 characters' },
@@ -32,23 +30,9 @@ export default function ChipsterExample2() {
       .map(fruit => `${fruit.emoji} ${fruit.text}`);
   }, []);
 
-
-  const handleItemsChange = useCallback((items) => {
-    setChipsterItems(items);
-    console.log('Current items:', items);
-  }, []);
-
   return (
-    <div className={styles.container}>
+    <div>
       <Chipster
-        className={styles.chipster}
-        inputClassName={styles.input}
-        errorClassName={styles.error}
-        chipClassName={styles.chip}
-        chipHighlightedClassName={styles.chipHighlighted}
-        chipDisabledClassName={styles.chipDisabled}
-        chipIconClassName={styles.chipIcon}
-        chipRemoveButtonClassName={styles.chipRemoveButton}
         onAdd={(value) => console.log('Added:', value)}
         onRemove={(id) => console.log('Removed item with id:', id)}
         placeholder="Type a fruit name..."
@@ -60,7 +44,6 @@ export default function ChipsterExample2() {
         transform={transform}
         showErrorMessage={true}
         getSuggestions={getSuggestions}
-        onItemsChange={handleItemsChange}
       />
 
     </div>

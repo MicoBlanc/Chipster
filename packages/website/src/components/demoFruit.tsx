@@ -34,7 +34,7 @@ export default function DemoFruit() {
   return (
     <div className='bg-black font-sans flex items-center justify-center w-full h-screen'>
       <div className="p-4 bg-black w-full max-w-xl">
-      <h2 className="text-base font-semibold mb-2 text-white">Choose a Fruit</h2>
+      <h2 className="text-base font-semibold mb-1 text-white">Choose a Fruit</h2>
 
         <Chipster
           theme="dark"

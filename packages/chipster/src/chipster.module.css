@@ -60,8 +60,9 @@
   box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.05);
   max-height: 15rem;
   overflow-y: auto;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
+  right: 0; 
 }
 
 .suggestionsFull {
@@ -138,6 +139,7 @@
 
 /* Dark mode styles */
 .containerDark {
+  position: relative;
   color: #f3f4f6;
 }
 

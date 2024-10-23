@@ -1,0 +1,48 @@
+# Theme
+
+The `theme` prop allows you to switch between light and dark modes for the Chipster component.
+
+## Definition
+
+| Property | Description |
+| -------- | ----------- |
+| Type     | `'light' \| 'dark'` |
+| Default  | `'light'` |
+
+## Usage
+
+```jsx filename="ChipsterExample.jsx" {6} copy
+import { Chipster } from '@micoblanc/chipster';
+
+function ChipsterExample() {
+  return (
+    <Chipster
+      theme="dark"
+      placeholder="Enter items..."
+      // other props...
+    />
+  );
+}
+````
+
+
+## Notes
+
+- The `theme` prop affects the overall appearance of the Chipster component, including the input, chips, and suggestions.
+- When set to `'light'`, the component uses a lighter color scheme suitable for light backgrounds.
+- When set to `'dark'`, the component switches to a darker color scheme optimized for dark backgrounds.
+- The theme affects various elements:
+  - Input container
+  - Input field
+  - Chips
+  - Suggestion dropdown
+  - Error messages
+- Custom class names provided through other props (e.g., `className`, `chipClassName`) will still be applied regardless of the theme.
+
+## Related Props
+
+- [`className`](/props/styling/className): Main container class, affected by theme.
+- [`inputClassName`](/props/styling/inputClassName): Input field class, affected by theme.
+- [`chipClassName`](/props/styling/chipClassName): Chip class, affected by theme.
+- [`chipHighlightedClassName`](/props/styling/chipHighlightedClassName): Highlighted chip class, affected by theme.
+- [`errorClassName`](/props/styling/errorClassName): Error message class, affected by theme.

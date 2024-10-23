@@ -1,0 +1,73 @@
+# Custom Class Props
+
+Chipster provides several props for applying custom CSS classes to different parts of the component. These props allow for fine-grained styling control.
+
+## Available Custom Class Props
+
+| Prop Name | Description | Default |
+|-----------|-------------|---------|
+| `className` | Applied to the main container | `undefined` |
+| `inputClassName` | Applied to the input element | `undefined` |
+| `errorClassName` | Applied to error messages | `undefined` |
+| `chipClassName` | Applied to each chip | `undefined` |
+| `chipHighlightedClassName` | Applied to highlighted chips | `undefined` |
+| `chipDisabledClassName` | Applied to disabled chips | `undefined` |
+| `chipIconClassName` | Applied to chip icons | `undefined` |
+| `chipRemoveButtonClassName` | Applied to chip remove buttons | `undefined` |
+
+## Usage
+
+Here's an example of how to use these custom class props:
+
+```jsx filename="CustomStyledChipster.jsx" copy
+import { Chipster } from '@micoblanc/chipster';
+import styles from './CustomStyledChipster.module.css';
+
+function CustomStyledChipster() {
+  return (
+    <Chipster
+      className={styles.container}
+      inputClassName={styles.input}
+      errorClassName={styles.error}
+      chipClassName={styles.chip}
+      chipHighlightedClassName={styles.chipHighlighted}
+      chipDisabledClassName={styles.chipDisabled}
+      chipIconClassName={styles.chipIcon}
+      chipRemoveButtonClassName={styles.chipRemoveButton}
+      // ... other props
+    />
+  );
+}
+````
+
+## Notes
+
+- These custom class props take precedence over the default styles provided by Chipster.
+- You can use these props with CSS Modules, styled-components, or any other CSS-in-JS solution.
+- The classes are applied in addition to the default classes, allowing you to override or extend the existing styles.
+- When using the `theme` prop, these custom classes are still applied, but the theme-specific styles may take precedence for certain properties.
+
+## Styling Specific Parts
+
+### Main Container
+Use `className` to style the overall container of the Chipster component.
+
+### Input Field
+Use `inputClassName` to customize the appearance of the input field where users type new chip values.
+
+### Error Messages
+Apply `errorClassName` to style error messages that appear when validation fails.
+
+### Chips
+- `chipClassName`: Base style for all chips
+- `chipHighlightedClassName`: Additional style for highlighted chips
+- `chipDisabledClassName`: Style for disabled chips
+- `chipIconClassName`: Style for icons within chips
+- `chipRemoveButtonClassName`: Style for the remove button on each chip
+
+## Best Practices
+
+1. Use these props for minor style adjustments or to align Chipster with your app's design system.
+2. For more extensive customization, consider using the `renderItem` prop in combination with these class props.
+3. When using CSS Modules or similar, ensure your class names are unique to avoid conflicts with Chipster's internal styles.
+4. Test your custom styles in both light and dark themes if you're using the `theme` prop.

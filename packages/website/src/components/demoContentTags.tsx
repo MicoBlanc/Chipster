@@ -32,9 +32,9 @@ export default function DemoContentTags() {
   return (
     <div className='bg-gray-100 font-sans flex items-center justify-center w-full h-screen'>
       <div className="p-4 bg-gray-100 w-full max-w-xl">
-        <h2 className="text-base font-semibold mb-2">Add tags to your content</h2>
+        <h2 className="text-base font-semibold mb-1">Keywords</h2>
         <Chipster
-          className="bg-white shadow-md rounded-lg p-2"
+          className="bg-white shadow-sm rounded-lg p-2"
           inputClassName="text-gray-700 placeholder-gray-400"
           errorClassName="text-red-600 font-semibold"
           chipClassName="bg-green-100 text-green-800 border-green-300 hover:bg-green-200 transition-colors duration-200"
@@ -44,7 +44,7 @@ export default function DemoContentTags() {
           chipRemoveButtonClassName="ml-2 text-green-500 hover:text-green-700"
           onAdd={(value) => console.log('Added tag:', value)}
           onRemove={(id) => console.log('Removed tag with id:', id)}
-          placeholder="Add tags to your content..."
+          placeholder="Add tags to your content"
           exitAnimation="fadeSlideLeft"
           validationRules={validationRules}
           maxItems={10}

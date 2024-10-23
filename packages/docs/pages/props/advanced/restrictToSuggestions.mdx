@@ -1,27 +1,37 @@
-# Placeholder
+# Restrict to Suggestions
 
-The `placeholder` prop allows you to set the text or element that appears in the input field when it's empty.
+The `restrictToSuggestions` prop limits the input to only accept values from the provided suggestions list.
 
-## Type
-typescript
-`string | React.ReactNode`
+## Definition
+
+| Property | Description |
+| -------- | ----------- |
+| Type     | `boolean`   |
+| Default  | `false`     |
 
 ## Usage
-```js filename="ChipsterExample.jsx" {7} copy
+```jsx filename="ChipsterExample.jsx" {8} copy
 import { Chipster } from '@micoblanc/chipster';
 
 function ChipsterExample() {
-
-return (
-   <Chipster
-     placeholder="Type a fruit name..."
-     // other props...
-   />
- );
+  return (
+    <Chipster
+      getSuggestions={(input) => ['apple', 'banana', 'cherry'].filter(fruit => fruit.includes(input))}
+      placeholder="Type a fruit name..."
+      restrictToSuggestions={true}
+      // other props...
+    />
+  );
 }
 ```
 
 ## Notes
 
-- The placeholder will be displayed only when the input field is empty.
-- If you provide a React Node, you can create more complex placeholders with icons or custom styling.
+- When `true`, users can only add items that are present in the suggestions list.
+- This prop works in conjunction with the `getSuggestions` prop, which should be provided to generate the list of valid suggestions.
+- If `restrictToSuggestions` is `true` and no suggestions match the current input, the user won't be able to add the item.
+- This can be useful for creating a controlled list and ensuring consistency with your data.
+
+## Related Props
+
+- [`getSuggestions`](/props/advanced/getSuggestions): Function to generate suggestions based on input.

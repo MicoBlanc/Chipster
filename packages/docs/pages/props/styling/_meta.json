@@ -1,6 +1,4 @@
 {
-  "placeholder": "Placeholder",
-  "onAdd": "onAdd",
-  "onRemove" : "onRemove",
-  "onItemsChange": "onItemsChange"
+  "customClasses": "Custom CSS Props",
+  "theme": "Theme"
 }

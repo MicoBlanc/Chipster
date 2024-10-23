@@ -246,7 +246,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
   return (
     <div className={classNames(styles.container, { [styles.containerDark]: theme === 'dark' })}>
       <div 
-        className={getContainerClasses(className, disabled, error, theme)}
+        className={getContainerClasses(className ?? '', disabled, error, theme)}
         data-disabled={disabled || undefined}
         data-error={error || undefined}
         onClick={() => !disabled && inputRef.current?.focus()}
@@ -280,6 +280,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setShowSuggestions(true)}
+          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           placeholder={typeof placeholder === 'string' ? placeholder : ''}
           className={getInputClasses(inputClassName ?? '', theme)}
           disabled={disabled}
@@ -288,9 +289,6 @@ export const Chipster: React.FC<ChipsterProps> = ({
           <div className={classNames(styles.placeholder, { [styles.placeholderDark]: theme === 'dark' })}>{placeholder}</div>
         )}
       </div>
-      {error && showErrorMessage && (
-        <div className={getErrorClasses(errorClassName || '', theme)}>{error}</div>
-      )}
       {showSuggestions && filteredSuggestions.length > 0 && (
         <ul 
           ref={listboxRef}
@@ -315,6 +313,9 @@ export const Chipster: React.FC<ChipsterProps> = ({
             </li>
           ))}
         </ul>
+      )}
+      {error && showErrorMessage && (
+        <div className={getErrorClasses(errorClassName || '', theme)}>{error}</div>
       )}
     </div>
   );

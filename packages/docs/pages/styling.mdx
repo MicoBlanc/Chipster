@@ -1,0 +1,151 @@
+# Styling Guide for Chipster
+
+Chipster offers various ways to customize its appearance. This guide will walk you through different styling methods and the available theming options.
+
+## Using Prop Classes
+
+Chipster provides several props for applying custom classes to different parts of the component:
+
+- `className`: Applied to the main container
+- `inputClassName`: Applied to the input element
+- `errorClassName`: Applied to error messages
+- `chipClassName`: Applied to each chip
+- `chipHighlightedClassName`: Applied to highlighted chips
+- `chipDisabledClassName`: Applied to disabled chips
+- `chipIconClassName`: Applied to chip icons
+- `chipRemoveButtonClassName`: Applied to chip remove buttons
+
+Example usage:
+
+```jsx
+<Chipster
+  className="my-custom-container"
+  inputClassName="my-custom-input"
+  chipClassName="my-custom-chip"
+  // ... other props
+/>
+````
+
+## Light and Dark Themes
+
+Chipster supports light and dark themes out of the box. Use the `theme` prop to switch between them:
+
+````jsx
+<Chipster theme="light" /> // Default
+<Chipster theme="dark" />
+````
+
+
+## Custom CSS
+
+You can create a separate CSS file to style Chipster. Target the classes used internally by the component:
+
+````css
+.inputContainer {
+  /* Styles for the main container */
+}
+
+.input {
+  /* Styles for the input field */
+}
+
+.item {
+  /* Styles for individual chips */
+}
+
+.itemHighlighted {
+  /* Styles for highlighted chips */
+}
+
+.itemDisabled {
+  /* Styles for disabled chips */
+}
+
+.itemIcon {
+  /* Styles for chip icons */
+}
+
+.itemRemove {
+  /* Styles for chip remove buttons */
+}
+
+.suggestions {
+  /* Styles for the suggestions dropdown */
+}
+
+.suggestion {
+  /* Styles for individual suggestions */
+}
+
+.suggestionSelected {
+  /* Styles for selected suggestions */
+}
+
+.error {
+  /* Styles for error messages */
+}
+````
+
+
+## Styling with Tailwind
+
+To use Tailwind with Chipster, you can pass Tailwind classes through the className props:
+
+````jsx
+<Chipster
+  className="bg-white shadow-md rounded-lg p-2"
+  inputClassName="text-gray-700 placeholder-gray-400"
+  chipClassName="bg-blue-100 text-blue-800 rounded-full px-2 py-1 m-1"
+  chipHighlightedClassName="ring-2 ring-blue-500"
+  chipRemoveButtonClassName="ml-1 text-blue-500 hover:text-blue-700"
+  // ... other props
+/>
+````
+
+
+The component applies different classes based on the theme:
+
+- Light theme classes: `inputContainer`, `input`, `item`, `itemHighlighted`, etc.
+- Dark theme classes: `inputContainerDark`, `inputDark`, `itemDark`, `itemHighlightedDark`, etc.
+
+## Customizing Specific Parts
+
+### Suggestions Dropdown
+
+Use the `suggestionStyle` prop to choose between 'fullWidth' and 'minimal' styles for the suggestions dropdown.
+
+### Exit Animations
+
+Customize chip removal animations with the `exitAnimation` prop. You can use predefined animations or create custom ones.
+
+## Advanced Styling
+
+For more complex styling needs, you can use the `renderItem` prop to completely customize the rendering of each chip:
+
+````jsx
+<Chipster
+  renderItem={(item, index, isHighlighted) => (
+    <div className={`custom-chip ${isHighlighted ? 'highlighted' : ''}`}>
+      {item.icon && <span className="icon">{item.icon}</span>}
+      <span className="text">{item.text}</span>
+      <button className="remove-btn" onClick={() => handleRemove(item.id)}>×</button>
+    </div>
+  )}
+  // ... other props
+/>
+````
+
+
+## Best Practices
+
+1. Use the provided className props for basic styling needs.
+2. For more specific styles, target the internal classes in a custom CSS file.
+3. When using Tailwind, combine utility classes in the className props.
+4. Leverage the `theme` prop for easy light/dark mode switching.
+5. Use `renderItem` for complete control over chip appearance and behavior.
+
+By combining these methods, you can create a fully customized Chipster component that fits seamlessly into your application's design.
+``````
+
+This guide covers the main aspects of styling the Chipster component, including using prop classes, custom CSS, Tailwind integration, and theming options. It also touches on more advanced styling techniques and best practices.
+````
