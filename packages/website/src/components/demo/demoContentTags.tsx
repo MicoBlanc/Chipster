@@ -14,7 +14,6 @@ const popularTags = [
 ];
 
 export default function DemoContentTags() {
-
   const validationRules: ValidationRule[] = [
     { test: (value: string) => value.length >= 2, message: 'Tag must be at least 2 characters' },
     { test: (value: string) => value.length <= 20, message: 'Tag must not exceed 20 characters' },
@@ -29,19 +28,46 @@ export default function DemoContentTags() {
       .map(tag => `${tag.icon} ${tag.name}`);
   }, []);
 
+  const codeSnippet = `import { Chipster } from 'chipster';
+
+const popularTags = [
+  { name: 'Technology', icon: '💻' },
+  { name: 'Fashion', icon: '👗' },
+  // ... other tags
+];
+
+function ContentTags() {
+  const getSuggestions = (input) => {
+    return popularTags
+      .filter(tag => tag.name.toLowerCase().includes(input.toLowerCase()))
+      .map(tag => \`\${tag.icon} \${tag.name}\`);
+  };
+
   return (
-    <div className='bg-gray-100 font-sans flex items-center justify-center w-full h-screen'>
-      <div className="p-4 bg-gray-100 w-full max-w-xl">
-        <h2 className="text-base font-semibold mb-1">Keywords</h2>
+    <Chipster
+      placeholder="Add tags to your content"
+      getSuggestions={getSuggestions}
+      restrictToSuggestions={true}
+      transform={(value) => value.toLowerCase().trim()}
+      validationRules={[
+        { test: (value) => value.length >= 2, message: 'Tag must be at least 2 characters' },
+        { test: (value) => value.length <= 20, message: 'Tag must not exceed 20 characters' },
+      ]}
+      maxItems={10}
+    />
+  );
+}`;
+
+  return (
+    <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
+      <div className="px-3 py-4 w-full bg-gray-50 max-w-xl bg-white border rounded-xl">
+        <h2 className="text-base font-semibold mb-1 text-black">Keywords</h2>
         <Chipster
-          className="bg-white shadow-sm rounded-lg p-2"
+          className="bg-white shadow-sm rounded-lg"
           inputClassName="text-gray-700 placeholder-gray-400"
           errorClassName="text-red-600 font-semibold"
-          chipClassName="bg-green-100 text-green-800 border-green-300 hover:bg-green-200 transition-colors duration-200"
-          chipHighlightedClassName="ring-2 ring-green-500"
           chipDisabledClassName="opacity-50 cursor-not-allowed"
           chipIconClassName="mr-2"
-          chipRemoveButtonClassName="ml-2 text-green-500 hover:text-green-700"
           onAdd={(value: string) => console.log('Added tag:', value)}
           onRemove={(id: string) => console.log('Removed tag with id:', id)}
           placeholder="Add tags to your content"
@@ -52,8 +78,15 @@ export default function DemoContentTags() {
           caseSensitive={false}
           transform={transform}
           showErrorMessage={true}
+          restrictToSuggestions={true}
           getSuggestions={getSuggestions}
         />
+      </div>
+      <div className="w-full max-w-xl">
+        <h3 className="text-base hidden font-semibold mb-2 text-black">Code Snippet</h3>
+        <pre className="bg-gray-100 p-2 max-h-80 border rounded-lg overflow-x-auto">
+          <code className="text-xs font-mono">{codeSnippet}</code>
+        </pre>
       </div>
     </div>
   );
