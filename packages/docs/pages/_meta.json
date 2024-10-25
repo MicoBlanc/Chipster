@@ -1,12 +1,9 @@
 {
   "index": {
     "title": "Home",
-    "type": "page",
-    "theme": {
-      "layout": "raw"
-    }
+    "type": "page"
   },
-  "get-started" : "Getting Started",
+  "get-started": "Getting Started",
   "props": "API Props",
   "about": {
     "title": "About",

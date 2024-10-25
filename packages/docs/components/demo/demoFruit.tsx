@@ -57,7 +57,7 @@ function FruitPicker() {
 
   return (
     <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
-      <div className="px-3 py-4 w-full bg-gray-50 max-w-xl bg-whit border rounded-xl">
+      <div className="px-3 py-6 w-full bg-gray-50 max-w-xl bg-whit border border-gray-200 rounded-xl">
         <h2 className="text-base font-semibold mb-1 text-black">Choose a Fruit</h2>
         <Chipster
           className="bg-white shadow-sm rounded-lg"
@@ -77,7 +77,7 @@ function FruitPicker() {
       </div>
       <div className="w-full max-w-xl">
         <h3 className="text-base hidden font-semibold mb-2 text-black">Code Snippet</h3>
-        <pre className="bg-gray-100 p-2 max-h-80 border rounded-lg overflow-x-auto">
+        <pre className="bg-gray-100 p-2 max-h-80 border border-gray-200 rounded-lg overflow-x-auto">
           <code className="text-xs font-mono">{codeSnippet}</code>
         </pre>
       </div>

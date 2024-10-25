@@ -16,6 +16,7 @@ const Logo = () => {
 
 const config: DocsThemeConfig = {
   logo: Logo,
+  faviconGlyph: "🚀",
   project: {
     link: 'https://github.com/micoblanc/chipster'
   },
@@ -37,7 +38,7 @@ const config: DocsThemeConfig = {
       <meta property="og:title" content={frontMatter.title || 'Chipster'} />
       <meta property="og:description" content={frontMatter.description || 'Chipster Documentation'} />
     </>
-  }
+  },
 }
 
 export default config
