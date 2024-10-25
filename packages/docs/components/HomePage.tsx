@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
 import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import DemoContainer from '@/components/DemoContainer';
+import TypingAnimation from './ui/typing-animation';
 
 const floatingAnimation = {
   y: ["0%", "-10%", "0%"],
@@ -49,11 +50,12 @@ const HomePage: React.FC = () => {
       >
         <section className='h-screen flex flex-col items-center justify-center p-4 relative'>
           <main className='max-w-5xl w-full flex flex-col items-center'>
-            <Image className='mb-2' width={130} height={30} alt='chipster logo' src="/chipster-logo.svg"/>
-            
-            <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition ease-out font-medium hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400 text-lg text-center mb-6">
-              A Flexible Multi-Entry Input Component for React
-            </AnimatedShinyText>
+            <img className='mb-2' width={130} height={30} alt='chipster logo' src="/chipster-logo.svg"/>
+            <TypingAnimation
+              className="inline-flex items-center justify-center px-4 py-1 text-neutral-500 transition ease-out font-medium hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400 text-lg text-center mb-6"
+              text="A Flexible Multi-Entry Input Component for React"
+              duration={20}
+            />
             <div className='flex justify-center space-x-2 font-medium mb-8'>
               <Button asChild>
                 <a href="https://github.com/micoblanc/chipster" target="_blank" rel="noopener noreferrer">
@@ -61,7 +63,7 @@ const HomePage: React.FC = () => {
                 </a>
               </Button>
               <Button asChild variant="outline">
-                <a href="/get-started">
+                <a href="/start">
                   <BookText className="h-4 w-4" /> Docs
                 </a>
               </Button>

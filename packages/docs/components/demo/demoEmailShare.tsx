@@ -1,7 +1,6 @@
 import { Chipster } from 'chipster';
 import { ValidationRule } from 'chipster';
 import { useCallback } from 'react';
-import Image from 'next/image';
 
 const teamMembers = [
   { email: 'john@example.com', name: 'John Doe', avatar: 'https://i.pravatar.cc/150?u=john' },
@@ -25,7 +24,7 @@ export default function DemoEmailShare() {
 
   const getIcon = useCallback((value: string) => {
     const member = teamMembers.find(m => m.email === value);
-    return member ? <Image src={member.avatar} alt={member.name} width={20} height={20} className="rounded-full" /> : null;
+    return member ? <img src={member.avatar} alt={member.name} width={20} height={20} className="rounded-full" /> : null;
   }, []);
 
   const renderSuggestion = useCallback((suggestion: string) => {
@@ -34,7 +33,7 @@ export default function DemoEmailShare() {
 
     return (
       <div className="flex items-center space-x-2">
-        <Image src={member.avatar} alt={member.name} width={24} height={24} className="rounded-full" />
+        <img src={member.avatar} alt={member.name} width={24} height={24} className="rounded-full" />
         <span>{member.name}</span>
         <span className="text-gray-500 text-sm">({member.email})</span>
       </div>

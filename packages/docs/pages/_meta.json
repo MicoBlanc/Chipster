@@ -1,15 +1,9 @@
 {
-  "index": {
-    "title": "Home",
-    "type": "page"
-  },
-  "get-started": "Getting Started",
+ 
+  "start": "Getting Started",
   "props": "API Props",
-  "about": {
-    "title": "About",
-    "type": "page"
-  },
   "styling": "How to style it?",
+  "about": "About Chipster",
   "contact": {
     "title": "Contact ↗",
     "type": "page",
