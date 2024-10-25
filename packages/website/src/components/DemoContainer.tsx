@@ -10,8 +10,8 @@ export default function DemoContainer() {
       <h2 className="text-3xl text-center font-bold mb-4 tracking-tight">Chipster Demo</h2>
       <Tabs defaultValue="fruit" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
+        <TabsTrigger value="email">Email Share</TabsTrigger>
           <TabsTrigger value="fruit">Fruit Picker</TabsTrigger>
-          <TabsTrigger value="email">Email Share</TabsTrigger>
           <TabsTrigger value="tags">Content Tags</TabsTrigger>
         </TabsList>
         <TabsContent value="fruit">

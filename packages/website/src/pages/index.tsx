@@ -48,10 +48,10 @@ export default function Home() {
         style={{ height: '200vh' }}
       >
         <section className='h-screen flex flex-col items-center justify-center p-4 relative'>
-          <main className='max-w-4xl w-full flex flex-col items-center'>
-            <Image className='mb-4' width={150} height={30} alt='chipster logo' src="/chipster-logo.svg"/>
+          <main className='max-w-5xl w-full flex flex-col items-center'>
+            <Image className='mb-2' width={130} height={30} alt='chipster logo' src="/chipster-logo.svg"/>
             
-            <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400 text-xl text-center mb-8">
+            <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition ease-out font-medium hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400 text-lg text-center mb-6">
               A Flexible Multi-Entry Input Component for React
             </AnimatedShinyText>
             <div className='flex justify-center space-x-2 font-medium mb-8'>
