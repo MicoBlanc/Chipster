@@ -1,5 +1,12 @@
 {
-  "index": "Get Started",
+  "index": {
+    "title": "Home",
+    "type": "page",
+    "theme": {
+      "layout": "raw"
+    }
+  },
+  "get-started" : "Getting Started",
   "props": "API Props",
   "about": {
     "title": "About",

@@ -13,8 +13,20 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "paths": {
+    "@/*": ["./*"]
+    },
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "theme.config.js", "pages/properties/2validation-transformation/validationRules.mdx"],
+  
+  "include": [
+    "next-env.d.ts", 
+    "**/*.ts", 
+    "**/*.tsx", 
+    "theme.config.js", 
+    "pages/properties/2validation-transformation/validationRules.mdx",  
+    "../chipster/src/**/*.ts",
+    "../chipster/src/**/*.tsx"
+  ],
   "exclude": ["node_modules"]
 }

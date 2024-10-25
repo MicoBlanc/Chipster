@@ -6,6 +6,7 @@
     "declaration": true,
     "jsx": "react",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

@@ -79,7 +79,7 @@ function EmailShare() {
 
   return (
     <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
-      <div className="px-3 py-4 w-full bg-gray-50 max-w-xl bg-white border rounded-xl">
+      <div className="px-3 py-4 w-full bg-gray-50 max-w-xl border rounded-xl">
         <h2 className="text-base font-semibold mb-1 text-black">Share with your team</h2>
         <Chipster
           className="bg-white shadow-sm rounded-lg"
