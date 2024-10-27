@@ -31,8 +31,3 @@ jobs:
       
       - name: Test Chipster
         run: pnpm test --filter=packages/chipster
-      
-      - name: Publish Chipster
-        run: pnpm publish --filter=packages/chipster --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
