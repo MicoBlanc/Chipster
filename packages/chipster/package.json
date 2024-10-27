@@ -1,6 +1,7 @@
 {
   "name": "@micoblanc/chipster",
   "version": "1.1.0",
+  "description": "A flexible multi-entry input component for React.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -10,6 +11,24 @@
     "build": "tsc",
     "test": "jest",
     "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+  "react",
+  "input",
+  "multi-entry",
+  "tags",
+  "chips",
+  "component"
+  ],
+  "author": "Mico Blanc <blancmico@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://chipster.micoblanc.me/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/micoblanc/chipster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/micoblanc/chipster/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -32,5 +51,6 @@
     "ts-jest": "^27.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^4.5.0"
-  }
+  },
+  "packageManager": "pnpm@9.12.2"
 }

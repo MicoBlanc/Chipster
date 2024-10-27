@@ -15,6 +15,7 @@ export interface ValidationRule {
 export interface UseChipsterOptions {
   validationRules?: ValidationRule[];
   getIcon?: (value: string) => ReactNode;
+  defaultValue?: string[];
   maxItems?: number;
   maxItemsMessage?: string;
   allowDuplicates?: boolean;
@@ -28,6 +29,7 @@ export interface ChipsterProps extends UseChipsterOptions {
   onAdd?: (value: string) => void;
   onRemove?: (id: string) => void;
   onItemsChange?: (items: ChipsterItem[]) => void;
+  
   theme?: 'light' | 'dark';
   placeholder?: string | React.ReactNode;
   className?: string;

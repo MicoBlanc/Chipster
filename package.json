@@ -1,17 +1,15 @@
 {
-  "name": "chipster-monorepo",
+  "name": "chipster",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "postinstall": "npm run build --workspace=packages/chipster",
-    "dev:docs": "npm run dev -w docs"
+    "postinstall": "pnpm run build --filter=@micoblanc/chipster",
+    "dev:docs": "pnpm run dev -w docs"
   },
   "devDependencies": {
-    "turbo": "^1.10.0"
-  }
+    "turbo": "^2.2.3"
+  },
+  "packageManager": "pnpm@9.12.2"
 }

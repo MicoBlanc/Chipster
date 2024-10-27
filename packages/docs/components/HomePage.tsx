@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { Button } from "@/components/ui/button"
 import { BookText, Check, Copy, ChevronDown, ChevronUp } from "lucide-react"
-import Image from 'next/image';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import AnimatedShinyText from '@/components/ui/animated-shiny-text';
 import DemoContainer from '@/components/DemoContainer';
 import TypingAnimation from './ui/typing-animation';
 

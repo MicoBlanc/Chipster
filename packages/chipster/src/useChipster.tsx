@@ -2,7 +2,15 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { ChipsterItem, UseChipsterOptions } from './types';
 
 export function useChipster(options: UseChipsterOptions = {}) {
-  const [items, setItems] = useState<ChipsterItem[]>([]);
+  const [items, setItems] = useState<ChipsterItem[]>(() => 
+    options.defaultValue 
+      ? options.defaultValue.map(text => ({
+          id: Date.now().toString() + Math.random(),
+          text,
+          icon: options.getIcon ? options.getIcon(text) : undefined
+        }))
+      : []
+  );
   const [error, setError] = useState<string | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);

@@ -1,6 +1,3 @@
-import ChipsterExample2 from "../../../components/ChipsterExample2"
-
-
 # Case Sensitivity
 
 The `caseSensitive` prop determines whether the chip comparison should be case-sensitive when checking for duplicates.
@@ -29,17 +26,3 @@ function ChipsterExample() {
 - When `caseSensitive` is set to `false`, "Apple" and "apple" will be considered the same chip.
 - This prop affects duplicate checking when `allowDuplicates` is set to `false`.
 - The default value is `true`.
-
-## Example
-
-Here's an example of how `caseSensitive` is used in the demo component:
-
- 
-<ChipsterExample2/>
-
-```typescript:packages/website/src/components/demoFruit.tsx
-startLine: 66
-endLine: 66
-```
-
-In this example, `caseSensitive` is set to `false`, meaning that chip comparisons will be case-insensitive. This ensures that variations in capitalization (e.g., "Apple" and "apple") are treated as the same chip.

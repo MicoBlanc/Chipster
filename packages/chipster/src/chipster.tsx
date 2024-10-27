@@ -74,6 +74,7 @@ export const Chipster: React.FC<ChipsterProps> = ({
   getSuggestions,
   onInputChange,
   theme = 'light',
+  defaultValue,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const { 
@@ -101,9 +102,9 @@ export const Chipster: React.FC<ChipsterProps> = ({
     transform,
     showErrorMessage,
     getSuggestions,
+    defaultValue,
   });
   const inputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 

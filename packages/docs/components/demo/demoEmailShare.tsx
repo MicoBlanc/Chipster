@@ -3,16 +3,19 @@ import { ValidationRule } from 'chipster';
 import { useCallback } from 'react';
 
 const teamMembers = [
-  { email: 'john@example.com', name: 'John Doe', avatar: 'https://i.pravatar.cc/150?u=john' },
-  { email: 'jane@example.com', name: 'Jane Smith', avatar: 'https://i.pravatar.cc/150?u=jane' },
-  { email: 'bob@example.com', name: 'Bob Johnson', avatar: 'https://i.pravatar.cc/150?u=bob' },
-  { email: 'alice@example.com', name: 'Alice Williams', avatar: 'https://i.pravatar.cc/150?u=alice' },
-  { email: 'charlie@example.com', name: 'Charlie Brown', avatar: 'https://i.pravatar.cc/150?u=charlie' },
+  { email: 'john@example.com', name: 'John Doe', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John' },
+  { email: 'jane@example.com', name: 'Jane Smith', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jane' },
+  { email: 'bob@example.com', name: 'Bob Johnson', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob' },
+  { email: 'alice@example.com', name: 'Alice Williams', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice' },
+  { email: 'charlie@example.com', name: 'Charlie Brown', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie' },
+  { email: 'emma@example.com', name: 'Emma Davis', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma' },
+  { email: 'david@example.com', name: 'David Wilson', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David' },
+  { email: 'olivia@example.com', name: 'Olivia Taylor', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia' },
 ];
 
 export default function DemoEmailShare() {
   const validationRules: ValidationRule[] = [
-    { test: (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), message: 'Invalid email format' },
+    { test: (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), message: 'Write a valid email' },
   ];
 
   const getSuggestions = useCallback((input: string) => {
@@ -25,19 +28,6 @@ export default function DemoEmailShare() {
   const getIcon = useCallback((value: string) => {
     const member = teamMembers.find(m => m.email === value);
     return member ? <img src={member.avatar} alt={member.name} width={20} height={20} className="rounded-full" /> : null;
-  }, []);
-
-  const renderSuggestion = useCallback((suggestion: string) => {
-    const member = teamMembers.find(m => m.email === suggestion);
-    if (!member) return suggestion;
-
-    return (
-      <div className="flex items-center space-x-2">
-        <img src={member.avatar} alt={member.name} width={24} height={24} className="rounded-full" />
-        <span>{member.name}</span>
-        <span className="text-gray-500 text-sm">({member.email})</span>
-      </div>
-    );
   }, []);
 
   const codeSnippet = `import { Chipster } from 'chipster';
@@ -70,7 +60,7 @@ function EmailShare() {
       getSuggestions={getSuggestions}
       renderSuggestion={renderSuggestion}
       validationRules={[
-        { test: (value) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value), message: 'Invalid email' },
+        { test: (value) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value), message: 'Write a valid email' },
       ]}
     />
   );
@@ -84,6 +74,7 @@ function EmailShare() {
           className="bg-white shadow-sm rounded-lg"
           onAdd={(value: string) => console.log('Added:', value)}
           onRemove={(id: string) => console.log('Removed item with id:', id)}
+          defaultValue={['john@example.com', 'jane@example.com']}
           placeholder="Enter team member's email"
           exitAnimation="fadeSlideLeft"
           validationRules={validationRules}
@@ -92,7 +83,7 @@ function EmailShare() {
           showErrorMessage={true}
           getSuggestions={getSuggestions}
           getIcon={getIcon}
-          renderSuggestion={renderSuggestion}
+          
         />
       </div>
       <div className="w-full max-w-xl">
