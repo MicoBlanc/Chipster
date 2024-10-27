@@ -44,16 +44,6 @@ function EmailShare() {
       .map(member => member.email);
   };
 
-  const renderSuggestion = (suggestion) => {
-    const member = teamMembers.find(m => m.email === suggestion);
-    return (
-      <div className="flex items-center">
-        <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full mr-2" />
-        <span>{member.name} ({member.email})</span>
-      </div>
-    );
-  };
-
   return (
     <Chipster
       placeholder="Enter team member's email"
@@ -89,7 +79,7 @@ function EmailShare() {
       <div className="w-full max-w-xl">
         <h3 className="text-base hidden font-semibold mb-2 text-black">Code Snippet</h3>
         <pre className="bg-gray-100 p-2 max-h-80 border border-gray-200 rounded-lg overflow-x-auto">
-          <code className="text-xs font-mono">{codeSnippet}</code>
+          <code className="hidden text-xs font-mono">{codeSnippet}</code>
         </pre>
       </div>
     </div>
