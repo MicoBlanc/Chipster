@@ -12,13 +12,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-      - run: npm run build --workspace=packages/chipster
-      - run: npm test --workspace=packages/chipster
-      - run: npm publish --workspace=packages/chipster --access public
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.12.2
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build Chipster
+        run: pnpm run build --filter=packages/chipster
+      
+      - name: Test Chipster
+        run: pnpm test --filter=packages/chipster
+      
+      - name: Publish Chipster
+        run: pnpm publish --filter=packages/chipster --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
