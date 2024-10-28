@@ -13,12 +13,12 @@
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
-  "react",
-  "input",
-  "multi-entry",
-  "tags",
-  "chips",
-  "component"
+    "react",
+    "input",
+    "multi-entry",
+    "tags",
+    "chips",
+    "component"
   ],
   "author": "Mico Blanc <blancmico@gmail.com>",
   "license": "MIT",
@@ -42,15 +42,20 @@
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6.2",
-    "@testing-library/react": "^13.0.0",
-    "@types/jest": "^27.0.0",
+    "@jest/globals": "^27.5.1",
+    "@jest/types": "^29.6.3",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.5.14",
     "@types/react": "^18.0.0",
-    "@types/styled-components": "^5.1.34",
-    "jest": "^27.0.0",
-    "ts-jest": "^27.0.0",
+    "@types/testing-library__jest-dom": "^5.14.9",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^4.5.0"
+    "typescript": "^4.9.5"
   },
   "packageManager": "pnpm@9.12.2"
 }

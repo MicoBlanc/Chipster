@@ -15,8 +15,19 @@
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": [
+      "jest",
+      "@testing-library/jest-dom"
+    ]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/global.d.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/global.d.ts",
+    "jest.d.ts",
+    "jest.setup.ts",
+    "jest.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

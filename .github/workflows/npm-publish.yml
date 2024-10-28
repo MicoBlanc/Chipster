@@ -9,7 +9,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
     steps:
       - uses: actions/checkout@v3
       
@@ -18,16 +18,20 @@ jobs:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
       
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2
         with:
           version: 9.12.2
-      
+          
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       
       - name: Build Chipster
-        run: pnpm run build --filter=packages/chipster
+        run: pnpm run build --filter=@micoblanc/chipster
       
       - name: Test Chipster
-        run: pnpm test --filter=packages/chipster
+        run: pnpm test --filter=@micoblanc/chipster
+        
+      - name: Publish to npm
+        run: cd packages/chipster && pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

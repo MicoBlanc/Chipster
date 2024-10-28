@@ -1,77 +1,96 @@
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, } from '@testing-library/react';
+import { act } from 'react';
 import { useChipster } from '../useChipster';
+import { ValidationRule } from '../types';
 
 describe('useChipster', () => {
-  it('should add an item', () => {
+  it('initializes with default values', () => {
     const { result } = renderHook(() => useChipster());
-
-    act(() => {
-      result.current.addItem('Test Item');
-    });
-
-    expect(result.current.items).toHaveLength(1);
-    expect(result.current.items[0].text).toBe('Test Item');
-  });
-
-  it('should remove an item', () => {
-    const { result } = renderHook(() => useChipster());
-
-    act(() => {
-      result.current.addItem('Test Item');
-    });
-
-    const itemId = result.current.items[0].id;
-
-    act(() => {
-      result.current.removeItem(itemId);
-    });
-
-    expect(result.current.items).toHaveLength(0);
-  });
-
-  it('should highlight an item', () => {
-    const { result } = renderHook(() => useChipster());
-
-    act(() => {
-      result.current.addItem('Test Item');
-      result.current.highlightItem(0);
-    });
-
-    expect(result.current.highlightedIndex).toBe(0);
-  });
-
-  it('should clear validation', () => {
-    const { result } = renderHook(() => useChipster());
-
-    act(() => {
-      result.current.validateInput('');
-      result.current.clearValidation();
-    });
-
+    
+    expect(result.current.items).toEqual([]);
     expect(result.current.error).toBeNull();
   });
 
-  it('should update suggestions', () => {
-    const mockGetSuggestions = jest.fn().mockReturnValue(['suggestion1', 'suggestion2']);
-    const { result } = renderHook(() => useChipster({ getSuggestions: mockGetSuggestions }));
+  it('initializes with default items', () => {
+    const defaultValue = ['item1', 'item2'];
+    const { result } = renderHook(() => useChipster({ defaultValue }));
+    
+    expect(result.current.items.map(i => i.text)).toEqual(defaultValue);
+  });
 
+  it('adds items successfully', () => {
+    const { result } = renderHook(() => useChipster());
+    
     act(() => {
-      result.current.updateSuggestions('test');
+      result.current.addItem('test item');
     });
+    
+    expect(result.current.items[0].text).toBe('test item');
+  });
 
-    expect(result.current.suggestions).toEqual(['suggestion1', 'suggestion2']);
+  it('removes items by id', () => {
+    const { result } = renderHook(() => useChipster({ defaultValue: ['test'] }));
+    const itemId = result.current.items[0].id;
+    
+    act(() => {
+      result.current.removeItem(itemId);
+    });
+    
+    expect(result.current.items).toHaveLength(0);
+  });
+
+  it('handles validation rules', () => {
+    const validationRules: ValidationRule[] = [{
+      test: (value) => value.length >= 3,
+      message: 'Too short'
+    }];
+    
+    const { result } = renderHook(() => 
+      useChipster({ validationRules, showErrorMessage: true })
+    );
+    
+    act(() => {
+      result.current.addItem('ab');
+    });
+    
+    expect(result.current.error).toBe('Too short');
+    expect(result.current.items).toHaveLength(0);
+  });
+
+  it('handles suggestions', () => {
+    const getSuggestions = (input: string) => 
+      ['apple', 'banana'].filter(s => s.includes(input));
+    
+    const { result } = renderHook(() => useChipster({ getSuggestions }));
+    
+    act(() => {
+      result.current.updateSuggestions('a');
+    });
+    
+    expect(result.current.suggestions).toEqual(['apple', 'banana']);
     expect(result.current.showSuggestions).toBe(true);
   });
 
-  it('should clear suggestions', () => {
-    const { result } = renderHook(() => useChipster());
-
+  it('transforms input when transform option is provided', () => {
+    const transform = (value: string) => value.toUpperCase();
+    const { result } = renderHook(() => useChipster({ transform }));
+    
     act(() => {
-      result.current.updateSuggestions('test');
-      result.current.clearSuggestions();
+      result.current.addItem('test');
     });
+    
+    expect(result.current.items[0].text).toBe('TEST');
+  });
 
-    expect(result.current.suggestions).toEqual([]);
-    expect(result.current.showSuggestions).toBe(false);
+  it('clears validation error', () => {
+    const { result } = renderHook(() => useChipster({ maxItems: 1 }));
+    
+    act(() => {
+      result.current.addItem('item1');
+      result.current.addItem('item2'); // This should trigger error
+      result.current.clearValidation();
+    });
+    
+    expect(result.current.error).toBeNull();
   });
 });

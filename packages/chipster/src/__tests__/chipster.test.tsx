@@ -1,57 +1,88 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Chipster } from '../chipster';
-import '@testing-library/jest-dom';
-
+import { ValidationRule } from '../types';
 
 describe('Chipster', () => {
+  const defaultProps = {
+    onAdd: jest.fn(),
+    onRemove: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders with placeholder', () => {
-    render(<Chipster placeholder="Enter items" />);
-    expect(screen.getByPlaceholderText('Enter items')).toBeInTheDocument();
+    render(<Chipster {...defaultProps} placeholder="Test placeholder" />);
+    expect(screen.getByPlaceholderText('Test placeholder')).toBeInTheDocument();
   });
 
-  it('adds items when Enter is pressed', () => {
-    const onAdd = jest.fn();
-    render(<Chipster onAdd={onAdd} />);
-    
-    const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: 'New Item' } });
-    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+  it('adds chip when typing and pressing enter', async () => {
+    render(<Chipster {...defaultProps} />);
 
-    expect(screen.getByText('New Item')).toBeInTheDocument();
-    expect(onAdd).toHaveBeenCalledWith('New Item');
+
+    const input = screen.getByRole('textbox');
+    
+    await userEvent.type(input, 'test chip{enter}');
+    
+    expect(screen.getByText('test chip')).toBeInTheDocument();
+    expect(defaultProps.onAdd).toHaveBeenCalledWith('test chip');
   });
 
-  it('removes items when remove button is clicked', () => {
-    const onRemove = jest.fn();
-    render(<Chipster onRemove={onRemove} />);
+  it('removes chip when clicking remove button', async () => {
+    render(<Chipster {...defaultProps} defaultValue={['initial chip']} />);
     
+    const removeButton = screen.getByRole('button');
+    await userEvent.click(removeButton);
+    
+    expect(screen.queryByText('initial chip')).not.toBeInTheDocument();
+    expect(defaultProps.onRemove).toHaveBeenCalled();
+  });
+
+  it('shows validation error for invalid input', async () => {
+    const validationRules: ValidationRule[] = [{
+      test: (value: string) => value.length > 5,
+      message: 'Too short'
+    }];
+
+    render(<Chipster {...defaultProps} validationRules={validationRules} />);
     const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: 'Test Item' } });
-    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    
+    await userEvent.type(input, 'test{enter}');
+    
+    expect(screen.getByText('Too short')).toBeInTheDocument();
+    expect(defaultProps.onAdd).not.toHaveBeenCalled();
+  });
 
-    const removeButton = screen.getByText('×');
-    fireEvent.click(removeButton);
+  it('handles suggestions correctly', async () => {
+    const getSuggestions = (input: string) => 
+      ['apple', 'banana', 'cherry'].filter(s => s.includes(input));
 
-    expect(screen.queryByText('Test Item')).not.toBeInTheDocument();
-    expect(onRemove).toHaveBeenCalled();
+    render(<Chipster {...defaultProps} getSuggestions={getSuggestions} />);
+    const input = screen.getByRole('textbox');
+    
+    await userEvent.type(input, 'a');
+    
+    expect(screen.getByText('apple')).toBeInTheDocument();
+    expect(screen.getByText('banana')).toBeInTheDocument();
+    expect(screen.queryByText('cherry')).not.toBeInTheDocument();
   });
 
   it('disables input when disabled prop is true', () => {
-    render(<Chipster disabled={true} />);
+    render(<Chipster {...defaultProps} disabled />);
     expect(screen.getByRole('textbox')).toBeDisabled();
   });
 
-  it('shows error message when validation fails', () => {
-    const validationRules = [
-      { test: (value: string) => value.length > 2, message: 'Must be longer than 2 characters' }
-    ];
-    render(<Chipster validationRules={validationRules} />);
-    
+  it('prevents duplicates when allowDuplicates is false', async () => {
+    render(<Chipster {...defaultProps} allowDuplicates={false} />);
     const input = screen.getByRole('textbox');
-    fireEvent.change(input, { target: { value: 'ab' } });
-    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
-
-    expect(screen.getByText('Must be longer than 2 characters')).toBeInTheDocument();
+    
+    await userEvent.type(input, 'test{enter}');
+    await userEvent.type(input, 'test{enter}');
+    
+    const chips = screen.getAllByText('test');
+    expect(chips).toHaveLength(1);
   });
 });

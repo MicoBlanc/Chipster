@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "test": "turbo run test",
     "lint": "turbo run lint",
-    "postinstall": "pnpm run build --filter=@micoblanc/chipster",
-    "dev:docs": "pnpm run dev -w docs"
+    "dev:docs": "pnpm run dev -w docs",
+    "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
     "turbo": "^2.2.3"

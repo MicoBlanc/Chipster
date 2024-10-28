@@ -1,12 +1,20 @@
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
+  clearMocks: true,
   preset: 'ts-jest',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testEnvironment: 'jsdom',
+  roots: ['<rootDir>/src'],
+  setupFilesAfterEnv: ['./jest.setup.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.css$': 'identity-obj-proxy' // For handling CSS imports
+  },
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+  },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testMatch: ['<rootDir>/src/**/__tests__/**/*.[jt]s?(x)', '<rootDir>/src/**/?(*.)+(spec|test).[tj]s?(x)'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testPathIgnorePatterns: ['<rootDir>/dist/'], // Ignore `dist` folder for tests
 };
 
 export default config;
