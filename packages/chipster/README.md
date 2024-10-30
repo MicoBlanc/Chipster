@@ -1,13 +1,17 @@
-# Chipster - A Composable Input Component for Managing Multiple Entries
+![chipster1](https://github.com/user-attachments/assets/7f7f09be-6e80-4d0e-81f5-fb395a92a0ff)
 
-Chipster is a **flexible, customizable input component** that allows users to input **multiple entries** (emails, tags, etc.) as removable badges. This component addresses key input management challenges by offering:
+Chipster is a highly customizable React component that simplifies the management of multiple input entries. Perfect for tags, email addresses, or any list-based input scenario.
 
-- **Input Flexibility**: Add multiple inputs fluidly without cluttering the UI.
-- **Badge Management**: Easily manage removable badges.
-- **Custom Validation**: Developers can add validation logic (e.g., for email or phone number formats).
-- **Accessibility**: Supports keyboard navigation and validation messages.
-- **Composable**: Badge components can be swapped for custom designs.
-- **Style Customization**: Compatible with Tailwind and custom CSS frameworks.
+
+## Key Features:
+
+- **Dynamic Input Handling**: Easily add and remove multiple entries
+- **Customizable Validation**: Apply your own validation rules
+- **Autocomplete Suggestions**: Enhance user experience with smart suggestions
+- **Flexible Styling**: Fully customizable to match your design system
+- **Accessibility-Focused**: Built with keyboard navigation and screen readers in mind
+- **Animation Support**: Smooth entry and exit animations for a polished feel
+
 ---
 
 ### Installation
@@ -120,4 +124,4 @@ Use built-in animations or define custom ones:
 />
 ```
 
-For more advanced usage and full API documentation, please refer to our [API Documentation]
+For more advanced usage and full API documentation, please refer to the [official docs](https://chipster.micoblanc.me)

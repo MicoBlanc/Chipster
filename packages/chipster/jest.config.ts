@@ -7,11 +7,18 @@ const config: Config.InitialOptions = {
   roots: ['<rootDir>/src'],
   setupFilesAfterEnv: ['./jest.setup.ts'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.css$': 'identity-obj-proxy' // For handling CSS imports
+    // Handle CSS imports (with CSS modules)
+    '\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
+    // Handle CSS imports (without CSS modules)
+    '\\.(css|sass|scss)$': 'identity-obj-proxy',
+    // Handle static assets
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+      '<rootDir>/__mocks__/fileMock.js',
   },
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      tsconfig: 'tsconfig.json'
+    }]
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testPathIgnorePatterns: ['<rootDir>/dist/'], // Ignore `dist` folder for tests

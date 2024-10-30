@@ -1,36 +1,112 @@
-# onItemsChange
+# On Items Change
 
-The `onItemsChange` prop is a callback function that is called whenever the items in the Chipster component change, either due to addition or removal.
+The `onItemsChange` prop is a callback function that provides real-time access to the current state of all items after validation and transformation. This callback is triggered whenever items are added, removed, or modified in the Chipster component.
 
-## Type
-typescript
-`(items: ChipsterItem[]) => void`
+## Definition
+
+| Property | Description |
+| -------- | ----------- |
+| Type     | `(items: Array<{ id: string; text: string; icon?: React.ReactNode }>) => void` |
+| Default  | `undefined` |
 
 ## Usage
-```tsx filename="ChipsterExample.tsx" {7,13-16} copy
-import { useState } from 'react';
+
+Here's a basic example of using the `onItemsChange` prop:
+
+```tsx filename="ChipsterWithState.tsx" {7-10} copy
 import { Chipster, ChipsterItem } from '@micoblanc/chipster';
 
-function ChipsterExample() {
+function ChipsterWithState() {
+  const [currentTags, setCurrentTags] = useState<ChipsterItem[]>([]);
 
-const [items, setItems] = useState<ChipsterItem[]>([]);
-
-const handleItemsChange = (newItems: ChipsterItem[]) => {
-setItems(newItems);
-console.log('Current items:', newItems);
-// Perform any additional actions with the updated items
-};
-
-return (
- <Chipster
-  onItemsChange={handleItemsChange}
-  // other props...
- />
-);
+  return (
+    <Chipster
+      onItemsChange={(items) => {
+        setCurrentTags(items);
+        console.log('Current items:', items);
+      }}
+      placeholder="Add tags..."
+    />
+  );
 }
 ```
-## Notes
 
-- The `onItemsChange` function receives an array of `ChipsterItem` objects as its parameter.
-- This callback is triggered after any change to the items, including additions, removals, and reordering.
-- Use this callback to keep your application state in sync with the Chipster component's internal state.
+## How It Works
+
+1. The callback is triggered after every change to the items collection
+2. Changes include:
+   - Adding new items
+   - Removing items
+   - Initial load with default values
+3. Items are provided after validation and transformation
+4. Each item includes:
+   - Unique ID
+   - Transformed text value
+   - Optional icon (if provided via `getIcon`)
+
+## Advanced Usage with Form Integration
+
+Use `onItemsChange` to integrate with form libraries:
+
+```tsx
+import { useForm } from 'react-hook-form';
+
+function ChipsterForm() {
+  const { setValue } = useForm();
+
+  return (
+    <Chipster
+      onItemsChange={(items) => {
+        setValue('tags', items.map(item => item.text));
+      }}
+      transform={(value) => value.toLowerCase().trim()}
+      validationRules={[
+        { test: (value) => value.length >= 2, message: 'Too short' }
+      ]}
+    />
+  );
+}
+```
+
+## Use Cases
+
+1. **State Management**: Keep parent components in sync with current items
+
+2. **Form Integration**: Update form values based on selected items
+
+3. **Data Persistence**: Save items to backend whenever they change
+
+4. **Validation Feedback**: Monitor validated and transformed items
+
+## Working with Validation
+
+The `onItemsChange` callback receives items after:
+- Input validation rules are applied
+- Text transformation is performed
+- Icons are added (if configured)
+
+```tsx
+<Chipster
+  onItemsChange={(items) => {
+    // Items here are already validated and transformed
+    updateValidatedTags(items);
+  }}
+  transform={(value) => value.toLowerCase()}
+  validationRules={[
+    { test: (value) => value.length >= 2, message: 'Tag too short' }
+  ]}
+/>
+```
+
+## Performance Considerations
+
+- Consider debouncing the callback if performing expensive operations
+- Memoize handlers if passing them from parent components
+- Avoid unnecessary re-renders by using `useCallback` when defining the handler
+
+## Related Props
+
+- [`onAdd`](/props/callbacks/onAdd): Called when individual items are added
+- [`onRemove`](/props/callbacks/onRemove): Called when individual items are removed
+- [`transform`](/props/advanced/transform): Affects the final text value of items
+- [`validationRules`](/props/validation/validationRules): Determines which items are valid

@@ -84,19 +84,19 @@ const HomePage: React.FC = () => {
             onClick={scrollToExamples}
             animate={floatingAnimation}
           >
-            <span className="text-sm mb-2">See Examples</span>
+            <span className="text-sm mb-1">See Examples</span>
             <ChevronDown className="h-6 w-6" />
           </motion.div>
         </section>
         <section className='h-screen flex flex-col items-center justify-center relative'>
           <DemoContainer />
           <motion.div 
-            className="absolute top-8 cursor-pointer flex flex-col items-center"
+            className="absolute top-6 cursor-pointer flex flex-col items-center"
             onClick={scrollToTop}
             animate={floatingAnimation}
           >
             <ChevronUp className="h-6 w-6" />
-            <span className="text-sm mt-2">Back to Top</span>
+            <span className="text-sm mt-1">Back to Top</span>
           </motion.div>
         </section>
       </motion.div>

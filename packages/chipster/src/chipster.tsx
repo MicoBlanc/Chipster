@@ -49,6 +49,7 @@ const getSuggestionClasses = (index: number, selectedSuggestionIndex: number, th
 export const Chipster: React.FC<ChipsterProps> = ({
   onAdd,
   onRemove,
+  onItemsChange,
   placeholder = 'Type and press Enter',
   className,
   inputClassName,
@@ -103,13 +104,13 @@ export const Chipster: React.FC<ChipsterProps> = ({
     showErrorMessage,
     getSuggestions,
     defaultValue,
+    onItemsChange,
   });
   const inputRef = useRef<HTMLInputElement>(null);
+  const listboxRef = useRef<HTMLUListElement>(null);
 
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
-
   const [activeDescendant, setActiveDescendant] = useState<string | undefined>();
-  const listboxRef = useRef<HTMLUListElement>(null);
 
   const scrollActiveDescendantIntoView = useCallback(() => {
     if (activeDescendant && listboxRef.current) {

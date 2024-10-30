@@ -17,6 +17,11 @@ export function useChipster(options: UseChipsterOptions = {}) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef<HTMLUListElement>(null);
 
+  // Notify parent whenever items change
+  useEffect(() => {
+    options.onItemsChange?.(items);
+  }, [items, options.onItemsChange]);
+
   const validateInput = useCallback((value: string) => {
     let processedValue = options.transform ? options.transform(value) : value.trim();
 
@@ -45,7 +50,6 @@ export function useChipster(options: UseChipsterOptions = {}) {
         }
       }
     }
-
     setError(null);
     return true;
   }, [items, options]);
@@ -54,7 +58,8 @@ export function useChipster(options: UseChipsterOptions = {}) {
     if (validateInput(text)) {
       const processedText = options.transform ? options.transform(text) : text.trim();
       const icon = options.getIcon ? options.getIcon(processedText) : undefined;
-      setItems(prev => [...prev, { id: Date.now().toString(), text: processedText, icon }]);
+      const newItem = { id: Date.now().toString(), text: processedText, icon };
+      setItems(prev => [...prev, newItem]);
       return true;
     }
     return false;
