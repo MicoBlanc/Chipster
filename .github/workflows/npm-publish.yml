@@ -8,7 +8,7 @@ on:
       - 'packages/chipster/**'
 
 jobs:
-  publish:
+  check-and-publish:
     runs-on: ubuntu-latest 
     steps:
       - uses: actions/checkout@v3
@@ -21,17 +21,33 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 9.12.2
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       
+      - name: Check version change
+        id: check
+        run: |
+          PUBLISHED_VERSION=$(npm view @micoblanc/chipster version 2>/dev/null || echo "0.0.0")
+          PACKAGE_VERSION=$(node -p "require('./packages/chipster/package.json').version")
+          if [ "$PUBLISHED_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Version changed from $PUBLISHED_VERSION to $PACKAGE_VERSION"
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged, skipping publish"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Build Chipster
+        if: steps.check.outputs.should_publish == 'true'
         run: pnpm run build --filter=@micoblanc/chipster
       
       - name: Test Chipster
+        if: steps.check.outputs.should_publish == 'true'
         run: pnpm test --filter=@micoblanc/chipster
         
       - name: Publish to npm
+        if: steps.check.outputs.should_publish == 'true'
         run: cd packages/chipster && pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
