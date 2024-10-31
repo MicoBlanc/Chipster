@@ -75,6 +75,9 @@ importers:
       '@headlessui/react':
         specifier: ^2.2.0
         version: 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@heroicons/react':
+        specifier: ^2.1.5
+        version: 2.1.5(react@18.3.1)
       '@micoblanc/chipster':
         specifier: latest
         version: 1.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -124,9 +127,6 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.8.1)(typescript@5.6.3)))
     devDependencies:
-      '@heroicons/react':
-        specifier: ^2.1.5
-        version: 2.1.5(react@18.3.1)
       '@types/react':
         specifier: ^18.3.12
         version: 18.3.12

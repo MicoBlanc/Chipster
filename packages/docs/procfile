@@ -1,0 +1,1 @@
+web: cd packages/docs && pnpm start

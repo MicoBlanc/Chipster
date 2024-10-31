@@ -29,22 +29,15 @@ export default withNextra({
                 }
               }]
             ]
-          },
-        },
-        {
-          loader: 'ts-loader',
-          options: {
-            transpileOnly: true,
-            configFile: path.resolve(__dirname, '../chipster/tsconfig.json')
           }
         }
       ]
     })
 
-    // Handle aliases based on environment
-    if (process.env.NODE_ENV === 'development') {
-      config.resolve.alias['@micoblanc/chipster'] = path.resolve(__dirname, '../chipster/src')
-    }
+    // Handle aliases for both dev and prod
+    config.resolve.alias['@micoblanc/chipster'] = process.env.NODE_ENV === 'development' 
+      ? path.resolve(__dirname, '../chipster/src')
+      : '@micoblanc/chipster'
 
     if (!isServer) {
       config.resolve.fallback = {
