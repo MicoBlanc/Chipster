@@ -1,1 +1,1 @@
-web: cd packages/docs && pnpm start
+web: cd packages/docs && NODE_ENV=production node ./node_modules/.bin/next start -p ${PORT:-3000}

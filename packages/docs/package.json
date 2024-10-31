@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 next build",
-    "start": "NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 next start -p ${PORT:-3000}",
+    "start": "NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 node ./node_modules/.bin/next start -p ${PORT:-3000}",
     "build:standalone": "NODE_ENV=production pnpm install --production=false && pnpm build"
   },
   "dependencies": {
@@ -37,8 +37,8 @@
     "typescript": "^5.6.3",
     "ts-loader": "^9.5.1"
   },
+  "packageManager": "pnpm@9.12.2",
   "engines": {
-    "node": ">=18.0.0",
-    "pnpm": "9.12.2"
+    "node": ">=18.0.0"
   }
 }
