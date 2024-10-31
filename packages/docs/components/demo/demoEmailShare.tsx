@@ -1,5 +1,5 @@
-import { Chipster } from 'chipster';
-import { ValidationRule } from 'chipster';
+import { Chipster } from '@micoblanc/chipster';
+import { ValidationRule } from '@micoblanc/chipster';
 import { useCallback } from 'react';
 import { Disclosure } from '@headlessui/react';
 import { CodeBracketIcon } from '@heroicons/react/24/outline';

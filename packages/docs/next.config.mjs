@@ -11,32 +11,45 @@ const withNextra = nextra({
   themeConfig: './theme.config.tsx',
 })
 
-const useLocalChipster = fs.existsSync(path.resolve(__dirname, '../chipster/src'))
-
 export default withNextra({
   webpack: (config, { isServer }) => {
-    if (useLocalChipster) {
-      config.resolve.alias['chipster'] = path.resolve(__dirname, '../chipster/src')
-      
-      config.module.rules.push({
-        test: /\.(ts|tsx)$/,
-        include: [path.resolve(__dirname, '../chipster/src')],
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['next/babel'],
-            },
+    // Always configure TypeScript/React processing for chipster
+    config.module.rules.push({
+      test: /\.(ts|tsx)$/,
+      include: [path.resolve(__dirname, '../chipster/src')],
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['next/babel', {
+                'preset-react': {
+                  runtime: 'automatic',
+                  importSource: 'react'
+                }
+              }]
+            ]
           },
-        ],
-      })
+        },
+        {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+            configFile: path.resolve(__dirname, '../chipster/tsconfig.json')
+          }
+        }
+      ]
+    })
+
+    // Handle aliases based on environment
+    if (process.env.NODE_ENV === 'development') {
+      config.resolve.alias['@micoblanc/chipster'] = path.resolve(__dirname, '../chipster/src')
     }
 
     if (!isServer) {
       config.resolve.fallback = {
-        ...config.resolve.fallback,
         fs: false,
-        path: false,
+        path: false
       }
     }
 
