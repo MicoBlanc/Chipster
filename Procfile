@@ -1,1 +1,1 @@
-web: pnpm install --no-frozen-lockfile && cd packages/docs && pnpm build && pnpm start
+web: cd packages/docs && pnpm install --no-frozen-lockfile && pnpm build && pnpm start

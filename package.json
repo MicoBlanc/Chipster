@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "pnpm install && turbo run build",
+    "start": "turbo run start",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "dev:docs": "pnpm run dev -w docs",
