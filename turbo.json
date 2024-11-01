@@ -3,20 +3,19 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*"]
     },
-    "build:docs": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**"]
+    "start": {
+      "dependsOn": ["build"]
     },
-    "test": {
-      "dependsOn": ["build"],
-      "outputs": ["coverage/**"]
-    },
-    "lint": {},
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "clean": {
+      "cache": false,
+      "outputs": []
     }
   }
 }

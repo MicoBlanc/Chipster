@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 next build",
-    "start": "NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 node ./node_modules/.bin/next start -p ${PORT:-3000}",
-    "build:standalone": "NODE_ENV=production pnpm install --production=false && pnpm build"
+    "build": "next build",
+    "start": "next start -p ${PORT:-3000}",
+    "dev": "next dev",
+    "clean": "rm -rf .next .turbo node_modules"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
@@ -31,7 +32,6 @@
     "@types/react": "^18.3.12",
     "autoprefixer": "^10.4.20",
     "babel-loader": "^9.2.1",
-    "next": "^13.5.7",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3",
