@@ -1,9 +1,6 @@
 {
   "name": "chipster",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "pnpm install && turbo run build",
