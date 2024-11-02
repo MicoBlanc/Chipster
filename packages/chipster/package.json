@@ -35,14 +35,16 @@
     "access": "public"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "dependencies": {
     "classnames": "^2.3.2",
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "@jest/globals": "^27.5.1",
     "@jest/types": "^29.6.3",
     "@testing-library/jest-dom": "^6.6.2",

@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Chipster } from '../chipster';
-import { ValidationRule } from '../types';
+import { Chipster } from '../old/chipster';
+import { ValidationRule } from '../old/types';
 
 describe('Chipster', () => {
   const defaultProps = {

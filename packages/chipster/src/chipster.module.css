@@ -1,5 +1,6 @@
 .container {
   position: relative;
+  width: 100%;
 }
 
 .inputContainer {
@@ -62,7 +63,8 @@
   overflow-y: auto;
   top: calc(100% + 4px);
   left: 0;
-  right: 0; 
+  right: 0;
+  width: 100%;
 }
 
 .suggestionsFull {

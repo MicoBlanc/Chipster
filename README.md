@@ -124,4 +124,4 @@ Use built-in animations or define custom ones:
 />
 ```
 
-For more advanced usage and full API documentation, please refer to the [official docs](https://chipster.micoblanc.me)
+For more advanced usage and full API documentation, please refer to the [official docs](https://chipster.micoblanc.me/start)

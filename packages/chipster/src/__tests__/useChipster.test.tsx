@@ -1,7 +1,7 @@
 import { renderHook, } from '@testing-library/react';
 import { act } from 'react';
-import { useChipster } from '../useChipster';
-import { ValidationRule } from '../types';
+import { useChipster } from '../old/useChipster';
+import { ValidationRule } from '../old/types';
 
 describe('useChipster', () => {
   it('initializes with default values', () => {

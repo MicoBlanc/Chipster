@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { ChipsterAnimationConfig, AnimationPreset } from './animations';
 
 export interface ChipsterItem {
   id: string;
@@ -26,28 +25,6 @@ export interface UseChipsterOptions {
   getSuggestions?: (input: string) => string[];
 }
 
-export interface ChipsterProps extends UseChipsterOptions {
-  onAdd?: (value: string) => void;
-  onRemove?: (id: string) => void;
-  onItemsChange?: (items: Array<{ id: string; text: string; icon?: React.ReactNode }>) => void;
-  theme?: 'light' | 'dark';
-  placeholder?: string | React.ReactNode;
-  className?: string;
-  inputClassName?: string;
-  errorClassName?: string;
-  chipClassName?: string;
-  chipHighlightedClassName?: string;
-  chipDisabledClassName?: string;
-  chipIconClassName?: string;
-  chipRemoveButtonClassName?: string;
-  restrictToSuggestions?: boolean;
-  suggestionStyle?: 'fullWidth' | 'minimal';
-  disabled?: boolean;
-  renderItem?: (item: ChipsterItem, index: number, highlighted: boolean) => React.ReactNode;
-  exitAnimation?: ChipsterAnimationConfig | AnimationPreset;
-  onInputChange?: (value: string) => void;
-}
-
 export interface ItemProps {
   children: ReactNode;
   onRemove?: () => void;
@@ -65,8 +42,65 @@ export interface ItemProps {
   'data-chip-index'?: number;
 }
 
-export interface UseChipsterReturn {
-  showSuggestions: boolean;
-  suggestionsRef: React.RefObject<HTMLUListElement>;
-  setShowSuggestions: React.Dispatch<React.SetStateAction<boolean>>;
+export interface ChipsterContextType {
+  items: ChipsterItem[]
+  addItem: (text: string) => boolean
+  removeItem: (id: string) => void
+  inputValue?: string
+  setInputValue: (value: string) => void
+  error: string | null
+  validateInput: (value: string) => boolean
+  clearValidation: () => void
+  highlightedIndex: number | null
+  highlightItem: (index: number | null) => void  
+  disabled?: boolean
+  theme?: 'light' | 'dark'
+  allowDuplicates?: boolean
+  updateSuggestions: (input: string) => void
+  clearSuggestions: () => void
+  showSuggestions: boolean
+  setShowSuggestions: (show: boolean) => void
+  selectedSuggestionIndex: number
+  setSelectedSuggestionIndex: (index: number | ((prev: number) => number)) => void
+  suggestions: string[]
+  setSuggestions: (suggestions: string[]) => void
+}
+
+export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange'> {
+  children?: React.ReactNode
+  theme?: 'light' | 'dark'
+  disabled?: boolean
+  className?: string
+  onAdd?: (value: string) => void
+  onRemove?: (id: string) => void
+}
+
+export interface ChipsterInputProps {
+  placeholder?: string | React.ReactNode
+  className?: string
+  inputValue?: string
+  setInputValue?: (value: string) => void
+  onInputChange?: (value: string) => void
+}
+
+export interface ChipsterSuggestionsProps {
+  getSuggestions?: (input: string) => string[]
+  onSelect?: (suggestion: string) => void
+  className?: string
+  style?: 'fullWidth' | 'minimal'
+  children?: (props: {
+    suggestions: string[]
+    onSelect: (suggestion: string) => void
+    selectedIndex?: number
+  }) => React.ReactNode
+}
+
+export interface ChipsterItemProps {
+  item: ChipsterItem
+  className?: string
+  highlightedClassName?: string
+  disabledClassName?: string
+  iconClassName?: string
+  removeButtonClassName?: string
+  render?: (item: ChipsterItem, highlighted: boolean) => React.ReactNode
 }
