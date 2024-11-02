@@ -56,6 +56,7 @@ export interface ChipsterContextType {
     maxItemsMessage?: string
     allowDuplicates?: boolean
     transform?: (value: string) => string
+    onError?: (error: string) => void
   } | null
   setValidationConfig: (config: ChipsterContextType['validationConfig']) => void
   highlightedIndex: number | null
@@ -69,8 +70,8 @@ export interface ChipsterContextType {
   setShowSuggestions: (show: boolean) => void
   selectedSuggestionIndex: number
   setSelectedSuggestionIndex: (index: number | ((prev: number) => number)) => void
-  suggestions: string[]
-  setSuggestions: (suggestions: string[]) => void
+  suggestions: ChipsterSuggestion[]
+  setSuggestions: (suggestions: ChipsterSuggestion[]) => void
 }
 
 export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange' | 'validationRules' | 'maxItems' | 'allowDuplicates' | 'transform'> {
@@ -90,16 +91,22 @@ export interface ChipsterInputProps {
   onInputChange?: (value: string) => void
 }
 
+export type ChipsterSuggestion = string | {
+  label: string
+  icon?: React.ReactNode
+  data?: any
+}
+
 export interface ChipsterSuggestionsProps {
-  getSuggestions?: (input: string) => string[]
-  onSelect?: (suggestion: string) => void
+  getSuggestions: (input: string) => ChipsterSuggestion[]
   className?: string
   style?: 'fullWidth' | 'minimal'
   children?: (props: {
-    suggestions: string[]
-    onSelect: (suggestion: string) => void
-    selectedIndex?: number
+    suggestions: ChipsterSuggestion[]
+    onSelect: (suggestion: ChipsterSuggestion) => void
+    selectedIndex: number
   }) => React.ReactNode
+  onSelect?: (suggestion: ChipsterSuggestion) => void
 }
 
 export interface ChipsterItemProps {
@@ -121,4 +128,5 @@ export interface ChipsterValidationProps {
   className?: string
   errorClassName?: string
   children?: (error: string | null) => React.ReactNode
+  onError?: (error: string) => void
 }

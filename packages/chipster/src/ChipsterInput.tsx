@@ -109,7 +109,11 @@ export const ChipsterInput = ({
       case 'Enter':
         if (suggestions.length > 0 && selectedSuggestionIndex >= 0) {
           e.preventDefault()
-          addItem(suggestions[selectedSuggestionIndex])
+          const selectedSuggestion = suggestions[selectedSuggestionIndex]
+          const value = typeof selectedSuggestion === 'string' 
+            ? selectedSuggestion 
+            : selectedSuggestion.label
+          addItem(value)
           setSelectedSuggestionIndex(-1)
           setInputValue('')
         }
@@ -136,6 +140,31 @@ export const ChipsterInput = ({
     removeItem
   ])
 
+  const handleFocus = useCallback(() => {
+    setShowSuggestions(true)
+    
+    // positioning logic for minimal style
+    if (inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect()
+      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+      
+      document.documentElement.style.setProperty('--suggestions-top', `${rect.bottom + scrollTop}px`)
+      document.documentElement.style.setProperty('--suggestions-left', `${rect.left + scrollLeft}px`)
+      document.documentElement.style.setProperty('--suggestions-width', `${rect.width}px`)
+    }
+  }, [setShowSuggestions])
+
+  const handleBlur = useCallback(() => {
+    setTimeout(() => {
+      setShowSuggestions(false)
+      // Clean up CSS variables
+      document.documentElement.style.removeProperty('--suggestions-top')
+      document.documentElement.style.removeProperty('--suggestions-left')
+      document.documentElement.style.removeProperty('--suggestions-width')
+    }, 200)
+  }, [setShowSuggestions])
+
   return (
     <input
       ref={inputRef}
@@ -143,8 +172,8 @@ export const ChipsterInput = ({
       value={inputValue}
       onChange={handleInputChange}
       onKeyDown={handleKeyDown}
-      onFocus={() => setShowSuggestions(true)}
-      onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       placeholder={typeof placeholder === 'string' ? placeholder : ''}
       className={classNames(styles.input, className, {
         [styles.inputDark]: theme === 'dark'

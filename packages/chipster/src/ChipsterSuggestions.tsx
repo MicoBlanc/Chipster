@@ -1,8 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import styles from './chipster.module.css'
-import { ChipsterSuggestionsProps } from './types'
+import { ChipsterSuggestionsProps, ChipsterSuggestion } from './types'
 import { useChipsterContext } from './ChipsterContext'
+import { createPortal } from 'react-dom'
 
 export const ChipsterSuggestions = ({
   getSuggestions,
@@ -24,25 +25,33 @@ export const ChipsterSuggestions = ({
     setSuggestions
   } = useChipsterContext()
   
+  const listRef = useRef<HTMLUListElement>(null)
+
+  const getSuggestionLabel = useCallback((suggestion: ChipsterSuggestion): string => {
+    return typeof suggestion === 'string' ? suggestion : suggestion.label
+  }, [])
+
   useEffect(() => {
     if (getSuggestions && inputValue) {
       let newSuggestions = getSuggestions(inputValue)
       
       if (!allowDuplicates) {
         newSuggestions = newSuggestions.filter(
-          suggestion => !items.some(item => item.text === suggestion)
+          suggestion => !items.some(item => 
+            item.text === getSuggestionLabel(suggestion)
+          )
         )
       }
       setSuggestions(newSuggestions)
     } else {
       setSuggestions([])
     }
-  }, [getSuggestions, inputValue, items, allowDuplicates, setSuggestions])
+  }, [getSuggestions, inputValue, items, allowDuplicates, setSuggestions, getSuggestionLabel])
 
-  const handleSelect = useCallback((suggestion: string) => {
-    addItem(suggestion)
+  const handleSelect = useCallback((suggestion: ChipsterSuggestion) => {
+    addItem(getSuggestionLabel(suggestion))
     setSelectedSuggestionIndex(-1)
-  }, [addItem, setSelectedSuggestionIndex])
+  }, [addItem, setSelectedSuggestionIndex, getSuggestionLabel])
 
   if (!showSuggestions || !suggestions.length) return null
 
@@ -67,8 +76,9 @@ export const ChipsterSuggestions = ({
     )
   }
 
-  return (
+  const suggestionsList = (
     <ul
+      ref={listRef}
       role="listbox"
       className={classNames(
         styles.suggestions,
@@ -91,9 +101,27 @@ export const ChipsterSuggestions = ({
           )}
           onClick={() => handleSelect(suggestion)}
         >
-          {suggestion}
+          {typeof suggestion === 'string' ? (
+            suggestion
+          ) : (
+            <div className={styles.suggestionWithIcon}>
+              {suggestion.icon && (
+                <span className={styles.suggestionIcon}>{suggestion.icon}</span>
+              )}
+              <span>{suggestion.label}</span>
+            </div>
+          )}
         </li>
       ))}
     </ul>
   )
+
+  if (style === 'minimal') {
+    return createPortal(
+      suggestionsList,
+      document.body
+    )
+  }
+
+  return suggestionsList
 } 

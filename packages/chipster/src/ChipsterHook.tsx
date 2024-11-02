@@ -1,6 +1,14 @@
 'use client'
-import { useState, useCallback, useEffect } from 'react'
-import { ChipsterItem, ChipsterProps, ChipsterContextType } from './types'
+import { useState, useCallback } from 'react'
+import { ChipsterItem, ChipsterProps, ChipsterContextType, ChipsterSuggestion } from './types'
+
+const isObjectSuggestion = (suggestion: ChipsterSuggestion): suggestion is { 
+  label: string
+  icon?: React.ReactNode
+  data?: any 
+} => {
+  return typeof suggestion === 'object' && 'label' in suggestion
+}
 
 export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   const {
@@ -25,7 +33,7 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [suggestions, setSuggestions] = useState<ChipsterSuggestion[]>([])
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1)
   const [validationConfig, setValidationConfig] = useState<ChipsterContextType['validationConfig']>(null)
 
@@ -70,12 +78,27 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
     return true
   }, [items, validationConfig])
 
-  const addItem = useCallback((text: string) => {
+  const addItem = useCallback((text: string, suggestion?: ChipsterSuggestion) => {
     if (validateInput(text)) {
       const processedValue = validationConfig?.transform ? 
         validationConfig.transform(text) : text.trim()
-      const icon = getIcon ? getIcon(processedValue) : undefined
-      const newItem = { id: Date.now().toString(), text: processedValue, icon }
+      
+      let icon: React.ReactNode | undefined
+      let data: any | undefined
+
+      if (suggestion && isObjectSuggestion(suggestion)) {
+        icon = suggestion.icon
+        data = suggestion.data
+      } else {
+        icon = getIcon ? getIcon(processedValue) : undefined
+      }
+      
+      const newItem = { 
+        id: Date.now().toString(), 
+        text: processedValue, 
+        icon,
+        data
+      }
       
       setItems(prev => [...prev, newItem])
       onAdd?.(processedValue)
@@ -98,10 +121,6 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
 
   const highlightItem = useCallback((index: number | null) => {
     setHighlightedIndex(index)
-  }, [])
-
-  const clearValidation = useCallback(() => {
-    setError(null)
   }, [])
 
   const updateSuggestions = useCallback((input: string) => {

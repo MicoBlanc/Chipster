@@ -12,7 +12,8 @@ export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
   transform,
   className,
   errorClassName,
-  children
+  children,
+  onError
 }) => {
   const { error, setValidationConfig } = useChipsterContext()
 
@@ -22,11 +23,18 @@ export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
       maxItems,
       maxItemsMessage,
       allowDuplicates,
-      transform
+      transform,
+      onError
     })
 
     return () => setValidationConfig(null)
-  }, [validationRules, maxItems, maxItemsMessage, allowDuplicates, transform])
+  }, [validationRules, maxItems, maxItemsMessage, allowDuplicates, transform, onError])
+
+  useEffect(() => {
+    if (error && onError) {
+      onError(error)
+    }
+  }, [error, onError])
 
   if (!error) return null
 
