@@ -1,18 +1,11 @@
 'use client'
 import { useState, useCallback, useEffect } from 'react'
-import { ChipsterItem, ChipsterProps } from './types'
+import { ChipsterItem, ChipsterProps, ChipsterContextType } from './types'
 
-export function useChipster(props: ChipsterProps = {}) {
+export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   const {
     defaultValue,
     getIcon,
-    maxItems,
-    maxItemsMessage,
-    allowDuplicates,
-    caseSensitive,
-    transform,
-    validationRules,
-    showErrorMessage,
     onAdd,
     onRemove,
     disabled,
@@ -34,8 +27,19 @@ export function useChipster(props: ChipsterProps = {}) {
   const [inputValue, setInputValue] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1)
+  const [validationConfig, setValidationConfig] = useState<ChipsterContextType['validationConfig']>(null)
 
   const validateInput = useCallback((value: string) => {
+    if (!validationConfig) return true
+
+    const {
+      validationRules,
+      maxItems,
+      maxItemsMessage,
+      allowDuplicates,
+      transform
+    } = validationConfig
+
     let processedValue = transform ? transform(value) : value.trim()
 
     if (maxItems && items.length >= maxItems) {
@@ -45,9 +49,7 @@ export function useChipster(props: ChipsterProps = {}) {
 
     if (!allowDuplicates) {
       const isDuplicate = items.some(item => 
-        caseSensitive 
-          ? item.text === processedValue 
-          : item.text.toLowerCase() === processedValue.toLowerCase()
+        item.text.toLowerCase() === processedValue.toLowerCase()
       )
       if (isDuplicate) {
         setError('Duplicate items are not allowed')
@@ -58,7 +60,7 @@ export function useChipster(props: ChipsterProps = {}) {
     if (validationRules) {
       for (const rule of validationRules) {
         if (!rule.test(processedValue)) {
-          setError(showErrorMessage ? (rule.message || 'Invalid input') : '')
+          setError(rule.message || 'Invalid input')
           return false
         }
       }
@@ -66,20 +68,21 @@ export function useChipster(props: ChipsterProps = {}) {
     
     setError(null)
     return true
-  }, [items, maxItems, maxItemsMessage, allowDuplicates, caseSensitive, transform, validationRules, showErrorMessage])
+  }, [items, validationConfig])
 
   const addItem = useCallback((text: string) => {
     if (validateInput(text)) {
-      const processedText = transform ? transform(text) : text.trim()
-      const icon = getIcon ? getIcon(processedText) : undefined
-      const newItem = { id: Date.now().toString(), text: processedText, icon }
+      const processedValue = validationConfig?.transform ? 
+        validationConfig.transform(text) : text.trim()
+      const icon = getIcon ? getIcon(processedValue) : undefined
+      const newItem = { id: Date.now().toString(), text: processedValue, icon }
       
       setItems(prev => [...prev, newItem])
-      onAdd?.(processedText)
+      onAdd?.(processedValue)
       return true
     }
     return false
-  }, [validateInput, transform, getIcon, onAdd])
+  }, [validateInput, validationConfig, getIcon, onAdd])
 
   const removeItem = useCallback((id: string) => {
     setItems(prev => {
@@ -115,16 +118,15 @@ export function useChipster(props: ChipsterProps = {}) {
   return {
     items,
     error,
+    setError,
     highlightedIndex,
     showSuggestions,
     disabled,
     theme,
-    allowDuplicates,
+    allowDuplicates: validationConfig?.allowDuplicates,
     addItem,
     removeItem,
     highlightItem,
-    validateInput,
-    clearValidation,
     updateSuggestions,
     clearSuggestions,
     setShowSuggestions,
@@ -134,5 +136,7 @@ export function useChipster(props: ChipsterProps = {}) {
     setSuggestions,
     selectedSuggestionIndex,
     setSelectedSuggestionIndex,
+    validationConfig,
+    setValidationConfig
   }
 }

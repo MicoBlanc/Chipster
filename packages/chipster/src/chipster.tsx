@@ -3,6 +3,7 @@ import React from 'react'
 import { ChipsterInput } from './ChipsterInput'
 import { ChipsterSuggestions } from './ChipsterSuggestions'
 import { ChipsterItem } from './ChipsterItem'
+import { ChipsterValidation } from './ChipsterValidation'
 import { ChipsterContext } from './ChipsterContext'
 import styles from './chipster.module.css'
 import { ChipsterProps, ChipsterItem as ChipsterItemType } from './types'
@@ -19,24 +20,31 @@ interface ChipsterComposition {
     itemClassName?: string
     removeButtonClassName?: string
   }>
+  Validation: typeof ChipsterValidation
 }
 
 export const Chipster: React.FC<ChipsterProps> & ChipsterComposition = ({ children, className, ...props }) => {
   const chipsterState = useChipster(props)
+  const { error } = chipsterState
 
   return (
     <ChipsterContext.Provider value={chipsterState}>
       <div className={classNames(styles.container, className)}>
-        <div className={styles.inputContainer}>
+        <div className={classNames(styles.inputContainer, {
+          [styles.inputContainerError]: error
+        })}>
           {React.Children.map(children, child => {
-            if (React.isValidElement(child) && child.type !== ChipsterSuggestions) {
+            if (React.isValidElement(child) && 
+                child.type !== ChipsterSuggestions && 
+                child.type !== ChipsterValidation) {
               return child
             }
           })}
         </div>
-        {/* Render suggestions only if they are present outside the input container */}
         {React.Children.map(children, child => {
-          if (React.isValidElement(child) && child.type === ChipsterSuggestions) {
+          if (React.isValidElement(child) && 
+              (child.type === ChipsterSuggestions || 
+               child.type === ChipsterValidation)) {
             return child
           }
         })}
@@ -84,3 +92,4 @@ Chipster.Input = ChipsterInput
 Chipster.Suggestions = ChipsterSuggestions
 Chipster.Item = ChipsterItem
 Chipster.ItemList = ItemList
+Chipster.Validation = ChipsterValidation

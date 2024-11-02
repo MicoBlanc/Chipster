@@ -9,6 +9,7 @@ export const ChipsterSuggestions = ({
   className,
   style = 'fullWidth',
   children,
+  onSelect,
   ...props
 }: ChipsterSuggestionsProps) => {
   const { 

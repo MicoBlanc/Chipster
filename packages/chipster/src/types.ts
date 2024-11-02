@@ -49,8 +49,15 @@ export interface ChipsterContextType {
   inputValue?: string
   setInputValue: (value: string) => void
   error: string | null
-  validateInput: (value: string) => boolean
-  clearValidation: () => void
+  setError: (error: string | null) => void
+  validationConfig: {
+    validationRules?: ValidationRule[]
+    maxItems?: number
+    maxItemsMessage?: string
+    allowDuplicates?: boolean
+    transform?: (value: string) => string
+  } | null
+  setValidationConfig: (config: ChipsterContextType['validationConfig']) => void
   highlightedIndex: number | null
   highlightItem: (index: number | null) => void  
   disabled?: boolean
@@ -66,7 +73,7 @@ export interface ChipsterContextType {
   setSuggestions: (suggestions: string[]) => void
 }
 
-export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange'> {
+export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange' | 'validationRules' | 'maxItems' | 'allowDuplicates' | 'transform'> {
   children?: React.ReactNode
   theme?: 'light' | 'dark'
   disabled?: boolean
@@ -103,4 +110,15 @@ export interface ChipsterItemProps {
   iconClassName?: string
   removeButtonClassName?: string
   render?: (item: ChipsterItem, highlighted: boolean) => React.ReactNode
+}
+
+export interface ChipsterValidationProps {
+  validationRules?: ValidationRule[]
+  maxItems?: number
+  maxItemsMessage?: string
+  allowDuplicates?: boolean
+  transform?: (value: string) => string
+  className?: string
+  errorClassName?: string
+  children?: (error: string | null) => React.ReactNode
 }

@@ -18,15 +18,14 @@ export const ChipsterInput = ({
     highlightedIndex,
     highlightItem,
     removeItem,
-    validateInput,
-    clearValidation,
     updateSuggestions,
     setShowSuggestions,
     inputValue,
     setInputValue,
     setSelectedSuggestionIndex,
     selectedSuggestionIndex,
-    suggestions
+    suggestions,
+    setError,
   } = useChipsterContext()
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -37,14 +36,13 @@ export const ChipsterInput = ({
     onInputChange?.(newValue)
     
     if (newValue.trim().length > 0) {
-      validateInput(newValue)
       updateSuggestions(newValue)
       setShowSuggestions(true)
     } else {
-      clearValidation()
+      setError(null)
       setShowSuggestions(false)
     }
-  }, [validateInput, clearValidation, updateSuggestions, setShowSuggestions, onInputChange, setInputValue])
+  }, [updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return
