@@ -4,20 +4,17 @@ Chipster is designed to be highly customizable through className props and theme
 
 ## Component-Based Styling
 
-Each Chipster component accepts className props for custom styling:
+Each Chipster component accepts className props for custom styling. To override default styles, use Tailwind's `!` modifier:
 
 ```tsx
 <Chipster className="container-class">
   <Chipster.ItemList 
     className="items-class"
-    itemClassName="item-class"
-    removeButtonClassName="remove-btn-class"
+    itemClassName="!bg-blue-100 !px-3 !py-1 !rounded-full" // Use ! to override defaults
+    removeButtonClassName="!ml-2 !text-blue-500 hover:!text-blue-700"
   />
   <Chipster.Input 
     className="input-class"
-  />
-  <Chipster.Validation
-    errorClassName="error-class"
   />
   <Chipster.Suggestions 
     className="suggestions-class"
@@ -27,181 +24,51 @@ Each Chipster component accepts className props for custom styling:
 
 ## Theme Support
 
-Chipster supports light and dark themes out of the box:
+Chipster provides built-in light and dark themes. Custom styles will override theme styles when using the `!` modifier:
 
 ```tsx
-<Chipster theme="light"> // Default
-  {/* ... components */}
-</Chipster>
-
 <Chipster theme="dark">
-  {/* ... components */}
+  <Chipster.ItemList 
+    itemClassName="!bg-blue-900 !text-white" // Overrides dark theme styles
+  />
 </Chipster>
 ```
 
-## Styling with Tailwind
+## Styling Examples
 
-Here's an example using Tailwind CSS classes:
-
+### Basic Example with Custom Styles
 ```tsx
-<Chipster className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+<Chipster>
   <Chipster.ItemList 
     className="flex flex-wrap gap-2"
-    itemClassName="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 px-3 py-1 rounded-full"
-    removeButtonClassName="ml-2 text-blue-500 hover:text-blue-700"
-  />
-  <Chipster.Input 
-    className="w-full mt-2 px-3 py-2 bg-transparent border-none focus:outline-none"
-    placeholder="Type and press Enter"
-  />
-  <Chipster.Validation
-    errorClassName="text-red-500 text-sm mt-1"
-  />
-  <Chipster.Suggestions 
-    className="mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden"
+    itemClassName="!bg-blue-100 !text-blue-900 !px-3 !py-1 !rounded-full"
+    removeButtonClassName="!ml-2 !text-blue-500"
+    iconClassName="!mr-2"
   />
 </Chipster>
 ```
 
-## Available className Props
-
-### Chipster
-- `className`: Applied to the main container
-
-### Chipster.ItemList
-- `className`: Applied to the items container
-- `itemClassName`: Applied to individual items
-- `removeButtonClassName`: Applied to remove buttons
-- `removeIcon`: Custom remove button icon
-- `iconClassName`: Applied to item icons
-
-### Chipster.Input
-- `className`: Applied to the input element
-
-### Chipster.Validation
-- `errorClassName`: Applied to error messages
-
-### Chipster.Suggestions
-- `className`: Applied to suggestions container
-
-## CSS Modules
-
-Chipster uses CSS Modules internally. The main classes are:
-
-```css
-.container {
-  /* Main container styles */
-}
-
-.input {
-  /* Input field styles */
-}
-
-.item {
-  /* Individual item styles */
-}
-
-.itemRemove {
-  /* Remove button styles */
-}
-
-.suggestions {
-  /* Suggestions container styles */
-}
-
-.error {
-  /* Error message styles */
-}
-
-/* Dark theme variants */
-.containerDark {
-  /* Dark theme container styles */
-}
-
-.inputDark {
-  /* Dark theme input styles */
-}
-
-.itemDark {
-  /* Dark theme item styles */
-}
+### Example with Custom Remove Icon
+```tsx
+<Chipster>
+  <Chipster.ItemList 
+    itemClassName="!bg-gray-100 !px-4"
+    removeButtonClassName="!bg-red-500 !text-white"
+    removeIcon={<XMarkIcon className="h-4 w-4" />}
+  />
+</Chipster>
 ```
+
+## Style Override Priority
+
+1. Default styles (lowest priority)
+2. Theme styles (medium priority)
+3. Custom styles with `!` modifier (highest priority)
 
 ## Best Practices
 
-1. Use the composable nature of Chipster to style each component independently
-2. Leverage Tailwind classes for quick styling
-3. Use the theme prop for dark mode support
-4. Apply custom classes for specific styling needs
-5. Keep styles consistent across all Chipster components
-
-## Example: Complete Styled Component
-
-```tsx
-export default function StyledChipster() {
-  return (
-    <Chipster 
-      className="max-w-xl mx-auto bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm"
-      theme="light"
-    >
-      <Chipster.ItemList 
-        className="flex flex-wrap gap-2"
-        itemClassName="flex items-center bg-blue-100 dark:bg-blue-900 text-blue-900 
-                     dark:text-blue-100 px-3 py-1 rounded-full"
-        removeButtonClassName="ml-2 text-blue-500 hover:text-blue-700"
-      />
-      <Chipster.Input 
-        className="w-full mt-2 px-3 py-2 bg-transparent border-none 
-                  focus:outline-none placeholder-gray-400"
-        placeholder="Type and press Enter"
-      />
-      <Chipster.Validation
-        errorClassName="text-red-500 text-sm mt-1 px-2"
-      />
-      <Chipster.Suggestions 
-        className="mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg 
-                  overflow-hidden border border-gray-200 dark:border-gray-700"
-      />
-    </Chipster>
-  )
-}
-```
-
-## Example with Custom Remove Icon
-
-```tsx
-export default function StyledChipster() {
-  return (
-    <Chipster>
-      <Chipster.ItemList 
-        className="flex flex-wrap gap-2"
-        itemClassName="flex items-center bg-blue-100 px-3 py-1 rounded-full"
-        removeButtonClassName="ml-2 text-blue-500 hover:text-blue-700"
-        removeIcon={<XMarkIcon className="h-4 w-4" />} // Using Heroicons
-        iconClassName="mr-2"
-      />
-      {/* ... other components */}
-    </Chipster>
-  )
-}
-```
-
-## Styling Individual Items
-
-You can style individual items using the `itemClassName` prop:
-
-```tsx
-<Chipster.ItemList 
-  itemClassName="
-    flex items-center gap-2 
-    bg-blue-100 hover:bg-blue-200 
-    px-3 py-1 rounded-full 
-    transition-colors
-  "
-  removeButtonClassName="
-    p-1 rounded-full 
-    hover:bg-blue-200 
-    transition-colors
-  "
-/>
-```
+1. Use the `!` modifier to ensure your custom styles take precedence
+2. Apply consistent styling across components
+3. Consider theme compatibility when styling
+4. Use Tailwind's utility classes for quick styling
+5. Group related style overrides together

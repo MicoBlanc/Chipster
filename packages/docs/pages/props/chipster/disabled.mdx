@@ -1,0 +1,102 @@
+# disabled
+
+The `disabled` prop allows you to disable all interactions with the Chipster component, including adding, removing items, and input functionality.
+
+## Type Definition
+```typescript
+type Disabled = boolean;
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+
+export default function BasicExample() {
+  return (
+    <Chipster disabled>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Type and press Enter" />
+    </Chipster>
+  )
+}
+```
+
+## Advanced Usage with Dynamic State
+
+```tsx filename="DynamicDisableExample.tsx" copy
+export default function DynamicDisableExample() {
+  const [isDisabled, setIsDisabled] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const handleSubmit = async () => {
+    setIsDisabled(true)
+    setIsLoading(true)
+    try {
+      await saveData()
+    } finally {
+      setIsDisabled(false)
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div>
+      <Chipster 
+        disabled={isDisabled || isLoading}
+        onAdd={handleSubmit}
+      >
+        <Chipster.ItemList />
+        <Chipster.Input 
+          placeholder={isLoading ? "Saving..." : "Add items..."} 
+        />
+      </Chipster>
+      <button onClick={() => setIsDisabled(!isDisabled)}>
+        Toggle Disabled
+      </button>
+    </div>
+  )
+}
+```
+
+## With Custom Styling
+
+```tsx filename="CustomDisabledExample.tsx" copy
+export default function CustomDisabledExample() {
+  return (
+    <Chipster disabled>
+      <Chipster.ItemList 
+        itemClassName="!opacity-50 !cursor-not-allowed"
+        removeButtonClassName="!hidden"
+      />
+      <Chipster.Input 
+        placeholder="Disabled input" 
+        className="!bg-gray-100 !cursor-not-allowed"
+      />
+    </Chipster>
+  )
+}
+```
+
+## Important Notes
+
+- When disabled:
+  - Input becomes non-editable
+  - Remove buttons are non-clickable
+  - Keyboard navigation is disabled
+  - Suggestions are hidden
+  - All callbacks (onAdd, onRemove) won't fire
+- Visual feedback is provided through opacity and cursor changes
+- The disabled state is propagated to all child components
+- Form submission is prevented when disabled
+
+## Common Use Cases
+
+- Loading states
+- Form submission handling
+- Permission-based access
+- Read-only views
+- Conditional interaction
+- Progressive form completion
+- Rate limiting
+- System maintenance states

@@ -34,11 +34,13 @@ export const ChipsterItem = ({
   const itemClasses = classNames(
     styles.item,
     theme === 'dark' ? styles.itemDark : '',
-    itemClassName,
     {
       [styles.itemHighlighted]: isHighlighted && theme === 'light',
       [styles.itemHighlightedDark]: isHighlighted && theme === 'dark',
       [styles.itemDisabled]: disabled,
+    },
+    itemClassName,
+    {
       [highlightedClassName || '']: isHighlighted,
       [disabledClassName || '']: disabled,
     }

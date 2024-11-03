@@ -126,8 +126,10 @@ Component to display selected items.
 | Prop | Type | Description |
 |------|------|-------------|
 | `className` | `string` | Custom class for items container |
-| `itemClassName` | `string` | Custom class for individual items |
-| `removeButtonClassName` | `string` | Custom class for remove buttons |
+| `itemClassName` | `string` | Custom class for individual items (use `!` modifier to override defaults) |
+| `removeButtonClassName` | `string` | Custom class for remove buttons (use `!` modifier to override defaults) |
+| `iconClassName` | `string` | Custom class for icons (use `!` modifier to override defaults) |
+| `removeIcon` | `ReactNode` | Custom remove button icon |
 
 ## Keyboard Navigation
 
@@ -139,3 +141,22 @@ Component to display selected items.
 
 ## Styling
 Chipster uses CSS Modules and can be customized using className props on each component. It also supports dark mode through the theme prop.
+
+## Styling Examples
+
+```tsx
+// Basic styling with overrides
+<Chipster.ItemList 
+  className="flex flex-wrap gap-2"
+  itemClassName="!bg-blue-100 !px-3 !py-1" // Use ! to override defaults
+  removeButtonClassName="!text-red-500"
+/>
+
+// Dark theme with custom styles
+<Chipster theme="dark">
+  <Chipster.ItemList 
+    itemClassName="!bg-gray-800 !text-white"
+    removeButtonClassName="!text-gray-400"
+  />
+</Chipster>
+```

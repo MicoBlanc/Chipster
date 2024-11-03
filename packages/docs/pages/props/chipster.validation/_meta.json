@@ -1,0 +1,7 @@
+{
+  "validationRules" : "validationRules",
+  "maxItems": "maxItems",
+  "allowDuplicates": "allowDuplicates",
+  "transform": "transform",
+  "onError": "onError"
+}

@@ -1,0 +1,7 @@
+{
+  "onAdd": "onAdd",
+  "onRemove" : "onRemove",
+  "disabled": "disabled",
+  "defaultValue": "defaultValue",
+  "theme": "theme"
+}

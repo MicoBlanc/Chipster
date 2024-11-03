@@ -1,127 +1,112 @@
+# Chipster
+
 ![chipster1](https://github.com/user-attachments/assets/7f7f09be-6e80-4d0e-81f5-fb395a92a0ff)
 
-Chipster is a highly customizable React component that simplifies the management of multiple input entries. Perfect for tags, email addresses, or any list-based input scenario.
+Chipster is a composable and flexible multi-entry input component for React. Perfect for managing tags, email addresses, or any list-based input scenario with built-in validation and suggestions support.
 
-
-## Key Features:
-
-- **Dynamic Input Handling**: Easily add and remove multiple entries
-- **Customizable Validation**: Apply your own validation rules
-- **Autocomplete Suggestions**: Enhance user experience with smart suggestions
-- **Flexible Styling**: Fully customizable to match your design system
-- **Accessibility-Focused**: Built with keyboard navigation and screen readers in mind
-- **Animation Support**: Smooth entry and exit animations for a polished feel
-
----
-
-### Installation
-
-Install Chipster via npm:
+## Installation
 
 ```bash
 npm install @micoblanc/chipster
 ```
 
-### Basic Usage
+## Basic Usage
 
-Import and use the Chipster component in your React application:
+```tsx
+import { Chipster } from '@micoblanc/chipster'
 
-```jsx
-import React from 'react';
-import { Chipster } from '@micoblanc/chipster';
-
-function App() {
+export default function BasicExample() {
   return (
-    <Chipster
-      placeholder="Enter tags..."
-      allowDuplicates={false}
-      showErrorMessage={true}
-      validationRules={[
-        (value) => value.length > 2 || 'Tag must be longer than 2 characters',
-      ]}
-      maxItems={5}
-      onAdd={(item) => console.log('Added:', item)}
-      onRemove={(item) => console.log('Removed:', item)}
-    />
-  );
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Type and press Enter" />
+      <Chipster.Validation
+        validationRules={[
+          { test: (v) => v.length >= 2, message: 'Min 2 characters' },
+          { test: (v) => v.length <= 20, message: 'Max 20 characters' }
+        ]}
+        maxItems={10}
+        allowDuplicates={false}
+      />
+    </Chipster>
+  )
 }
 ```
 
-#### Props:
+## Features
 
-- `placeholder`: Set custom placeholder text (string or JSX)
-- `allowDuplicates`: Allow or prevent duplicate entries (boolean)
-- `showErrorMessage`: Display validation error messages (boolean)
-- `validationRules`: Array of functions for input validation
-- `maxItems`: Set maximum number of items allowed
-- `onAdd`: Callback function when an item is added
-- `onRemove`: Callback function when an item is removed
+- 🎨 **Highly Customizable**: Style with Tailwind classes and theme support
+- 🔍 **Smart Suggestions**: Built-in autocomplete with custom suggestions
+- ✅ **Validation**: Flexible validation rules and constraints
+- ⌨️ **Keyboard Navigation**: Full keyboard support for better accessibility
+- 🌓 **Theme Support**: Built-in light and dark themes
+- 🎯 **Composable**: Mix and match components as needed
 
-### Suggestions (Autocomplete)
+## Advanced Usage with Suggestions
 
-Enable autocomplete suggestions:
+```tsx
+const suggestions = [
+  { label: 'JavaScript', icon: '🟨' },
+  { label: 'TypeScript', icon: '🔷' },
+  { label: 'React', icon: '⚛️' }
+]
 
-```jsx
-import React from 'react';
-import { Chipster } from '@micoblanc/chipster';
+export default function AdvancedExample() {
+  const getSuggestions = useCallback((input: string) => {
+    return suggestions
+      .filter(item => 
+        item.label.toLowerCase().includes(input.toLowerCase())
+      )
+      .map(item => ({
+        label: item.label,
+        icon: item.icon,
+        data: item
+      }))
+  }, [])
 
-const suggestions = ['apple', 'banana', 'cherry', 'date', 'elderberry'];
-
-function App() {
   return (
-    <Chipster
-      placeholder="Enter fruits..."
-      getSuggestions={(input) => 
-        suggestions.filter(item => 
-          item.toLowerCase().includes(input.toLowerCase())
-        )
-      }
-    />
-  );
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Search technologies..." />
+      <Chipster.Suggestions getSuggestions={getSuggestions} />
+    </Chipster>
+  )
 }
 ```
 
-The `getSuggestions` prop accepts a function that returns an array of suggestions based on the current input.
+## Styling
 
-### Styling
+Chipster supports custom styling through className props and theme variants:
 
-Chipster supports custom styling through className props:
-
-```jsx
-<Chipster
-  className="custom-container"
-  inputClassName="custom-input"
-  errorClassName="custom-error"
-  chipClassName="custom-chip"
-  chipHighlightedClassName="custom-chip-highlighted"
-  chipDisabledClassName="custom-chip-disabled"
-  chipIconClassName="custom-chip-icon"
-  chipRemoveButtonClassName="custom-chip-remove-button"
-  exitAnimation="fade" // or 'slide' or custom animation object
+```tsx
+// Basic styling with overrides
+<Chipster.ItemList 
+  className="flex flex-wrap gap-2"
+  itemClassName="!bg-blue-100 !px-3 !py-1" // Use ! to override defaults
+  removeButtonClassName="!text-red-500"
 />
+
+// Dark theme with custom styles
+<Chipster theme="dark">
+  <Chipster.ItemList 
+    itemClassName="!bg-gray-800 !text-white"
+    removeButtonClassName="!text-gray-400"
+  />
+</Chipster>
 ```
 
-#### Animation
+## Keyboard Navigation
 
-Use built-in animations or define custom ones:
+- `ArrowLeft/Right`: Navigate between chips when input is empty
+- `Backspace`: Remove highlighted chip or last chip when input is empty
+- `ArrowUp/Down`: Navigate through suggestions
+- `Enter`: Select highlighted suggestion
+- `Escape`: Clear suggestions and chip highlight
 
-```jsx
-// Built-in animation
-<Chipster exitAnimation="fade" />
+## Documentation
 
-// Custom animation
-<Chipster
-  exitAnimation={{
-    exit: {
-      duration: 300,
-      easing: 'ease-out',
-      properties: {
-        opacity: 0,
-        transform: 'scale(0.8)',
-      },
-    },
-  }}
-/>
-```
+For complete documentation and examples, visit [chipster.micoblanc.me/start](https://chipster.micoblanc.me/start)
 
-For more advanced usage and full API documentation, please refer to the [official docs](https://chipster.micoblanc.me/start)
+## License
+
+MIT © [Alvaro Gallego De Paz]

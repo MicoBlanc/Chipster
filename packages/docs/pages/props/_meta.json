@@ -1,7 +1,7 @@
 {
-  "core-functionality": "Core Functionality",
-  "validation-transformation": "Validate and Transform",
-  "behaviour": "Behavior Control",
-  "styling": "Styling and Appearance",
-  "advanced": "Advanced Features"
+  "chipster": "Chipster",
+  "chipster.itemlist": "Chipster.ItemList",
+  "chipster.input": "Chipster.Input",
+  "chipster.validation": "Chipster.Validation",
+  "chipster.suggestions": "Chipster.Suggestions"
 }

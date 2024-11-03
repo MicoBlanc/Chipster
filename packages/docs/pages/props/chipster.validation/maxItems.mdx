@@ -1,0 +1,29 @@
+
+
+# Maximum Items
+
+The `maxItems` prop allows you to set the maximum number of items that can be added to the Chipster component.
+
+## Type
+typescript
+`number`
+
+## Usage
+```tsx filename="ChipsterExample.tsx" {7} copy
+import { Chipster } from '@micoblanc/chipster';
+
+function ChipsterExample() {
+  return (
+    <Chipster
+      maxItems={3}
+      // other props...
+    />
+  );
+}
+```
+
+## Notes
+
+- When the maximum number of items is reached, the input field is disabled, preventing further additions.
+- If not specified, there is no limit to the number of items that can be added.
+- Use this prop to control the number of selections in scenarios like tag limits or multi-select restrictions.
