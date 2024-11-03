@@ -111,10 +111,12 @@ export interface ChipsterSuggestionsProps {
 export interface ChipsterItemProps {
   item: ChipsterItem
   className?: string
+  itemClassName?: string
   highlightedClassName?: string
   disabledClassName?: string
   iconClassName?: string
   removeButtonClassName?: string
+  removeIcon?: React.ReactNode
   render?: (item: ChipsterItem, highlighted: boolean) => React.ReactNode
 }
 
@@ -128,4 +130,12 @@ export interface ChipsterValidationProps {
   errorClassName?: string
   children?: (error: string | null) => React.ReactNode
   onError?: (error: string) => void
+}
+
+export interface ChipsterItemListProps {
+  className?: string
+  itemClassName?: string
+  removeButtonClassName?: string
+  removeIcon?: React.ReactNode
+  iconClassName?: string
 }

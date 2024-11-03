@@ -13,7 +13,6 @@ const isObjectSuggestion = (suggestion: ChipsterSuggestion): suggestion is {
 export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   const {
     defaultValue,
-    getIcon,
     onAdd,
     onRemove,
     disabled,
@@ -24,8 +23,7 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
     defaultValue 
       ? defaultValue.map(text => ({
           id: Date.now().toString() + Math.random(),
-          text,
-          icon: getIcon ? getIcon(text) : undefined
+          text
         }))
       : []
   )
@@ -89,8 +87,6 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
       if (suggestion && isObjectSuggestion(suggestion)) {
         icon = suggestion.icon
         data = suggestion.data
-      } else {
-        icon = getIcon ? getIcon(processedValue) : undefined
       }
       
       const newItem = { 
@@ -105,7 +101,7 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
       return true
     }
     return false
-  }, [validateInput, validationConfig, getIcon, onAdd])
+  }, [validateInput, validationConfig, onAdd])
 
   const removeItem = useCallback((id: string) => {
     setItems(prev => {

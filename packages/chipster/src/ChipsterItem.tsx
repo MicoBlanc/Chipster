@@ -6,14 +6,18 @@ import { useChipsterContext } from './ChipsterContext'
 
 export const ChipsterItem = ({
   item,
-  className,
+  itemClassName,
   highlightedClassName,
   disabledClassName,
   iconClassName,
   removeButtonClassName,
+  removeIcon,
   render,
   index,
-}: ChipsterItemProps & { index?: number }) => {
+}: ChipsterItemProps & { 
+  index?: number
+  removeIcon?: React.ReactNode
+}) => {
   const { 
     removeItem, 
     highlightedIndex, 
@@ -29,12 +33,12 @@ export const ChipsterItem = ({
 
   const itemClasses = classNames(
     styles.item,
-    className,
+    theme === 'dark' ? styles.itemDark : '',
+    itemClassName,
     {
       [styles.itemHighlighted]: isHighlighted && theme === 'light',
       [styles.itemHighlightedDark]: isHighlighted && theme === 'dark',
       [styles.itemDisabled]: disabled,
-      [styles.itemDark]: theme === 'dark',
       [highlightedClassName || '']: isHighlighted,
       [disabledClassName || '']: disabled,
     }
@@ -50,19 +54,28 @@ export const ChipsterItem = ({
       aria-selected={isHighlighted}
     >
       {item.icon && (
-        <span className={classNames(styles.itemIcon, iconClassName)}>
+        <span className={classNames(
+          styles.itemIcon,
+          theme === 'dark' ? styles.itemIconDark : '',
+          iconClassName
+        )}>
           {item.icon}
         </span>
       )}
       {item.text}
       <button 
         onClick={() => removeItem(item.id)} 
-        className={classNames(styles.itemRemove, removeButtonClassName)}
+        className={classNames(
+          styles.itemRemove,
+          theme === 'dark' ? styles.itemRemoveDark : '',
+          removeButtonClassName,
+          'flex items-center justify-center'
+        )}
         disabled={disabled}
         tabIndex={-1}
         aria-label={`Remove ${item.text}`}
       >
-        &times;
+        {removeIcon || '×'}
       </button>
     </span>
   )

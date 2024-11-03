@@ -10,7 +10,6 @@ export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
   maxItemsMessage = 'Maximum items reached',
   allowDuplicates = true,
   transform,
-  className,
   errorClassName,
   children,
   onError

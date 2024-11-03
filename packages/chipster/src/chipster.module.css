@@ -141,12 +141,12 @@
 /* Dark mode styles */
 .containerDark {
   position: relative;
-  color: #f3f4f6;
+  color: #070707;
 }
 
 .inputContainerDark {
   border-color: #5e5e5e;
-  background-color: #000000;
+  background-color: #070707;
 }
 
 .inputContainerDark:focus-within {
@@ -174,13 +174,13 @@
 
 .suggestionDark {
   color: #ffffff;
-  background-color: #1f2937;
-  border-color: #374151;
+  background-color: #070707;
+  border-color: #5e5e5e;
 }
 
 .suggestionDark:hover,
 .suggestionSelectedDark {
-  background-color: #374151;
+  background-color: #222222;
 }
 
 .itemDark {

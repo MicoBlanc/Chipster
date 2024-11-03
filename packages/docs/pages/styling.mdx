@@ -1,151 +1,207 @@
 # Styling Guide for Chipster
 
-Chipster offers various ways to customize its appearance. This guide will walk you through different styling methods and the available theming options.
+Chipster is designed to be highly customizable through className props and theme support. This guide explains the available styling options.
 
-## Using Prop Classes
+## Component-Based Styling
 
-Chipster provides several props for applying custom classes to different parts of the component:
+Each Chipster component accepts className props for custom styling:
 
-- `className`: Applied to the main container
-- `inputClassName`: Applied to the input element
-- `errorClassName`: Applied to error messages
-- `chipClassName`: Applied to each chip
-- `chipHighlightedClassName`: Applied to highlighted chips
-- `chipDisabledClassName`: Applied to disabled chips
-- `chipIconClassName`: Applied to chip icons
-- `chipRemoveButtonClassName`: Applied to chip remove buttons
+```tsx
+<Chipster className="container-class">
+  <Chipster.ItemList 
+    className="items-class"
+    itemClassName="item-class"
+    removeButtonClassName="remove-btn-class"
+  />
+  <Chipster.Input 
+    className="input-class"
+  />
+  <Chipster.Validation
+    errorClassName="error-class"
+  />
+  <Chipster.Suggestions 
+    className="suggestions-class"
+  />
+</Chipster>
+```
 
-Example usage:
+## Theme Support
 
-```jsx
-<Chipster
-  className="my-custom-container"
-  inputClassName="my-custom-input"
-  chipClassName="my-custom-chip"
-  // ... other props
-/>
-````
+Chipster supports light and dark themes out of the box:
 
-## Light and Dark Themes
+```tsx
+<Chipster theme="light"> // Default
+  {/* ... components */}
+</Chipster>
 
-Chipster supports light and dark themes out of the box. Use the `theme` prop to switch between them:
-
-````jsx
-<Chipster theme="light" /> // Default
-<Chipster theme="dark" />
-````
-
-
-## Custom CSS
-
-You can create a separate CSS file to style Chipster. Target the classes used internally by the component:
-
-````css
-.inputContainer {
-  /* Styles for the main container */
-}
-
-.input {
-  /* Styles for the input field */
-}
-
-.item {
-  /* Styles for individual chips */
-}
-
-.itemHighlighted {
-  /* Styles for highlighted chips */
-}
-
-.itemDisabled {
-  /* Styles for disabled chips */
-}
-
-.itemIcon {
-  /* Styles for chip icons */
-}
-
-.itemRemove {
-  /* Styles for chip remove buttons */
-}
-
-.suggestions {
-  /* Styles for the suggestions dropdown */
-}
-
-.suggestion {
-  /* Styles for individual suggestions */
-}
-
-.suggestionSelected {
-  /* Styles for selected suggestions */
-}
-
-.error {
-  /* Styles for error messages */
-}
-````
-
+<Chipster theme="dark">
+  {/* ... components */}
+</Chipster>
+```
 
 ## Styling with Tailwind
 
-To use Tailwind with Chipster, you can pass Tailwind classes through the className props:
+Here's an example using Tailwind CSS classes:
 
-````jsx
-<Chipster
-  className="bg-white shadow-md rounded-lg p-2"
-  inputClassName="text-gray-700 placeholder-gray-400"
-  chipClassName="bg-blue-100 text-blue-800 rounded-full px-2 py-1 m-1"
-  chipHighlightedClassName="ring-2 ring-blue-500"
-  chipRemoveButtonClassName="ml-1 text-blue-500 hover:text-blue-700"
-  // ... other props
-/>
-````
+```tsx
+<Chipster className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+  <Chipster.ItemList 
+    className="flex flex-wrap gap-2"
+    itemClassName="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 px-3 py-1 rounded-full"
+    removeButtonClassName="ml-2 text-blue-500 hover:text-blue-700"
+  />
+  <Chipster.Input 
+    className="w-full mt-2 px-3 py-2 bg-transparent border-none focus:outline-none"
+    placeholder="Type and press Enter"
+  />
+  <Chipster.Validation
+    errorClassName="text-red-500 text-sm mt-1"
+  />
+  <Chipster.Suggestions 
+    className="mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden"
+  />
+</Chipster>
+```
 
+## Available className Props
 
-The component applies different classes based on the theme:
+### Chipster
+- `className`: Applied to the main container
 
-- Light theme classes: `inputContainer`, `input`, `item`, `itemHighlighted`, etc.
-- Dark theme classes: `inputContainerDark`, `inputDark`, `itemDark`, `itemHighlightedDark`, etc.
+### Chipster.ItemList
+- `className`: Applied to the items container
+- `itemClassName`: Applied to individual items
+- `removeButtonClassName`: Applied to remove buttons
+- `removeIcon`: Custom remove button icon
+- `iconClassName`: Applied to item icons
 
-## Customizing Specific Parts
+### Chipster.Input
+- `className`: Applied to the input element
 
-### Suggestions Dropdown
+### Chipster.Validation
+- `errorClassName`: Applied to error messages
 
-Use the `suggestionStyle` prop to choose between 'fullWidth' and 'minimal' styles for the suggestions dropdown.
+### Chipster.Suggestions
+- `className`: Applied to suggestions container
 
-### Exit Animations
+## CSS Modules
 
-Customize chip removal animations with the `exitAnimation` prop. You can use predefined animations or create custom ones.
+Chipster uses CSS Modules internally. The main classes are:
 
-## Advanced Styling
+```css
+.container {
+  /* Main container styles */
+}
 
-For more complex styling needs, you can use the `renderItem` prop to completely customize the rendering of each chip:
+.input {
+  /* Input field styles */
+}
 
-````jsx
-<Chipster
-  renderItem={(item, index, isHighlighted) => (
-    <div className={`custom-chip ${isHighlighted ? 'highlighted' : ''}`}>
-      {item.icon && <span className="icon">{item.icon}</span>}
-      <span className="text">{item.text}</span>
-      <button className="remove-btn" onClick={() => handleRemove(item.id)}>×</button>
-    </div>
-  )}
-  // ... other props
-/>
-````
+.item {
+  /* Individual item styles */
+}
 
+.itemRemove {
+  /* Remove button styles */
+}
+
+.suggestions {
+  /* Suggestions container styles */
+}
+
+.error {
+  /* Error message styles */
+}
+
+/* Dark theme variants */
+.containerDark {
+  /* Dark theme container styles */
+}
+
+.inputDark {
+  /* Dark theme input styles */
+}
+
+.itemDark {
+  /* Dark theme item styles */
+}
+```
 
 ## Best Practices
 
-1. Use the provided className props for basic styling needs.
-2. For more specific styles, target the internal classes in a custom CSS file.
-3. When using Tailwind, combine utility classes in the className props.
-4. Leverage the `theme` prop for easy light/dark mode switching.
-5. Use `renderItem` for complete control over chip appearance and behavior.
+1. Use the composable nature of Chipster to style each component independently
+2. Leverage Tailwind classes for quick styling
+3. Use the theme prop for dark mode support
+4. Apply custom classes for specific styling needs
+5. Keep styles consistent across all Chipster components
 
-By combining these methods, you can create a fully customized Chipster component that fits seamlessly into your application's design.
-``````
+## Example: Complete Styled Component
 
-This guide covers the main aspects of styling the Chipster component, including using prop classes, custom CSS, Tailwind integration, and theming options. It also touches on more advanced styling techniques and best practices.
-````
+```tsx
+export default function StyledChipster() {
+  return (
+    <Chipster 
+      className="max-w-xl mx-auto bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm"
+      theme="light"
+    >
+      <Chipster.ItemList 
+        className="flex flex-wrap gap-2"
+        itemClassName="flex items-center bg-blue-100 dark:bg-blue-900 text-blue-900 
+                     dark:text-blue-100 px-3 py-1 rounded-full"
+        removeButtonClassName="ml-2 text-blue-500 hover:text-blue-700"
+      />
+      <Chipster.Input 
+        className="w-full mt-2 px-3 py-2 bg-transparent border-none 
+                  focus:outline-none placeholder-gray-400"
+        placeholder="Type and press Enter"
+      />
+      <Chipster.Validation
+        errorClassName="text-red-500 text-sm mt-1 px-2"
+      />
+      <Chipster.Suggestions 
+        className="mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg 
+                  overflow-hidden border border-gray-200 dark:border-gray-700"
+      />
+    </Chipster>
+  )
+}
+```
+
+## Example with Custom Remove Icon
+
+```tsx
+export default function StyledChipster() {
+  return (
+    <Chipster>
+      <Chipster.ItemList 
+        className="flex flex-wrap gap-2"
+        itemClassName="flex items-center bg-blue-100 px-3 py-1 rounded-full"
+        removeButtonClassName="ml-2 text-blue-500 hover:text-blue-700"
+        removeIcon={<XMarkIcon className="h-4 w-4" />} // Using Heroicons
+        iconClassName="mr-2"
+      />
+      {/* ... other components */}
+    </Chipster>
+  )
+}
+```
+
+## Styling Individual Items
+
+You can style individual items using the `itemClassName` prop:
+
+```tsx
+<Chipster.ItemList 
+  itemClassName="
+    flex items-center gap-2 
+    bg-blue-100 hover:bg-blue-200 
+    px-3 py-1 rounded-full 
+    transition-colors
+  "
+  removeButtonClassName="
+    p-1 rounded-full 
+    hover:bg-blue-200 
+    transition-colors
+  "
+/>
+```

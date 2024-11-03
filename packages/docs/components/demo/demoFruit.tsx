@@ -3,7 +3,7 @@ import { Chipster } from '@micoblanc/chipster'
 import { ValidationRule } from '@micoblanc/chipster'
 import { useCallback } from 'react'
 import { Disclosure } from '@headlessui/react'
-import { CodeBracketIcon } from '@heroicons/react/24/outline'
+import { CodeBracketIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const fruitEmojis = [
@@ -21,10 +21,6 @@ const fruitEmojis = [
 
 export default function DemoFruit() {
   const validationRules: ValidationRule[] = [
-    { 
-      test: (value: string) => value.length >= 4, 
-      message: 'Must be at least 4 characters' 
-    },
     { 
       test: (value: string) => value.length <= 20, 
       message: 'Must not exceed 20 characters' 
@@ -77,7 +73,6 @@ export default function FruitPicker() {
       <Chipster.Input placeholder="Type a fruit name..." />
       <Chipster.Validation
         validationRules={[
-          { test: (v) => v.length >= 2, message: 'Min 2 characters' },
           { test: (v) => v.length <= 20, message: 'Max 20 characters' }
         ]}
         maxItems={10}
@@ -93,10 +88,13 @@ export default function FruitPicker() {
     <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
       <div className="px-3 py-6 w-full bg-neutral-50 max-w-xl border border-neutral-200 rounded-xl">
         <h2 className="text-base font-semibold mb-1 text-black">Choose a Fruit</h2>
-        <Chipster>
-          <Chipster.ItemList />
+        <Chipster theme="dark">
+          <Chipster.ItemList 
+            className='bg-gray-20' 
+            itemClassName='bg-red-500 px-20 border-black'
+            iconClassName="w-4 h-4 bg-blue-10"
+          />
           <Chipster.Input 
-            className="bg-white shadow-sm rounded-lg"
             placeholder="Type a fruit name..."
           />
           <Chipster.Validation

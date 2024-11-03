@@ -175,9 +175,11 @@ export const ChipsterInput = ({
       onFocus={handleFocus}
       onBlur={handleBlur}
       placeholder={typeof placeholder === 'string' ? placeholder : ''}
-      className={classNames(styles.input, className, {
-        [styles.inputDark]: theme === 'dark'
-      })}
+      className={classNames(
+        styles.input,
+        theme === 'dark' ? styles.inputDark : '',
+        className
+      )}
       disabled={disabled}
       {...props}
     />

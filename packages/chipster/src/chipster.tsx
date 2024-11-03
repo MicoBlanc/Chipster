@@ -6,36 +6,39 @@ import { ChipsterItem } from './ChipsterItem'
 import { ChipsterValidation } from './ChipsterValidation'
 import { ChipsterContext } from './ChipsterContext'
 import styles from './chipster.module.css'
-import { ChipsterProps, ChipsterItem as ChipsterItemType } from './types'
+import { ChipsterProps } from './types'
 import { useChipster } from './ChipsterHook'
-import { useChipsterContext } from './ChipsterContext'
 import classNames from 'classnames'
+import { ChipsterItemList } from './ChipsterItemList'
 
 interface ChipsterComposition {
   Input: typeof ChipsterInput
   Suggestions: typeof ChipsterSuggestions
   Item: typeof ChipsterItem
-  ItemList: React.FC<{
-    className?: string
-    itemClassName?: string
-    removeButtonClassName?: string
-  }>
+  ItemList: typeof ChipsterItemList
   Validation: typeof ChipsterValidation
 }
 
-export const Chipster: React.FC<ChipsterProps> & ChipsterComposition = ({ children, className, ...props }) => {
-  const chipsterState = useChipster(props)
+export const Chipster: React.FC<ChipsterProps> & ChipsterComposition = ({ 
+  children, 
+  className, 
+  theme = 'light',
+  ...props 
+}) => {
+  const chipsterState = useChipster({ theme, ...props })
   const { error } = chipsterState
 
   return (
     <ChipsterContext.Provider value={chipsterState}>
       <div className={classNames(
         styles.container,
+        theme === 'dark' ? styles.containerDark : '',
         className,
         { [styles.containerError]: error }
       )}>
         <div className={classNames(
           styles.inputContainer,
+          theme === 'dark' ? styles.inputContainerDark : '',
           { [styles.inputContainerError]: error }
         )}>
           {React.Children.map(children, child => {
@@ -58,43 +61,8 @@ export const Chipster: React.FC<ChipsterProps> & ChipsterComposition = ({ childr
   )
 }
 
-const ItemList: React.FC<{
-  className?: string
-  itemClassName?: string
-  removeButtonClassName?: string
-}> = ({ 
-  className,
-  itemClassName,
-  removeButtonClassName
-}) => {
-  const { items, theme } = useChipsterContext()
-  if (!items?.length) return null
-
-  return (
-    <div className={classNames(className)}>
-      {items.map((item, index) => (
-        <ChipsterItem
-          key={item.id}
-          item={item}
-          index={index}
-          className={classNames(
-            styles.item,
-            { [styles.itemDark]: theme === 'dark' },
-            itemClassName
-          )}
-          removeButtonClassName={classNames(
-            styles.itemRemove,
-            { [styles.itemRemoveDark]: theme === 'dark' },
-            removeButtonClassName
-          )}
-        />
-      ))}
-    </div>
-  )
-}
-
 Chipster.Input = ChipsterInput
 Chipster.Suggestions = ChipsterSuggestions
 Chipster.Item = ChipsterItem
-Chipster.ItemList = ItemList
+Chipster.ItemList = ChipsterItemList
 Chipster.Validation = ChipsterValidation

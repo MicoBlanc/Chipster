@@ -12,6 +12,7 @@ export const ChipsterSuggestions = ({
   ...props
 }: ChipsterSuggestionsProps) => {
   const { 
+    theme,
     items,
     addItem,
     showSuggestions,
@@ -65,7 +66,11 @@ export const ChipsterSuggestions = ({
   const listProps = {
     ref: listRef,
     role: 'listbox',
-    className: classNames(styles.suggestions, className),
+    className: classNames(
+      styles.suggestions,
+      theme === 'dark' ? styles.suggestionsDark : '',
+      className
+    ),
     ...props
   }
 
@@ -78,7 +83,11 @@ export const ChipsterSuggestions = ({
           aria-selected={index === selectedSuggestionIndex}
           className={classNames(
             styles.suggestion,
-            { [styles.suggestionSelected]: index === selectedSuggestionIndex }
+            theme === 'dark' ? styles.suggestionDark : '',
+            { 
+              [styles.suggestionSelected]: index === selectedSuggestionIndex && theme === 'light',
+              [styles.suggestionSelectedDark]: index === selectedSuggestionIndex && theme === 'dark'
+            }
           )}
           onClick={() => handleSelect(suggestion)}
         >
@@ -87,7 +96,12 @@ export const ChipsterSuggestions = ({
           ) : (
             <div className={styles.suggestionWithIcon}>
               {suggestion.icon && (
-                <span className={styles.suggestionIcon}>{suggestion.icon}</span>
+                <span className={classNames(
+                  styles.suggestionIcon,
+                  theme === 'dark' ? styles.suggestionIconDark : ''
+                )}>
+                  {suggestion.icon}
+                </span>
               )}
               <span>{suggestion.label}</span>
             </div>
