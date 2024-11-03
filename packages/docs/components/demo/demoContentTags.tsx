@@ -25,49 +25,45 @@ const popularTags = [
 ];
 
 export default function ContentTags() {
-  const getSuggestions = (input: string) => {
-    const lowercasedInput = input.toLowerCase();
-    return popularTags
-      .filter(tag => tag.name.toLowerCase().includes(lowercasedInput))
-      .map(tag => \`\${tag.icon} \${tag.name}\`);
-  };
+  const getSuggestions = (input: string) => 
+    popularTags
+      .map(tag => ({
+        label: \`\${tag.name}\`,
+        icon: tag.icon,
+        data: tag
+      }));
 
   return (
-    <Chipster>
-      <Chipster.ItemList />
-      <Chipster.Input 
-        className="bg-white shadow-sm rounded-lg"
-        placeholder="Add tags to your content"
-      />
-      <Chipster.Validation
-        validationRules={[
-          { 
-            test: (v) => v.length >= 2, 
-            message: 'Tag must be at least 2 characters' 
-          },
-          { 
-            test: (v) => v.length <= 20, 
-            message: 'Tag must not exceed 20 characters' 
-          }
-        ]}
-        maxItems={10}
-        allowDuplicates={false}
-        transform={(v) => v.toLowerCase().trim()}
-        onError={(error) => console.log('Validation error:', error)}
-      />
-      <Chipster.Suggestions
-        getSuggestions={getSuggestions}
-        style="minimal"
-      />
-    </Chipster>
+    <div className="w-full max-w-xl">
+      <h2 className="text-base font-semibold mb-1">Keywords</h2>
+      <Chipster>
+        <Chipster.ItemList />
+        <Chipster.Input 
+          placeholder="Add tags to your content"
+          className="bg-white rounded-lg"
+        />
+        <Chipster.Validation
+          validationRules={[
+            { test: (v) => v.length >= 2, message: 'Min 2 characters' },
+            { test: (v) => v.length <= 20, message: 'Max 20 characters' }
+          ]}
+          maxItems={10}
+          transform={(v) => v.toLowerCase().trim()}
+        />
+        <Chipster.Suggestions getSuggestions={getSuggestions} />
+      </Chipster>
+    </div>
   );
 }`;
 
 export default function DemoContentTags() {
   const getSuggestions = useCallback((input: string) => {
     return popularTags
-      .filter(tag => tag.name.includes(input))
-      .map(tag => `${tag.icon} ${tag.name}`);
+      .map(tag => ({
+        label: `${tag.name}`,
+        icon: tag.icon,
+        data: tag
+      }));
   }, []);
 
   return (
@@ -87,12 +83,10 @@ export default function DemoContentTags() {
             ]}
             maxItems={10}
             allowDuplicates={true}
-            transform={(v) => v.toLowerCase().trim()}
             onError={(error) => console.log('Validation error:', error)}
           />
           <Chipster.Suggestions
             getSuggestions={getSuggestions}
-            style="minimal"
           />
         </Chipster>
       </div>

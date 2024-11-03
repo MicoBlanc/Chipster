@@ -21,27 +21,71 @@ const fruitEmojis = [
 
 export default function DemoFruit() {
   const validationRules: ValidationRule[] = [
-    { test: (value: string) => value.length >= 2, message: 'Must be at least 2 characters' },
-    { test: (value: string) => value.length <= 20, message: 'Must not exceed 20 characters' },
+    { 
+      test: (value: string) => value.length >= 4, 
+      message: 'Must be at least 4 characters' 
+    },
+    { 
+      test: (value: string) => value.length <= 20, 
+      message: 'Must not exceed 20 characters' 
+    },
   ]
 
-  const transform = (value: string) => value.trim()
+  const transform = useCallback((value: string) => value.trim(), [])
+
+  const handleError = useCallback((error: string) => {
+    console.log('Validation error:', error)
+  }, [])
 
   const getSuggestions = useCallback((input: string) => {
     const lowercasedInput = input.toLowerCase()
     return fruitEmojis
-      .filter(fruit => fruit.text.toLowerCase().includes(lowercasedInput))
-      .map(fruit => `${fruit.emoji} ${fruit.text}`)
+      .filter(fruit => 
+        fruit.text.toLowerCase().includes(lowercasedInput)
+      )
+      .map(fruit => ({
+        label: fruit.text,
+        icon: fruit.emoji,
+        data: fruit
+      }))
   }, [])
 
-  const codeSnippet = `import { Chipster } from 'chipster'
+  const codeSnippet = `import { Chipster } from '@micoblanc/chipster'
 
-function FruitPicker() {
-  const getSuggestions = (input) => {
+const fruitEmojis = [
+  { text: 'Apple', emoji: '🍎' },
+  { text: 'Banana', emoji: '🍌' },
+  // ... more fruits
+]
+
+export default function FruitPicker() {
+  const getSuggestions = (input: string) => {
     return fruitEmojis
-      .filter(fruit => fruit.text.toLowerCase().includes(input.toLowerCase()))
-      .map(fruit => \`\${fruit.emoji} \${fruit.text}\`)
+      .filter(fruit => 
+        fruit.text.toLowerCase().includes(input.toLowerCase())
+      )
+      .map(fruit => ({
+        label: fruit.text,
+        icon: fruit.emoji,
+        data: fruit
+      }))
   }
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Type a fruit name..." />
+      <Chipster.Validation
+        validationRules={[
+          { test: (v) => v.length >= 2, message: 'Min 2 characters' },
+          { test: (v) => v.length <= 20, message: 'Max 20 characters' }
+        ]}
+        maxItems={10}
+        allowDuplicates={false}
+        transform={(v) => v.trim()}
+      />
+      <Chipster.Suggestions getSuggestions={getSuggestions} />
+    </Chipster>
   )
 }`
 
@@ -51,16 +95,20 @@ function FruitPicker() {
         <h2 className="text-base font-semibold mb-1 text-black">Choose a Fruit</h2>
         <Chipster>
           <Chipster.ItemList />
-          <Chipster.Input />
+          <Chipster.Input 
+            className="bg-white shadow-sm rounded-lg"
+            placeholder="Type a fruit name..."
+          />
           <Chipster.Validation
             validationRules={validationRules}
             maxItems={10}
             allowDuplicates={false}
             transform={transform}
+            onError={handleError}
+            errorClassName="text-red-500 text-sm mt-1 px-2"
           />
           <Chipster.Suggestions 
             getSuggestions={getSuggestions} 
-            style="minimal"
           />
         </Chipster>
       </div>

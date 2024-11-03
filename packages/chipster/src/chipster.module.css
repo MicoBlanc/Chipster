@@ -48,8 +48,14 @@
 
 .error {
   color: #ef4444;
-  font-size: 0.875rem;
   margin-top: 0.25rem;
+  font-size: 0.875rem;
+  padding: 0 0.5rem;
+}
+
+.inputContainerError {
+  border-color: #ef4444;
+  border-width: 2px;
 }
 
 .suggestions {

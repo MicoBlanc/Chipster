@@ -29,10 +29,15 @@ export const Chipster: React.FC<ChipsterProps> & ChipsterComposition = ({ childr
 
   return (
     <ChipsterContext.Provider value={chipsterState}>
-      <div className={classNames(styles.container, className)}>
-        <div className={classNames(styles.inputContainer, {
-          [styles.inputContainerError]: error
-        })}>
+      <div className={classNames(
+        styles.container,
+        className,
+        { [styles.containerError]: error }
+      )}>
+        <div className={classNames(
+          styles.inputContainer,
+          { [styles.inputContainerError]: error }
+        )}>
           {React.Children.map(children, child => {
             if (React.isValidElement(child) && 
                 child.type !== ChipsterSuggestions && 

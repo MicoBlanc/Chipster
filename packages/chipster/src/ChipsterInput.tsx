@@ -26,9 +26,23 @@ export const ChipsterInput = ({
     selectedSuggestionIndex,
     suggestions,
     setError,
+    validationConfig,
   } = useChipsterContext()
 
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const validateInput = useCallback((value: string) => {
+    if (!validationConfig?.validationRules) return true
+
+    for (const rule of validationConfig.validationRules) {
+      if (!rule.test(value)) {
+        setError(rule.message || 'Invalid input')
+        return false
+      }
+    }
+    setError(null)
+    return true
+  }, [validationConfig, setError])
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
@@ -36,13 +50,14 @@ export const ChipsterInput = ({
     onInputChange?.(newValue)
     
     if (newValue.trim().length > 0) {
+      validateInput(newValue)
       updateSuggestions(newValue)
       setShowSuggestions(true)
     } else {
       setError(null)
       setShowSuggestions(false)
     }
-  }, [updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError])
+  }, [updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError, validateInput])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return

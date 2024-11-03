@@ -8,7 +8,7 @@ export interface ChipsterItem {
 
 export interface ValidationRule {
   test: (value: string) => boolean;
-  message?: string;
+  message: string;
 }
 
 export interface UseChipsterOptions {

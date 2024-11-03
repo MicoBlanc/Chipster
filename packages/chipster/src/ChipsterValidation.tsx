@@ -7,15 +7,15 @@ import { useChipsterContext } from './ChipsterContext'
 export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
   validationRules,
   maxItems,
-  maxItemsMessage,
-  allowDuplicates,
+  maxItemsMessage = 'Maximum items reached',
+  allowDuplicates = true,
   transform,
   className,
   errorClassName,
   children,
   onError
 }) => {
-  const { error, setValidationConfig } = useChipsterContext()
+  const { error, setValidationConfig, setError } = useChipsterContext()
 
   useEffect(() => {
     setValidationConfig({
@@ -27,14 +27,11 @@ export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
       onError
     })
 
-    return () => setValidationConfig(null)
-  }, [validationRules, maxItems, maxItemsMessage, allowDuplicates, transform, onError])
-
-  useEffect(() => {
-    if (error && onError) {
-      onError(error)
+    return () => {
+      setValidationConfig(null)
+      setError(null)
     }
-  }, [error, onError])
+  }, [validationRules, maxItems, maxItemsMessage, allowDuplicates, transform, onError, setValidationConfig, setError])
 
   if (!error) return null
 
@@ -43,7 +40,11 @@ export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
   }
 
   return (
-    <div className={classNames(styles.error, errorClassName)}>
+    <div className={classNames(
+      styles.error,
+      'text-red-500 text-sm mt-1',
+      errorClassName
+    )}>
       {error}
     </div>
   )
