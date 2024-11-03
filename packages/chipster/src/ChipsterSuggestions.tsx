@@ -3,12 +3,10 @@ import classNames from 'classnames'
 import styles from './chipster.module.css'
 import { ChipsterSuggestionsProps, ChipsterSuggestion } from './types'
 import { useChipsterContext } from './ChipsterContext'
-import { createPortal } from 'react-dom'
 
 export const ChipsterSuggestions = ({
   getSuggestions,
   className,
-  style = 'fullWidth',
   children,
   onSelect,
   ...props
@@ -49,47 +47,30 @@ export const ChipsterSuggestions = ({
   }, [getSuggestions, inputValue, items, allowDuplicates, setSuggestions, getSuggestionLabel])
 
   const handleSelect = useCallback((suggestion: ChipsterSuggestion) => {
-    addItem(getSuggestionLabel(suggestion))
+    const label = getSuggestionLabel(suggestion)
+    addItem(label, suggestion)
     setSelectedSuggestionIndex(-1)
   }, [addItem, setSelectedSuggestionIndex, getSuggestionLabel])
 
   if (!showSuggestions || !suggestions.length) return null
 
   if (children) {
-    return (
-      <div 
-        className={classNames(
-          styles.suggestions,
-          className,
-          {
-            [styles.suggestionsFull]: style === 'fullWidth',
-            [styles.suggestionsMinimal]: style === 'minimal',
-          }
-        )}
-      >
-        {children({ 
-          suggestions, 
-          onSelect: handleSelect,
-          selectedIndex: selectedSuggestionIndex
-        })}
-      </div>
-    )
+    return children({ 
+      suggestions, 
+      onSelect: handleSelect,
+      selectedIndex: selectedSuggestionIndex
+    })
   }
 
-  const suggestionsList = (
-    <ul
-      ref={listRef}
-      role="listbox"
-      className={classNames(
-        styles.suggestions,
-        className,
-        {
-          [styles.suggestionsFull]: style === 'fullWidth',
-          [styles.suggestionsMinimal]: style === 'minimal',
-        }
-      )}
-      {...props}
-    >
+  const listProps = {
+    ref: listRef,
+    role: 'listbox',
+    className: classNames(styles.suggestions, className),
+    ...props
+  }
+
+  return (
+    <ul {...listProps}>
       {suggestions.map((suggestion, index) => (
         <li
           key={index}
@@ -115,13 +96,4 @@ export const ChipsterSuggestions = ({
       ))}
     </ul>
   )
-
-  if (style === 'minimal') {
-    return createPortal(
-      suggestionsList,
-      document.body
-    )
-  }
-
-  return suggestionsList
 } 

@@ -65,9 +65,8 @@ export default function ContentTags() {
 
 export default function DemoContentTags() {
   const getSuggestions = useCallback((input: string) => {
-    const lowercasedInput = input.toLowerCase();
     return popularTags
-      .filter(tag => tag.name.toLowerCase().includes(lowercasedInput))
+      .filter(tag => tag.name.includes(input))
       .map(tag => `${tag.icon} ${tag.name}`);
   }, []);
 
@@ -87,7 +86,7 @@ export default function DemoContentTags() {
               { test: (v) => v.length <= 20, message: 'Tag must not exceed 20 characters' }
             ]}
             maxItems={10}
-            allowDuplicates={false}
+            allowDuplicates={true}
             transform={(v) => v.toLowerCase().trim()}
             onError={(error) => console.log('Validation error:', error)}
           />

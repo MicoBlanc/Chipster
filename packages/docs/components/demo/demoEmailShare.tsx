@@ -91,7 +91,6 @@ export default function DemoEmailShare() {
               height={20} 
               className="rounded-full" 
             />
-            <span className="text-sm font-medium text-neutral-800">{member.name}</span>
           </div>
         )
       }));

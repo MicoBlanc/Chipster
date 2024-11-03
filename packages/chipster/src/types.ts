@@ -44,7 +44,7 @@ export interface ItemProps {
 
 export interface ChipsterContextType {
   items: ChipsterItem[]
-  addItem: (text: string) => boolean
+  addItem: (text: string, suggestion?: ChipsterSuggestion) => boolean
   removeItem: (id: string) => void
   inputValue?: string
   setInputValue: (value: string) => void
@@ -100,7 +100,6 @@ export type ChipsterSuggestion = string | {
 export interface ChipsterSuggestionsProps {
   getSuggestions: (input: string) => ChipsterSuggestion[]
   className?: string
-  style?: 'fullWidth' | 'minimal'
   children?: (props: {
     suggestions: ChipsterSuggestion[]
     onSelect: (suggestion: ChipsterSuggestion) => void
