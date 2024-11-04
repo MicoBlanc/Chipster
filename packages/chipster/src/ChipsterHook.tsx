@@ -12,6 +12,7 @@ const isObjectSuggestion = (suggestion: ChipsterSuggestion): suggestion is {
 
 export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   const {
+    mode = 'free',
     defaultValue,
     onAdd,
     onRemove,
@@ -77,6 +78,10 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   }, [items, validationConfig])
 
   const addItem = useCallback((text: string, suggestion?: ChipsterSuggestion) => {
+    if (mode === 'suggestions-only' && !suggestion) {
+      return false
+    }
+
     if (validateInput(text)) {
       const processedValue = validationConfig?.transform ? 
         validationConfig.transform(text) : text.trim()
@@ -101,7 +106,7 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
       return true
     }
     return false
-  }, [validateInput, validationConfig, onAdd])
+  }, [mode, validateInput, validationConfig, onAdd])
 
   const removeItem = useCallback((id: string) => {
     setItems(prev => {
@@ -131,6 +136,7 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   }, [])
 
   return {
+    mode,
     items,
     error,
     setError,

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, KeyboardEvent } from 'react'
+import React, { useCallback, useRef } from 'react'
 import classNames from 'classnames'
 import styles from './chipster.module.css'
 import { ChipsterInputProps } from './types'
@@ -27,6 +27,7 @@ export const ChipsterInput = ({
     suggestions,
     setError,
     validationConfig,
+    mode,
   } = useChipsterContext()
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -62,6 +63,8 @@ export const ChipsterInput = ({
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return
 
+    const currentValue = inputValue || ''
+
     switch (e.key) {
       // Suggestions navigation
       case 'ArrowDown':
@@ -83,7 +86,7 @@ export const ChipsterInput = ({
 
       // Item deletion and navigation
       case 'Backspace':
-        if (inputValue === '') {
+        if (currentValue === '') {
           e.preventDefault()
           if (highlightedIndex !== null) {
             const itemToRemove = items[highlightedIndex]
@@ -96,7 +99,7 @@ export const ChipsterInput = ({
         break
 
       case 'ArrowLeft':
-        if (inputValue === '') {
+        if (currentValue === '') {
           e.preventDefault()
           if (highlightedIndex === null && items.length > 0) {
             highlightItem(items.length - 1)
@@ -107,7 +110,7 @@ export const ChipsterInput = ({
         break
 
       case 'ArrowRight':
-        if (inputValue === '') {
+        if (currentValue === '') {
           e.preventDefault()
           if (highlightedIndex !== null) {
             if (highlightedIndex < items.length - 1) {
@@ -122,15 +125,27 @@ export const ChipsterInput = ({
 
       // Suggestion selection
       case 'Enter':
-        if (suggestions.length > 0 && selectedSuggestionIndex >= 0) {
+        if (currentValue.trim()) {
           e.preventDefault()
-          const selectedSuggestion = suggestions[selectedSuggestionIndex]
-          const value = typeof selectedSuggestion === 'string' 
-            ? selectedSuggestion 
-            : selectedSuggestion.label
-          addItem(value, selectedSuggestion)
-          setSelectedSuggestionIndex(-1)
-          setInputValue('')
+          
+          // Handle suggestion selection
+          if (selectedSuggestionIndex >= 0 && suggestions.length > 0) {
+            const selectedSuggestion = suggestions[selectedSuggestionIndex]
+            const value = typeof selectedSuggestion === 'string' 
+              ? selectedSuggestion 
+              : selectedSuggestion.label
+            addItem(value, selectedSuggestion)
+            setSelectedSuggestionIndex(-1)
+            setInputValue('')
+            return
+          }
+
+          // Handle free input mode
+          if (mode === 'free') {
+            if (addItem(currentValue.trim())) {
+              setInputValue('')
+            }
+          }
         }
         break
 
@@ -140,20 +155,7 @@ export const ChipsterInput = ({
         highlightItem(null)
         break
     }
-  }, [
-    disabled,
-    suggestions,
-    selectedSuggestionIndex,
-    setSelectedSuggestionIndex,
-    addItem,
-    setShowSuggestions,
-    setInputValue,
-    inputValue,
-    items,
-    highlightedIndex,
-    highlightItem,
-    removeItem
-  ])
+  }, [mode, disabled, inputValue, suggestions, selectedSuggestionIndex, addItem])
 
   const handleFocus = useCallback(() => {
     setShowSuggestions(true)
@@ -169,7 +171,7 @@ export const ChipsterInput = ({
     <input
       ref={inputRef}
       type="text"
-      value={inputValue}
+      value={inputValue || ''}
       onChange={handleInputChange}
       onKeyDown={handleKeyDown}
       onFocus={handleFocus}

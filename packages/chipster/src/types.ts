@@ -72,6 +72,7 @@ export interface ChipsterContextType {
   setSelectedSuggestionIndex: (index: number | ((prev: number) => number)) => void
   suggestions: ChipsterSuggestion[]
   setSuggestions: (suggestions: ChipsterSuggestion[]) => void
+  mode: 'free' | 'suggestions-only';
 }
 
 export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange' | 'validationRules' | 'maxItems' | 'allowDuplicates' | 'transform'> {
@@ -81,6 +82,7 @@ export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange' 
   className?: string
   onAdd?: (value: string) => void
   onRemove?: (id: string) => void
+  mode?: 'free' | 'suggestions-only'
 }
 
 export interface ChipsterInputProps {
