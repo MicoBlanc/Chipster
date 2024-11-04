@@ -59,25 +59,6 @@ export default function DynamicDisableExample() {
 }
 ```
 
-## With Custom Styling
-
-```tsx filename="CustomDisabledExample.tsx" copy
-export default function CustomDisabledExample() {
-  return (
-    <Chipster disabled>
-      <Chipster.ItemList 
-        itemClassName="!opacity-50 !cursor-not-allowed"
-        removeButtonClassName="!hidden"
-      />
-      <Chipster.Input 
-        placeholder="Disabled input" 
-        className="!bg-gray-100 !cursor-not-allowed"
-      />
-    </Chipster>
-  )
-}
-```
-
 ## Important Notes
 
 - When disabled:

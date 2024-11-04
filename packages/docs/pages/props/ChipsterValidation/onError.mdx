@@ -1,0 +1,183 @@
+# onError
+
+The `onError` prop is a callback function that is triggered whenever a validation error occurs in Chipster. This includes validation rule failures, maximum items limit, and duplicate item errors.
+
+## Type Definition
+```typescript
+type OnErrorCallback = (error: string) => void;
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+
+export default function BasicExample() {
+  const handleError = (error: string) => {
+    console.log('Validation error:', error)
+    // Additional error handling
+  }
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Add tag" />
+      <Chipster.Validation
+        validationRules={[
+          { test: (v) => v.length >= 2, message: 'Too short' }
+        ]}
+        onError={handleError}
+      />
+    </Chipster>
+  )
+}
+```
+
+## With Toast Notifications
+
+```tsx filename="ToastExample.tsx" copy
+import { toast } from 'your-toast-library'
+
+export default function ToastExample() {
+  const handleError = (error: string) => {
+    toast.error(error, {
+      position: 'bottom-right',
+      duration: 3000
+    })
+  }
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Add email" />
+      <Chipster.Validation
+        validationRules={[
+          { 
+            test: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+            message: 'Invalid email format'
+          }
+        ]}
+        maxItems={5}
+        allowDuplicates={false}
+        onError={handleError}
+      />
+    </Chipster>
+  )
+}
+```
+
+## With Error Tracking
+
+```tsx filename="ErrorTrackingExample.tsx" copy
+export default function ErrorTrackingExample() {
+  const [errorMetrics, setErrorMetrics] = useState({
+    count: 0,
+    lastError: '',
+    timestamp: null as number | null
+  })
+
+  const handleError = (error: string) => {
+    setErrorMetrics(prev => ({
+      count: prev.count + 1,
+      lastError: error,
+      timestamp: Date.now()
+    }))
+
+    // Optional: Send to analytics
+    trackValidationError({
+      error,
+      timestamp: Date.now()
+    })
+  }
+
+  return (
+    <div>
+      <Chipster>
+        <Chipster.ItemList />
+        <Chipster.Input placeholder="Add item" />
+        <Chipster.Validation
+          validationRules={[
+            { test: (v) => v.length >= 2, message: 'Too short' },
+            { test: (v) => v.length <= 20, message: 'Too long' }
+          ]}
+          onError={handleError}
+        />
+      </Chipster>
+      
+      {errorMetrics.count > 0 && (
+        <div className="mt-4 text-sm text-gray-500">
+          Total validation errors: {errorMetrics.count}
+          <br />
+          Last error: {errorMetrics.lastError}
+          <br />
+          Last occurred: {new Date(errorMetrics.timestamp!).toLocaleString()}
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+## Important Notes
+
+- Called whenever any validation error occurs
+- Receives the error message as a string argument
+- Triggered by:
+  - Validation rule failures
+  - Maximum items limit reached
+  - Duplicate items (when `allowDuplicates` is false)
+- Called before the error is displayed in the UI
+- Can be used alongside custom error rendering
+- Not called when input is empty
+- Multiple errors trigger separate callbacks
+
+## Common Use Cases
+
+- Toast notifications
+- Error logging
+- Analytics tracking
+- Form state management
+- User feedback
+- Error metrics collection
+- Debugging
+- Integration with error monitoring services
+
+## With Form Integration
+
+```tsx filename="FormIntegrationExample.tsx" copy
+import { useForm } from 'react-hook-form'
+
+export default function FormIntegrationExample() {
+  const form = useForm()
+  
+  const handleError = (error: string) => {
+    // Set form-level error
+    form.setError('tags', {
+      type: 'validation',
+      message: error
+    })
+  }
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <Chipster>
+        <Chipster.ItemList />
+        <Chipster.Input placeholder="Add tags" />
+        <Chipster.Validation
+          validationRules={[
+            { test: (v) => v.length >= 2, message: 'Tag too short' }
+          ]}
+          maxItems={5}
+          onError={handleError}
+        />
+      </Chipster>
+      
+      {form.formState.errors.tags && (
+        <span className="text-red-500">
+          {form.formState.errors.tags.message}
+        </span>
+      )}
+    </form>
+  )
+}
+```

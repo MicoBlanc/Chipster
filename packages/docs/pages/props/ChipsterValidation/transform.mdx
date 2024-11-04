@@ -1,0 +1,116 @@
+# transform
+
+The `transform` prop allows you to modify input values before they are added as items. This is useful for formatting, sanitization, or normalization of input values.
+
+## Type Definition
+```typescript
+type TransformFunction = (value: string) => string;
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+
+export default function BasicExample() {
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Add email" />
+      <Chipster.Validation
+        transform={(value) => value.toLowerCase().trim()}
+        validationRules={[
+          { 
+            test: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+            message: 'Invalid email format'
+          }
+        ]}
+      />
+    </Chipster>
+  )
+}
+```
+
+## Advanced Transformations
+
+```tsx filename="AdvancedExample.tsx" copy
+export default function AdvancedExample() {
+  const transformTag = (value: string) => {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/[^a-z0-9-]/g, '') // Remove special characters
+  }
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Add tag" />
+      <Chipster.Validation
+        transform={transformTag}
+        validationRules={[
+          { 
+            test: (v) => v.length >= 2,
+            message: 'Tag too short'
+          }
+        ]}
+      />
+    </Chipster>
+  )
+}
+```
+
+## Common Transform Functions
+
+```tsx filename="CommonTransforms.tsx" copy
+const transforms = {
+  // Email normalization
+  email: (value: string) => value.toLowerCase().trim(),
+
+  // URL formatting
+  url: (value: string) => {
+    const url = value.trim().toLowerCase()
+    return url.startsWith('http') ? url : `https://${url}`
+  },
+
+  // Tag formatting
+  tag: (value: string) => value
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-'),
+
+  // Phone number formatting
+  phone: (value: string) => value
+    .replace(/\D/g, '')
+    .replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
+}
+
+export default function TransformExample() {
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Enter URL" />
+      <Chipster.Validation
+        transform={transforms.url}
+        validationRules={[
+          { 
+            test: (v) => v.startsWith('https://'),
+            message: 'Must be a valid URL'
+          }
+        ]}
+      />
+    </Chipster>
+  )
+}
+```
+
+## Important Notes
+
+- Transform runs before validation rules are checked
+- Applies to both manual input and suggestion selection
+- Original input value is preserved in the input field
+- Transform only applies when adding items
+- Multiple transformations can be chained
+- Transform should always return a string
+- Empty strings after transformation are ignored

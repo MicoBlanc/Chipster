@@ -85,19 +85,19 @@ Main container component that provides context to all child components.
 | Prop | Type | Description |
 |------|------|-------------|
 | `className` | `string` | Custom class for the container |
-| `disabled` | `boolean` | Disable all interactions |
-| `theme` | `'light' \| 'dark'` | Theme variant |
-| `defaultValue` | `string[]` | Initial items to populate the input |
 | `onAdd` | `(text: string) => void` | Callback when an item is added |
 | `onRemove` | `(id: string) => void` | Callback when an item is removed |
+| `defaultValue` | `string[]` | Initial items to populate the input |
+| `disabled` | `boolean` | Disable all interactions |
+| `theme` | `'light' \| 'dark'` | Theme variant |
 
 ### Chipster.Input
 Input component for entering new items.
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `placeholder` | `string` | Input placeholder text |
 | `className` | `string` | Custom class for the input |
+| `placeholder` | `string` | Input placeholder text |
 | `onInputChange` | `(value: string) => void` | Input change callback |
 
 ### Chipster.Validation
@@ -109,7 +109,6 @@ Validation component for input rules and constraints.
 | `maxItems` | `number` | Maximum number of items |
 | `allowDuplicates` | `boolean` | Allow duplicate items |
 | `transform` | `(value: string) => string` | Transform input before adding |
-| `errorClassName` | `string` | Custom class for error messages |
 | `onError` | `(error: string) => void` | Error callback |
 
 ### Chipster.Suggestions
@@ -119,6 +118,7 @@ Suggestions component for autocomplete functionality.
 |------|------|-------------|
 | `className` | `string` | Custom class for suggestions container |
 | `getSuggestions` | `(input: string) => Array<string \| { label: string, icon?: React.ReactNode, data?: any }>` | Get suggestions function |
+| `onSelect` | `(suggestion: ChipsterSuggestion) => void` | Callback when a suggestion is selected |
 
 ### Chipster.ItemList
 Component to display selected items.

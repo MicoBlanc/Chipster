@@ -1,6 +1,0 @@
-{
-  "renderItem": "renderItem",
-  "getIcon": "getIcon",
-  "getSuggestions": "getSuggestions",
-  "restrictToSuggestions": "restrictToSuggestions"
-}

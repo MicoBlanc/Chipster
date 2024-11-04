@@ -1,0 +1,139 @@
+# validationRules
+
+The `validationRules` prop allows you to define validation rules for input values in Chipster. Each rule consists of a test function and an error message. Validation occurs in real-time as the user types.
+
+## Type Definition
+```typescript
+type ValidationRule = {
+  test: (value: string) => boolean;
+  message: string;
+};
+
+type ValidationRules = ValidationRule[];
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+
+export default function BasicExample() {
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Type and press Enter" />
+      <Chipster.Validation
+        validationRules={[
+          { 
+            test: (value) => value.length >= 2,
+            message: 'Input must be at least 2 characters'
+          },
+          {
+            test: (value) => value.length <= 20,
+            message: 'Input cannot exceed 20 characters'
+          }
+        ]}
+      />
+    </Chipster>
+  )
+}
+```
+
+## Advanced Usage with Multiple Rules
+
+```tsx filename="EmailValidationExample.tsx" copy
+export default function EmailValidationExample() {
+  const emailValidationRules = [
+    {
+      test: (value) => value.includes('@'),
+      message: 'Email must contain @'
+    },
+    {
+      test: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      message: 'Please enter a valid email address'
+    },
+    {
+      test: (value) => value.length <= 50,
+      message: 'Email cannot exceed 50 characters'
+    }
+  ]
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Enter email addresses" />
+      <Chipster.Validation
+        validationRules={emailValidationRules}
+        maxItems={5}
+        allowDuplicates={false}
+        errorClassName="text-red-600 font-medium"
+      />
+    </Chipster>
+  )
+}
+```
+
+## Important Notes
+
+- Validation occurs in real-time as the user types
+- Rules are checked in the order they are defined
+- First failing rule's message is displayed
+- Validation happens before item addition
+- Empty input bypasses validation
+- Rules apply to the current input value only
+- Error state is cleared when input is empty
+- Validation state affects the input's visual style
+
+## Common Validation Rules
+
+```tsx filename="CommonValidationRules.tsx" copy
+const commonValidationRules = {
+  // Minimum length
+  minLength: (min: number) => ({
+    test: (value: string) => value.length >= min,
+    message: `Must be at least ${min} characters`
+  }),
+
+  // Maximum length
+  maxLength: (max: number) => ({
+    test: (value: string) => value.length <= max,
+    message: `Cannot exceed ${max} characters`
+  }),
+
+  // Pattern matching
+  pattern: (regex: RegExp, message: string) => ({
+    test: (value: string) => regex.test(value),
+    message
+  }),
+
+  // Custom validation
+  custom: (testFn: (value: string) => boolean, message: string) => ({
+    test: testFn,
+    message
+  })
+}
+
+// Usage example
+export default function ValidationExample() {
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Add tag" />
+      <Chipster.Validation
+        validationRules={[
+          commonValidationRules.minLength(2),
+          commonValidationRules.maxLength(20),
+          commonValidationRules.pattern(
+            /^[a-z0-9-]+$/i,
+            'Only letters, numbers, and hyphens allowed'
+          ),
+          commonValidationRules.custom(
+            (value) => !value.includes('admin'),
+            'Reserved word "admin" is not allowed'
+          )
+        ]}
+      />
+    </Chipster>
+  )
+}
+```

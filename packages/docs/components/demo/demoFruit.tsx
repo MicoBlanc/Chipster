@@ -88,10 +88,10 @@ export default function FruitPicker() {
     <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
       <div className="px-3 py-6 w-full bg-neutral-50 max-w-xl border border-neutral-200 rounded-xl">
         <h2 className="text-base font-semibold mb-1 text-black">Choose a Fruit</h2>
-        <Chipster theme='dark'>
+        <Chipster theme='light'>
           <Chipster.ItemList 
             itemClassName='bg-red-500 px-20 border-black'
-            iconClassName="bg-blue-10"
+            iconClassName="bg-blue-100"
           />
           <Chipster.Input 
             placeholder="Type a fruit name..."
