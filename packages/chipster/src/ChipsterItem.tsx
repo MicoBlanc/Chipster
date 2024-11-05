@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import styles from './chipster.module.css'
 import classNames from 'classnames'
 import { ChipsterItemProps } from './types'
@@ -22,38 +22,63 @@ export const ChipsterItem = ({
     removeItem, 
     highlightedIndex, 
     disabled, 
-    theme 
+    theme,
+    focusedItemIndex,
+    setFocusedItemIndex,
+    inputRef 
   } = useChipsterContext()
 
+  const itemRef = useRef<HTMLSpanElement>(null)
   const isHighlighted = highlightedIndex === index
+  const isFocused = focusedItemIndex === index
+
+  useEffect(() => {
+    if (isFocused && itemRef.current) {
+      itemRef.current.focus()
+    } else if (!isFocused && itemRef.current === document.activeElement) {
+      // If this item loses focus and was the active element, focus the input
+      inputRef.current?.focus()
+    }
+  }, [isFocused, inputRef])
 
   if (render) {
     return render(item, isHighlighted)
   }
 
-  const itemClasses = classNames(
-    styles.item,
-    theme === 'dark' ? styles.itemDark : '',
-    {
-      [styles.itemHighlighted]: isHighlighted && theme === 'light',
-      [styles.itemHighlightedDark]: isHighlighted && theme === 'dark',
-      [styles.itemDisabled]: disabled,
-    },
-    itemClassName,
-    {
-      [highlightedClassName || '']: isHighlighted,
-      [disabledClassName || '']: disabled,
-    }
-  )
-
   return (
     <span
-      className={itemClasses}
+      ref={itemRef}
+      className={classNames(
+        styles.item,
+        theme === 'dark' ? styles.itemDark : '',
+        {
+          [styles.itemHighlighted]: isHighlighted && theme === 'light',
+          [styles.itemHighlightedDark]: isHighlighted && theme === 'dark',
+          [styles.itemDisabled]: disabled,
+          [styles.itemFocused]: isFocused,
+        },
+        itemClassName,
+        {
+          [highlightedClassName || '']: isHighlighted,
+          [disabledClassName || '']: disabled,
+        }
+      )}
       data-highlighted={isHighlighted || undefined}
       data-disabled={disabled || undefined}
-      tabIndex={isHighlighted ? 0 : -1}
+      tabIndex={isFocused ? 0 : -1}
       role="button"
       aria-selected={isHighlighted}
+      onFocus={() => {
+        if (typeof index === 'number' && focusedItemIndex !== index) {
+          setFocusedItemIndex(index)
+        }
+      }}
+      onBlur={(e) => {
+        // Only clear focus if we're not moving to another item
+        if (!e.relatedTarget?.closest(`.${styles.item}`)) {
+          setFocusedItemIndex(null)
+        }
+      }}
     >
       {item.icon && (
         <span className={classNames(

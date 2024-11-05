@@ -26,16 +26,20 @@ export const Chipster: React.FC<ChipsterProps> & ChipsterComposition = ({
   ...props 
 }) => {
   const chipsterState = useChipster({ theme, ...props })
-  const { error } = chipsterState
+  const { error, containerRef } = chipsterState
 
   return (
     <ChipsterContext.Provider value={chipsterState}>
-      <div className={classNames(
-        styles.container,
-        theme === 'dark' ? styles.containerDark : '',
-        className,
-        { [styles.containerError]: error }
-      )}>
+      <div 
+        ref={containerRef}
+        tabIndex={-1}
+        className={classNames(
+          styles.container,
+          theme === 'dark' ? styles.containerDark : '',
+          className,
+          { [styles.containerError]: error }
+        )}
+      >
         <div className={classNames(
           styles.inputContainer,
           theme === 'dark' ? styles.inputContainerDark : '',

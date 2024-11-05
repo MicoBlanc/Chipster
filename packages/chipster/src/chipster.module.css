@@ -105,11 +105,12 @@
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
   margin: 0.125rem;
+  outline: none;
+  transition: all 0.2s ease;
 }
 
 .itemHighlighted {
-  outline: 2px solid #000000;
-  outline-offset: 0px;
+  background-color: var(--highlight-color, #e5e7eb);
 }
 
 .itemDisabled {
@@ -190,8 +191,7 @@
 }
 
 .itemHighlightedDark {
-  outline: 2px solid #ffffff;
-  outline-offset: 0px;
+  background-color: var(--highlight-color-dark, #374151);
 }
 
 .itemIconDark {
@@ -217,4 +217,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.itemFocused {
+  outline: 2px solid var(--focus-ring-color, #222222);
+  outline-offset: 2px;
 }

@@ -73,6 +73,10 @@ export interface ChipsterContextType {
   suggestions: ChipsterSuggestion[]
   setSuggestions: (suggestions: ChipsterSuggestion[]) => void
   mode: 'free' | 'suggestions-only';
+  containerRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.RefObject<HTMLInputElement>;
+  focusedItemIndex: number | null;
+  setFocusedItemIndex: (index: number | null) => void;
 }
 
 export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange' | 'validationRules' | 'maxItems' | 'allowDuplicates' | 'transform'> {
