@@ -1,4 +1,5 @@
 {
+  "mode": "mode",
   "onAdd": "onAdd",
   "onRemove" : "onRemove",
   "disabled": "disabled",
