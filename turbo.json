@@ -13,6 +13,32 @@
       "cache": false,
       "persistent": true
     },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "packages/*/src/**/*.tsx",
+        "packages/*/src/**/*.ts",
+        "packages/*/__tests__/**/*.ts",
+        "packages/*/__tests__/**/*.tsx"
+      ],
+      "outputs": [
+        "packages/*/playwright-report/**",
+        "packages/*/test-results/**"
+      ]
+    },
+    "test:e2e:ui": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "test:e2e:debug": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
     "clean": {
       "cache": false,
       "outputs": []

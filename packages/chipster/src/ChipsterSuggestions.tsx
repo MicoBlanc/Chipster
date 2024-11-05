@@ -17,6 +17,7 @@ export const ChipsterSuggestions = ({
     addItem,
     showSuggestions,
     inputValue,
+    setInputValue,
     allowDuplicates,
     selectedSuggestionIndex,
     setSelectedSuggestionIndex,
@@ -51,7 +52,8 @@ export const ChipsterSuggestions = ({
     const label = getSuggestionLabel(suggestion)
     addItem(label, suggestion)
     setSelectedSuggestionIndex(-1)
-  }, [addItem, setSelectedSuggestionIndex, getSuggestionLabel])
+    setInputValue('')
+  }, [addItem, setSelectedSuggestionIndex, setInputValue, getSuggestionLabel])
 
   if (!showSuggestions || !suggestions.length) return null
 
