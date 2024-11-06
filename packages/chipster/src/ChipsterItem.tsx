@@ -17,7 +17,7 @@ export const ChipsterItem = ({
 }: ChipsterItemProps & { 
   index?: number
   removeIcon?: React.ReactNode
-}) => {
+}): JSX.Element => {
   const { 
     removeItem, 
     highlightedIndex, 
@@ -36,13 +36,12 @@ export const ChipsterItem = ({
     if (isFocused && itemRef.current) {
       itemRef.current.focus()
     } else if (!isFocused && itemRef.current === document.activeElement) {
-      // If this item loses focus and was the active element, focus the input
       inputRef.current?.focus()
     }
   }, [isFocused, inputRef])
 
   if (render) {
-    return render(item, isHighlighted)
+    return <>{render(item, isHighlighted)}</>
   }
 
   return (
@@ -74,7 +73,6 @@ export const ChipsterItem = ({
         }
       }}
       onBlur={(e) => {
-        // Only clear focus if we're not moving to another item
         if (!e.relatedTarget?.closest(`.${styles.item}`)) {
           setFocusedItemIndex(null)
         }

@@ -3,9 +3,9 @@ name: CI
 on:
   push:
     branches:
-      - main  # Change this to your default branch if it's not 'main'
-      - 'feature/*'  # Run on feature branches
-      - 'bugfix/*'  # Run on bugfix branches
+      - main
+      - 'feature/*'
+      - 'bugfix/*'  
 
 jobs:
   test:
@@ -18,12 +18,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '21'  
+          node-version: '21'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.12.2
+          run_install: false
 
       - name: Install dependencies
-        run: |
-          pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Run Playwright tests
         run: |
+          pnpm exec playwright install --with-deps
           pnpm test:e2e  
