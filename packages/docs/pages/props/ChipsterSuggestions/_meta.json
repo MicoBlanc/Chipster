@@ -1,0 +1,4 @@
+{
+  "getSuggestions": "getSuggestions",
+  "onSelect": "onSelect"
+}

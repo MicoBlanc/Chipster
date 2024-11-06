@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch if it's not 'main'
+      - 'feature/*'  # Run on feature branches
+      - 'bugfix/*'  # Run on bugfix branches
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21'  
+
+      - name: Install dependencies
+        run: |
+          pnpm install
+
+      - name: Run Playwright tests
+        run: |
+          pnpm test:e2e  

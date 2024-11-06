@@ -1,0 +1,104 @@
+# getSuggestions
+
+The `getSuggestions` prop is a callback function that returns an array of suggestions based on the current input value. Suggestions can be simple strings or objects with label, icon, and additional data.
+
+## Type Definition
+```typescript
+type ChipsterSuggestion = string | {
+  label: string;
+  icon?: React.ReactNode;
+  data?: any;
+};
+
+type GetSuggestionsCallback = (inputValue: string) => ChipsterSuggestion[];
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+
+export default function BasicExample() {
+  const getSuggestions = (input: string) => {
+    const suggestions = ['React', 'TypeScript', 'Next.js', 'Tailwind']
+    return suggestions.filter(item => 
+      item.toLowerCase().includes(input.toLowerCase())
+    )
+  }
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Search frameworks..." />
+      <Chipster.Suggestions getSuggestions={getSuggestions} />
+    </Chipster>
+  )
+}
+```
+
+## With Icons and Data
+
+```tsx filename="IconsExample.tsx" copy
+export default function IconsExample() {
+  const getSuggestions = (input: string) => {
+    const suggestions = [
+      { label: 'React', icon: '⚛️', data: { version: '18' } },
+      { label: 'TypeScript', icon: '🔷', data: { version: '5' } },
+      { label: 'Next.js', icon: '▲', data: { version: '14' } }
+    ]
+
+    return suggestions.filter(item =>
+      item.label.toLowerCase().includes(input.toLowerCase())
+    )
+  }
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Search..." />
+      <Chipster.Suggestions getSuggestions={getSuggestions} />
+    </Chipster>
+  )
+}
+```
+
+## With Async Data
+
+```tsx filename="AsyncExample.tsx" copy
+export default function AsyncExample() {
+  const getSuggestions = useCallback(async (input: string) => {
+    const response = await fetch(`/api/search?q=${input}`)
+    const data = await response.json()
+    
+    return data.map((item: any) => ({
+      label: item.name,
+      icon: item.icon,
+      data: item
+    }))
+  }, [])
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Search users..." />
+      <Chipster.Suggestions getSuggestions={getSuggestions} />
+    </Chipster>
+  )
+}
+```
+
+## Important Notes
+
+- Called whenever input value changes
+- Should return an array of suggestions
+- Suggestions are filtered automatically for duplicates when `allowDuplicates` is false
+- Empty input clears suggestions
+- Supports both sync and async functions
+- Suggestions can include icons and additional data
+- Keyboard navigation works automatically
+- Selected suggestion's label is used as the item text
+
+## Common Use Cases
+
+- Autocomplete
+- Search

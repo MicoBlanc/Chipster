@@ -1,2 +1,9 @@
-export { Chipster } from './chipster';
-export * from './types';
+export { Chipster } from './Chipster'
+export type { 
+  ChipsterProps, 
+  ChipsterItem, 
+  ChipsterInputProps, 
+  ChipsterSuggestionsProps, 
+  ChipsterItemProps,
+  ValidationRule,
+} from './types'

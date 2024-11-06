@@ -1,0 +1,68 @@
+# maxItems
+
+The `maxItems` prop sets a limit on the number of items that can be added to Chipster. When the limit is reached, further additions are prevented and an error message is displayed.
+
+## Type Definition
+```typescript
+type MaxItemsProps = {
+  maxItems?: number;
+  maxItemsMessage?: string; // Optional custom message
+};
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+
+export default function BasicExample() {
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Add tags (max 5)" />
+      <Chipster.Validation
+        maxItems={5}
+        maxItemsMessage="Maximum of 5 tags allowed" // Optional custom message
+      />
+    </Chipster>
+  )
+}
+```
+
+## With Custom Error Handling
+
+```tsx filename="CustomErrorExample.tsx" copy
+export default function CustomErrorExample() {
+  const handleError = (error: string) => {
+    console.log('Validation error:', error)
+    // Additional error handling
+  }
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Add emails" />
+      <Chipster.Validation
+        maxItems={3}
+        maxItemsMessage="You can only add up to 3 email addresses"
+        onError={handleError}
+      >
+        {(error) => (
+          <div className="bg-red-50 p-2 rounded text-red-600 text-sm">
+            {error}
+          </div>
+        )}
+      </Chipster.Validation>
+    </Chipster>
+  )
+}
+```
+
+## Important Notes
+
+- Error message appears when trying to add items beyond the limit
+- Input remains enabled but additions are prevented
+- Works alongside other validation rules
+- Default message can be customized via `maxItemsMessage`
+- Limit applies to both manual input and suggestion selection
+- Error state is cleared when items are removed below the limit

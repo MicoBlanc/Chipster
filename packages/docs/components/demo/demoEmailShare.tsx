@@ -1,5 +1,4 @@
 import { Chipster } from '@micoblanc/chipster';
-import { ValidationRule } from '@micoblanc/chipster';
 import { useCallback } from 'react';
 import { Disclosure } from '@headlessui/react';
 import { CodeBracketIcon } from '@heroicons/react/24/outline';
@@ -16,68 +15,111 @@ const teamMembers = [
   { email: 'olivia@example.com', name: 'Olivia Taylor', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia' },
 ];
 
-export default function DemoEmailShare() {
-  const validationRules: ValidationRule[] = [
-    { test: (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), message: 'Write a valid email' },
-  ];
-
-  const getSuggestions = useCallback((input: string) => {
-    const lowercasedInput = input.toLowerCase();
-    return teamMembers
-      .filter(member => member.email.toLowerCase().includes(lowercasedInput) || member.name.toLowerCase().includes(lowercasedInput))
-      .map(member => member.email);
-  }, []);
-
-  const getIcon = useCallback((value: string) => {
-    const member = teamMembers.find(m => m.email === value);
-    return member ? <img src={member.avatar} alt={member.name} width={20} height={20} className="rounded-full" /> : null;
-  }, []);
-
-  const codeSnippet = `import { Chipster } from 'chipster';
+const codeSnippet = `import { Chipster } from '@micoblanc/chipster';
 
 const teamMembers = [
-  { email: 'john@example.com', name: 'John Doe', avatar: 'path/to/avatar' },
-  // ... other team members
+  { email: 'john@example.com', name: 'John Doe', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John' },
+  // ... more team members
 ];
 
-function EmailShare() {
-  const getSuggestions = (input) => {
+export default function EmailShare() {
+  const getSuggestions = (input: string) => {
+    const lowercasedInput = input.toLowerCase();
     return teamMembers
-      .filter(member => member.email.includes(input) || member.name.includes(input))
-      .map(member => member.email);
+      .filter(member => 
+        member.email.toLowerCase().includes(lowercasedInput) || 
+        member.name.toLowerCase().includes(lowercasedInput)
+      )
+      .map(member => ({
+        label: member.email,
+        icon: (
+          <div className="flex items-center gap-2">
+            <img 
+              src={member.avatar} 
+              alt={member.name} 
+              width={20} 
+              height={20} 
+              className="rounded-full" 
+            />
+            <span className="text-sm text-neutral-500">{member.name}</span>
+          </div>
+        )
+      }));
   };
 
   return (
-    <Chipster
-      placeholder="Enter team member's email"
-      getSuggestions={getSuggestions}
-      renderSuggestion={renderSuggestion}
-      validationRules={[
-        { test: (value) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value), message: 'Write a valid email' },
-      ]}
-    />
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input 
+        className="bg-white shadow-sm rounded-lg"
+        placeholder="Enter team member's email"
+      />
+      <Chipster.Validation
+        validationRules={[
+          { 
+            test: (v) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v), 
+            message: 'Write a valid email' 
+          }
+        ]}
+        allowDuplicates={false}
+        onError={(error) => console.log('Validation error:', error)}
+      />
+      <Chipster.Suggestions
+        getSuggestions={getSuggestions}
+        style="minimal"
+      />
+    </Chipster>
   );
 }`;
+
+export default function DemoEmailShare() {
+  const getSuggestions = useCallback((input: string) => {
+    const lowercasedInput = input.toLowerCase();
+    return teamMembers
+      .filter(member => 
+        member.email.toLowerCase().includes(lowercasedInput) || 
+        member.name.toLowerCase().includes(lowercasedInput)
+      )
+      .map(member => ({
+        label: member.email,
+        icon: (
+          <div className="flex items-center gap-1">
+            <img 
+              src={member.avatar} 
+              alt={member.name} 
+              width={20} 
+              height={20} 
+              className="rounded-full" 
+            />
+          </div>
+        )
+      }));
+  }, []);
 
   return (
     <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
       <div className="px-3 py-6 w-full bg-neutral-50 max-w-xl border border-neutral-200 rounded-xl">
         <h2 className="text-base font-semibold mb-1 text-black">Share with your team</h2>
-        <Chipster
-          className="bg-white shadow-sm rounded-lg"
-          onAdd={(value: string) => console.log('Added:', value)}
-          onRemove={(id: string) => console.log('Removed item with id:', id)}
-          defaultValue={['john@example.com', 'jane@example.com']}
-          placeholder="Enter team member's email"
-          exitAnimation="fadeSlideLeft"
-          validationRules={validationRules}
-          allowDuplicates={false}
-          caseSensitive={false}
-          showErrorMessage={true}
-          getSuggestions={getSuggestions}
-          getIcon={getIcon}
-          
-        />
+        <Chipster>
+          <Chipster.ItemList />
+          <Chipster.Input 
+            className="bg-white shadow-sm rounded-lg"
+            placeholder="Enter team member's email"
+          />
+          <Chipster.Validation
+            validationRules={[
+              { 
+                test: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 
+                message: 'Write a valid email' 
+              }
+            ]}
+            allowDuplicates={false}
+            onError={(error) => console.log('Validation error:', error)}
+          />
+          <Chipster.Suggestions
+            getSuggestions={getSuggestions}
+          />
+        </Chipster>
       </div>
 
       <div className="w-full max-w-xl relative">

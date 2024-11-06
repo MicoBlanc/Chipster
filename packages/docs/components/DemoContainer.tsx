@@ -3,12 +3,11 @@ import DemoFruit from "./demo/demoFruit"
 import DemoEmailShare from "./demo/demoEmailShare"
 import DemoContentTags from "./demo/demoContentTags"
 
-
 export default function DemoContainer() {
   return (
     <div className="w-full max-w-xl mx-auto p-6">
       <h2 className="text-3xl text-center font-bold mb-4 tracking-tight">Chipster Demo</h2>
-      <Tabs defaultValue="fruit" className="w-full">
+       <Tabs defaultValue="fruit" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="email">Email Share</TabsTrigger>
           <TabsTrigger value="fruit">Fruit Picker</TabsTrigger>
@@ -23,7 +22,7 @@ export default function DemoContainer() {
         <TabsContent value="tags">
           <DemoContentTags />
         </TabsContent>
-      </Tabs>
+      </Tabs> 
     </div>
   )
 }

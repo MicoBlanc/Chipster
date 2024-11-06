@@ -1,5 +1,4 @@
-import { Chipster, ChipsterItem } from '@micoblanc/chipster';
-import { ValidationRule } from '@micoblanc/chipster';
+import { Chipster } from '@micoblanc/chipster';
 import { useCallback, useState } from 'react';
 import { Disclosure } from '@headlessui/react';
 import { CodeBracketIcon } from '@heroicons/react/24/outline';
@@ -16,80 +15,80 @@ const popularTags = [
   { name: 'Health', icon: '🏥' },
 ];
 
-export default function DemoContentTags() {
-  const [currentTags, setCurrentTags] = useState<ChipsterItem[]>([]);
-
-  const validationRules: ValidationRule[] = [
-    { test: (value: string) => value.length >= 2, message: 'Tag must be at least 2 characters' },
-    { test: (value: string) => value.length <= 20, message: 'Tag must not exceed 20 characters' },
-  ];
-
-  const transform = (value: string) => value.toLowerCase().trim();
-
-  const getSuggestions = useCallback((input: string) => {
-    const lowercasedInput = input.toLowerCase();
-    return popularTags
-      .filter(tag => tag.name.toLowerCase().includes(lowercasedInput))
-      .map(tag => `${tag.icon} ${tag.name}`);
-  }, []);
-
-  const codeSnippet = `import { Chipster } from 'chipster';
+const codeSnippet = `import { Chipster } from '@micoblanc/chipster';
 
 const popularTags = [
   { name: 'Technology', icon: '💻' },
   { name: 'Fashion', icon: '👗' },
-  // ... other tags
+  { name: 'Food', icon: '🍔' },
+  // ... more tags
 ];
 
-function ContentTags() {
-  const getSuggestions = (input) => {
-    return popularTags
-      .filter(tag => tag.name.toLowerCase().includes(input.toLowerCase()))
-      .map(tag => \`\${tag.icon} \${tag.name}\`);
-  };
+export default function ContentTags() {
+  const getSuggestions = (input: string) => 
+    popularTags
+      .map(tag => ({
+        label: \`\${tag.name}\`,
+        icon: tag.icon,
+        data: tag
+      }));
 
   return (
-    <Chipster
-      placeholder="Add tags to your content"
-      getSuggestions={getSuggestions}
-      restrictToSuggestions={true}
-      transform={(value) => value.toLowerCase().trim()}
-      validationRules={[
-        { test: (value) => value.length >= 2, message: 'Tag must be at least 2 characters' },
-        { test: (value) => value.length <= 20, message: 'Tag must not exceed 20 characters' },
-      ]}
-      maxItems={10}
-    />
+    <div className="w-full max-w-xl">
+      <h2 className="text-base font-semibold mb-1">Keywords</h2>
+      <Chipster>
+        <Chipster.ItemList />
+        <Chipster.Input 
+          placeholder="Add tags to your content"
+          className="bg-white rounded-lg"
+        />
+        <Chipster.Validation
+          validationRules={[
+            { test: (v) => v.length >= 2, message: 'Min 2 characters' },
+            { test: (v) => v.length <= 20, message: 'Max 20 characters' }
+          ]}
+          maxItems={10}
+          transform={(v) => v.toLowerCase().trim()}
+        />
+        <Chipster.Suggestions getSuggestions={getSuggestions} />
+      </Chipster>
+    </div>
   );
 }`;
+
+export default function DemoContentTags() {
+  const getSuggestions = useCallback((input: string) => {
+    return popularTags
+      .map(tag => ({
+        label: `${tag.name}`,
+        icon: tag.icon,
+        data: tag
+      }));
+  }, []);
 
   return (
     <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
       <div className="px-3 py-6 w-full bg-neutral-50 max-w-xl border border-neutral-200 rounded-xl">
         <h2 className="text-base font-semibold mb-1 text-black">Keywords</h2>
-        <Chipster
-          className="bg-white shadow-sm rounded-lg"
-          inputClassName="text-neutral-700 placeholder-neutral-400"
-          errorClassName="text-red-600 font-semibold"
-          chipDisabledClassName="opacity-50 cursor-not-allowed"
-          chipIconClassName="mr-2"
-          onAdd={(value: string) => console.log('Added tag:', value)}
-          onRemove={(id: string) => console.log('Removed tag with id:', id)}
-          placeholder="Add tags to your content"
-          exitAnimation="fadeSlideLeft"
-          validationRules={validationRules}
-          maxItems={10}
-          allowDuplicates={false}
-          caseSensitive={false}
-          transform={transform}
-          showErrorMessage={true}
-          restrictToSuggestions={true}
-          getSuggestions={getSuggestions}
-          onItemsChange={(items) => {
-            setCurrentTags(items);
-            console.log('Current validated tags:', items);
-          }}
-        />
+        <Chipster>
+          <Chipster.ItemList />
+          <Chipster.Input 
+            className="bg-white shadow-sm rounded-lg text-neutral-700 placeholder-neutral-400"
+            placeholder="Add tags to your content"
+          />
+          <Chipster.Validation
+            validationRules={[
+              { test: (v) => v.length >= 2, message: 'Tag must be at least 2 characters' },
+              { test: (v) => v.length <= 20, message: 'Tag must not exceed 20 characters' }
+            ]}
+            maxItems={10}
+            allowDuplicates={true}
+            onError={(error) => console.log('Validation error:', error)}
+          />
+          <Chipster.Suggestions
+            getSuggestions={getSuggestions}
+          />
+        </Chipster>
       </div>
 
       <div className="w-full max-w-xl relative">

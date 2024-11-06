@@ -1,0 +1,116 @@
+# onAdd
+
+The `onAdd` prop is a callback function that is triggered when a new item is added to the Chipster component. This can happen through direct input, suggestion selection, or programmatic addition.
+
+## Type Definition
+```typescript
+type OnAddCallback = (value: string) => void;
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+
+export default function BasicExample() {
+  const handleAdd = (value: string) => {
+    console.log('Added item:', value)
+    // Additional logic here
+  }
+
+  return (
+    <Chipster onAdd={handleAdd}>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Type and press Enter" />
+    </Chipster>
+  )
+}
+```
+
+## Advanced Usage with Validation
+
+```tsx filename="ValidationExample.tsx" copy
+export default function ValidationExample() {
+  const [items, setItems] = useState<string[]>([])
+  
+  const handleAdd = (value: string) => {
+    setItems(prev => [...prev, value])
+    // You can perform additional actions like API calls
+    saveToDatabase(value)
+  }
+
+  return (
+    <Chipster onAdd={handleAdd}>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Add item..." />
+      <Chipster.Validation
+        validationRules={[
+          { test: (v) => v.length >= 2, message: 'Min 2 characters' },
+          { test: (v) => v.length <= 20, message: 'Max 20 characters' }
+        ]}
+        maxItems={10}
+        allowDuplicates={false}
+        transform={(v) => v.trim()}
+      />
+    </Chipster>
+  )
+}
+```
+
+## With Suggestions
+
+```tsx filename="SuggestionsExample.tsx" copy
+const suggestions = [
+  { label: 'JavaScript', icon: '🟨' },
+  { label: 'TypeScript', icon: '🔷' },
+  { label: 'React', icon: '⚛️' }
+]
+
+export default function SuggestionsExample() {
+  const handleAdd = (value: string) => {
+    // value will be the label of the selected suggestion
+    console.log('Added technology:', value)
+  }
+
+  const getSuggestions = useCallback((input: string) => {
+    return suggestions
+      .filter(item => 
+        item.label.toLowerCase().includes(input.toLowerCase())
+      )
+      .map(item => ({
+        label: item.label,
+        icon: item.icon,
+        data: item
+      }))
+  }, [])
+
+  return (
+    <Chipster onAdd={handleAdd}>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Search technologies..." />
+      <Chipster.Suggestions getSuggestions={getSuggestions} />
+    </Chipster>
+  )
+}
+```
+
+## Important Notes
+
+- The `onAdd` callback is called after validation (if `Chipster.Validation` is used) but before the item is added to the internal state
+- The value passed to `onAdd` will be transformed if a `transform` function is provided in `Chipster.Validation`
+- The callback won't be triggered if:
+  - The validation rules fail
+  - The maximum items limit is reached
+  - The item is a duplicate (when `allowDuplicates` is false)
+- The callback receives the final string value, even when selecting from suggestions (it uses the suggestion's label)
+
+## Common Use Cases
+- Syncing with external state management
+- Making API calls to save new items
+- Tracking user input analytics
+- Triggering side effects on item addition
+- Updating parent component state
+- Validating against external data sources
+- Logging user actions
+- Real-time data synchronization
+

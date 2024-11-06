@@ -26,7 +26,6 @@
     "**/*.ts", 
     "**/*.tsx", 
     "theme.config.js", 
-    "pages/properties/2validation-transformation/validationRules.mdx",  
     "../chipster/src/**/*.ts",
     "../chipster/src/**/*.tsx"
   ],

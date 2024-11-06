@@ -6,8 +6,11 @@
     "build": "pnpm install && turbo run build",
     "start": "turbo run start",
     "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e --filter=@micoblanc/chipster",
+    "test:e2e:ui": "turbo run test:e2e:ui --filter=@micoblanc/chipster",
+    "test:e2e:debug": "turbo run test:e2e:debug --filter=@micoblanc/chipster",
     "lint": "turbo run lint",
-    "dev:docs": "pnpm run dev -w docs",
+    "dev:docs": "turbo run dev --filter=docs",
     "clean": "turbo run clean && rm -rf node_modules **/node_modules"
   },
   "devDependencies": {

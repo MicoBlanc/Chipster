@@ -84,7 +84,7 @@ const HomePage: React.FC = () => {
             onClick={scrollToExamples}
             animate={floatingAnimation}
           >
-            <span className="text-sm mb-1">See Examples</span>
+            <span className="text-sm font-medium mb-1">See Examples</span>
             <ChevronDown className="h-6 w-6" />
           </motion.div>
         </section>
@@ -96,7 +96,7 @@ const HomePage: React.FC = () => {
             animate={floatingAnimation}
           >
             <ChevronUp className="h-6 w-6" />
-            <span className="text-sm mt-1">Back to Top</span>
+            <span className="text-sm font-medium mt-1">Back to Top</span>
           </motion.div>
         </section>
       </motion.div>

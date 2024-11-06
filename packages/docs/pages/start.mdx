@@ -1,81 +1,162 @@
 # Chipster
 
-Chipster is a flexible and powerful multi-entry input component for React. It's perfect for managing tags, email addresses, or any list-based input scenario where you need to handle multiple entries efficiently.
-
-## Features
-
-- Customizable input and chip styles
-- Validation rules for input
-- Autocomplete suggestions
-- Real-time state management
-- Animations for chip removal
-- Accessibility support
-- TypeScript support
-- Flexible API with `useChipster` hook
+Chipster is a composable and flexible multi-entry input component for React. Perfect for managing tags, email addresses, or any list-based input scenario with built-in validation and suggestions support.
 
 ## Installation
 
-Install Chipster via npm:
-
-```bash filename="Install library" {3} copy
+```bash filename="Install library" copy
 npm install @micoblanc/chipster
 ```
 
-## How to Use
+## Basic Usage
+Here's a simple example of how to use Chipster:
 
-To use Chipster in your React application, import it and add it to your JSX. Here's a basic example:
-```tsx filename="Chipster.tsx" {3} copy
-import { Chipster, ChipsterItem } from '@micoblanc/chipster';
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
 
-function ChipsterComponent() {
-  const [currentItems, setCurrentItems] = useState<ChipsterItem[]>([]);
-
+export default function BasicExample() {
   return (
-    <Chipster
-      placeholder="Enter emails"
-      onAdd={(item) => console.log('Added:', item)}
-      onRemove={(item) => console.log('Removed:', item)}
-      onItemsChange={(items) => {
-        setCurrentItems(items);
-        console.log('Current items:', items);
-      }}
-      getIcon={(value) => value.includes('@') ? '✉️' : null}
-      maxItems={5}
-      allowDuplicates={false}
-    />
-  );
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Type and press Enter" />
+      <Chipster.Validation
+        validationRules={[
+          { test: (v) => v.length >= 2, message: 'Min 2 characters' },
+          { test: (v) => v.length <= 20, message: 'Max 20 characters' }
+        ]}
+        maxItems={10}
+        allowDuplicates={false}
+      />
+    </Chipster>
+  )
 }
 ```
 
-## API Reference
+## Advanced Usage with Suggestions
+
+Here's how to implement Chipster with suggestions and custom icons:
+
+```tsx filename="AdvancedExample.tsx" copy
+const suggestions = [
+  { label: 'JavaScript', icon: '🟨' },
+  { label: 'TypeScript', icon: '🔷' },
+  { label: 'React', icon: '⚛️' }
+]
+
+export default function AdvancedExample() {
+  const getSuggestions = useCallback((input: string) => {
+    return suggestions
+      .filter(item => 
+        item.label.toLowerCase().includes(input.toLowerCase())
+      )
+      .map(item => ({
+        label: item.label,
+        icon: item.icon,
+        data: item
+      }))
+  }, [])
+
+  return (
+    <Chipster>
+      <Chipster.ItemList />
+      <Chipster.Input 
+        placeholder="Search technologies..."
+        className="bg-white rounded-lg"
+      />
+      <Chipster.Validation
+        validationRules={[
+          { test: (v) => v.length >= 2, message: 'Min 2 characters' },
+          { test: (v) => v.length <= 20, message: 'Max 20 characters' }
+        ]}
+        maxItems={5}
+        transform={(v) => v.toLowerCase().trim()}
+      />
+      <Chipster.Suggestions getSuggestions={getSuggestions} />
+    </Chipster>
+  )
+}
+```
+
+## Components API
+
+### Chipster
+Main container component that provides context to all child components.
 
 | Prop | Type | Description |
-| ---- | ---- | ----------- |
-| `onAdd` | `(item: string) => void` | Callback function called when an item is added |
-| `onRemove` | `(id: string) => void` | Callback function called when an item is removed |
-| `onItemsChange` | `(items: Array<{ id: string; text: string; icon?: React.ReactNode }>) => void` | Callback function called whenever items change, providing the current state |
-| `placeholder` | `string \| React.ReactNode` | Text or element to display when the input is empty |
-| `className` | `string` | CSS class for the main container |
-| `inputClassName` | `string` | CSS class for the input element |
-| `errorClassName` | `string` | CSS class for error messages |
-| `chipClassName` | `string` | CSS class for each chip |
-| `chipHighlightedClassName` | `string` | CSS class for highlighted chips |
-| `chipDisabledClassName` | `string` | CSS class for disabled chips |
-| `chipIconClassName` | `string` | CSS class for chip icons |
-| `chipRemoveButtonClassName` | `string` | CSS class for chip remove buttons |
-| `disabled` | `boolean` | Disable the entire component |
-| `suggestionStyle` | `'fullWidth' \| 'minimal'` | Style of the suggestions dropdown |
-| `validationRules` | `Array<{ test: (value: string) => boolean, message: string }>` | Array of rules to validate input |
-| `getIcon` | `(value: string) => React.ReactNode` | Function to get an icon for each chip based on its value |
-| `maxItems` | `number` | Maximum number of items allowed |
-| `maxItemsMessage` | `string` | Message to display when max items limit is reached |
-| `allowDuplicates` | `boolean` | Allow or disallow duplicate items |
-| `caseSensitive` | `boolean` | Determine if chip values are case-sensitive |
-| `renderItem` | `(item: ChipsterItem, index: number, isHighlighted: boolean) => React.ReactNode` | Custom render function for chips |
-| `transform` | `(value: string) => string` | Function to transform input before adding as a chip |
-| `showErrorMessage` | `boolean` | Show or hide error messages |
-| `exitAnimation` | `string \| { exit: AnimationKeyframes }` | Animation style for removing chips |
-| `restrictToSuggestions` | `boolean` | Only allow items from suggestions to be added |
-| `getSuggestions` | `(input: string) => string[]` | Function to get autocomplete suggestions based on input |
-| `onInputChange` | `(value: string) => void` | Callback function called when input value changes |
-| `theme` | `'light' \| 'dark'` | Theme for the component |
+|------|------|-------------|
+| `className` | `string` | Custom class for the container |
+| `onAdd` | `(text: string) => void` | Callback when an item is added |
+| `onRemove` | `(id: string) => void` | Callback when an item is removed |
+| `defaultValue` | `string[]` | Initial items to populate the input |
+| `disabled` | `boolean` | Disable all interactions |
+| `theme` | `'light' \| 'dark'` | Theme variant |
+
+### Chipster.Input
+Input component for entering new items.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `className` | `string` | Custom class for the input |
+| `placeholder` | `string` | Input placeholder text |
+| `onInputChange` | `(value: string) => void` | Input change callback |
+
+### Chipster.Validation
+Validation component for input rules and constraints.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `validationRules` | `Array<{ test: (value: string) => boolean, message: string }>` | Validation rules |
+| `maxItems` | `number` | Maximum number of items |
+| `allowDuplicates` | `boolean` | Allow duplicate items |
+| `transform` | `(value: string) => string` | Transform input before adding |
+| `onError` | `(error: string) => void` | Error callback |
+
+### Chipster.Suggestions
+Suggestions component for autocomplete functionality.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `className` | `string` | Custom class for suggestions container |
+| `getSuggestions` | `(input: string) => Array<string \| { label: string, icon?: React.ReactNode, data?: any }>` | Get suggestions function |
+| `onSelect` | `(suggestion: ChipsterSuggestion) => void` | Callback when a suggestion is selected |
+
+### Chipster.ItemList
+Component to display selected items.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `className` | `string` | Custom class for items container |
+| `itemClassName` | `string` | Custom class for individual items (use `!` modifier to override defaults) |
+| `removeButtonClassName` | `string` | Custom class for remove buttons (use `!` modifier to override defaults) |
+| `iconClassName` | `string` | Custom class for icons (use `!` modifier to override defaults) |
+| `removeIcon` | `ReactNode` | Custom remove button icon |
+
+## Keyboard Navigation
+
+- `ArrowLeft/Right`: Navigate between chips when input is empty
+- `Backspace`: Remove highlighted chip or last chip when input is empty
+- `ArrowUp/Down`: Navigate through suggestions
+- `Enter`: Select highlighted suggestion
+- `Escape`: Clear suggestions and chip highlight
+
+## Styling
+Chipster uses CSS Modules and can be customized using className props on each component. It also supports dark mode through the theme prop.
+
+## Styling Examples
+
+```tsx
+// Basic styling with overrides
+<Chipster.ItemList 
+  className="flex flex-wrap gap-2"
+  itemClassName="!bg-blue-100 !px-3 !py-1" // Use ! to override defaults
+  removeButtonClassName="!text-red-500"
+/>
+
+// Dark theme with custom styles
+<Chipster theme="dark">
+  <Chipster.ItemList 
+    itemClassName="!bg-gray-800 !text-white"
+    removeButtonClassName="!text-gray-400"
+  />
+</Chipster>
+```
