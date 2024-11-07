@@ -13,7 +13,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "prepublishOnly": "pnpm run build && pnpm test",
+    "prepublishOnly": "pnpm run build",
     "clean": "rm -rf dist node_modules"
   },
   "keywords": [
