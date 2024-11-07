@@ -3,9 +3,13 @@ name: CI
 on:
   push:
     branches:
-      - main  # Change this to your default branch if it's not 'main'
-      - 'feature/*'  # Run on feature branches
-      - 'bugfix/*'  # Run on bugfix branches
+      - main
+      - 'feature/*'
+      - 'bugfix/*'
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
@@ -18,12 +22,27 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '21'  
+          node-version: '21'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.12.2
+          run_install: false
 
       - name: Install dependencies
-        run: |
-          pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Clean
+        run: pnpm clean
+
+      - name: Install dependencies (after clean)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm run build --filter=@micoblanc/chipster
 
       - name: Run Playwright tests
         run: |
-          pnpm test:e2e  
+          pnpm exec playwright install --with-deps
+          pnpm test:e2e

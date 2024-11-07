@@ -8,7 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.json",
     "dev:test": "vite",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

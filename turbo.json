@@ -42,6 +42,11 @@
     "clean": {
       "cache": false,
       "outputs": []
+    },
+    "dev:docs": {
+      "dependsOn": ["packages/docs"],
+      "cache": false,
+      "persistent": true
     }
   }
 }

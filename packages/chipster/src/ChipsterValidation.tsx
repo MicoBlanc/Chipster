@@ -4,7 +4,7 @@ import styles from './chipster.module.css'
 import { ChipsterValidationProps } from './types'
 import { useChipsterContext } from './ChipsterContext'
 
-export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
+export const ChipsterValidation = ({
   validationRules,
   maxItems,
   maxItemsMessage = 'Maximum items reached',
@@ -13,7 +13,7 @@ export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
   errorClassName,
   children,
   onError
-}) => {
+}: ChipsterValidationProps): JSX.Element | null => {
   const { error, setValidationConfig, setError } = useChipsterContext()
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export const ChipsterValidation: React.FC<ChipsterValidationProps> = ({
   if (!error) return null
 
   if (children) {
-    return children(error)
+    return <>{children(error)}</>
   }
 
   return (
