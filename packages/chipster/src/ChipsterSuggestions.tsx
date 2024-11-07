@@ -10,7 +10,7 @@ export const ChipsterSuggestions = ({
   children,
   onSelect,
   ...props
-}: ChipsterSuggestionsProps) => {
+}: ChipsterSuggestionsProps): JSX.Element | null => {
   const { 
     theme,
     items,
@@ -62,7 +62,7 @@ export const ChipsterSuggestions = ({
       suggestions, 
       onSelect: handleSelect,
       selectedIndex: selectedSuggestionIndex
-    })
+    }) as JSX.Element | null
   }
 
   const listProps = {
