@@ -3,6 +3,7 @@
   "version": "1.2.0",
   "description": "A composable and flexible multi-entry input component for React",
   "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "style": "dist/styles.css", 
   "files": [
@@ -68,5 +69,12 @@
     "@rollup/plugin-terser": "^0.4.3"
   },
   "packageManager": "pnpm@9.12.2",
-  "type": "module"
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.esm.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  }
 }
