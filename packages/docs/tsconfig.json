@@ -28,6 +28,6 @@
     "theme.config.js", 
     "../chipster/src/**/*.ts",
     "../chipster/src/**/*.tsx"
-  ],
+, "pages/_app.mdx" ],
   "exclude": ["node_modules"]
 }

@@ -11,6 +11,14 @@ npm install @micoblanc/chipster
 ## Basic Usage
 Here's a simple example of how to use Chipster:
 
+<iframe
+  src="https://codesandbox.io/embed/chipster-basic-example-xyz123"
+  style={{ width: '100%', height: '500px', border: 0, borderRadius: '4px', overflow: 'hidden' }}
+  title="Chipster Basic Example"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+/>
+
 ```tsx filename="BasicExample.tsx" copy
 import { Chipster } from '@micoblanc/chipster'
 
@@ -90,6 +98,7 @@ Main container component that provides context to all child components.
 | `defaultValue` | `string[]` | Initial items to populate the input |
 | `disabled` | `boolean` | Disable all interactions |
 | `theme` | `'light' \| 'dark'` | Theme variant |
+| `joiner` | `string \| string[]` | Character(s) that trigger new item creation. Default is Enter and , key only |
 
 ### Chipster.Input
 Input component for entering new items.
