@@ -7,7 +7,7 @@ const codeSnippet = `import { Chipster } from '@micoblanc/chipster';
 
 export default function EmailShare() {
   return (
-    <Chipster>
+     <Chipster mode='free' joiner={[',', 'Tab', 'Enter']}>
       <Chipster.ItemList />
       <Chipster.Input 
         className="bg-white shadow-sm rounded-lg"
@@ -32,7 +32,7 @@ export default function DemoEmailShare() {
     <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
       <div className="px-3 py-6 w-full bg-neutral-50 max-w-xl border border-neutral-200 rounded-xl">
         <h2 className="text-base font-semibold mb-1 text-black">Share with your team</h2>
-        <Chipster mode='free' joiner={[';', 'Tab', 'Enter']}>
+        <Chipster mode='free' joiner={[',', 'Tab', 'Enter']}>
           <Chipster.ItemList />
           <Chipster.Input 
             className="bg-white shadow-sm rounded-lg"
