@@ -12,19 +12,20 @@ export default {
     {
       file: 'dist/index.js',
       format: 'cjs',
-      sourcemap: true
+      sourcemap: true,
+      exports: 'named'
     },
     {
       file: 'dist/index.esm.js',
       format: 'esm',
-      sourcemap: true
+      sourcemap: true,
+      exports: 'named'
     }
   ],
   external: [
     'react', 
     'react-dom', 
-    'classnames',
-    'styled-components'
+    'classnames'
   ],
   plugins: [
     resolve(),
@@ -32,25 +33,20 @@ export default {
     typescript({
       tsconfig: './tsconfig.json',
       declaration: true,
-      declarationDir: 'dist',
-      exclude: [
-        '**/*.test.tsx',
-        '**/*.test.ts',
-        'src/__tests__/**/*',
-        'src/playwright/**/*'
-      ]
+      declarationDir: 'dist'
     }),
     postcss({
+      modules: {
+        generateScopedName: 'chipster__[local]__[hash:base64:5]'
+      },
+      inject: true,
+      extract: false,
+      autoModules: true,
+      minimize: true,
       plugins: [
         autoprefixer(),
         cssnano()
-      ],
-      modules: {
-        generateScopedName: '[local]_[hash:base64:5]'
-      },
-      extract: 'styles.css',
-      minimize: true,
-      sourceMap: true
+      ]
     }),
     terser()
   ]

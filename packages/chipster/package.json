@@ -12,10 +12,11 @@
   "scripts": {
     "build": "rollup -c",
     "build:watch": "rollup -c -w",
-    "dev:test": "vite",
+    "dev:test": "vite --port 3000 --host",
+    "pretest:e2e": "pnpm install",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:debug": "PWDEBUG=1 playwright test",
     "prepublishOnly": "pnpm run build",
     "clean": "rm -rf dist node_modules"
   },
@@ -75,6 +76,7 @@
       "require": "./dist/index.js",
       "import": "./dist/index.esm.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./dist/styles.css": "./dist/styles.css"
   }
 }
