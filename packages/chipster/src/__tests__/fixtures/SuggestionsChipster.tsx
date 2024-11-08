@@ -10,7 +10,7 @@ const suggestions = [
 export function SuggestionsChipster() {
   return (
     <div data-testid="suggestions-chipster">
-      <Chipster mode="suggestions-only">
+      <Chipster theme='dark' mode="suggestions-only">
         <Chipster.ItemList />
         <Chipster.Input placeholder="Search technologies..." />
         <Chipster.Suggestions 

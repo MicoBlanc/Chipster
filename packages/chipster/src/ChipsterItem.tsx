@@ -54,7 +54,8 @@ export const ChipsterItem = ({
           [styles.itemHighlighted]: isHighlighted && theme === 'light',
           [styles.itemHighlightedDark]: isHighlighted && theme === 'dark',
           [styles.itemDisabled]: disabled,
-          [styles.itemFocused]: isFocused,
+          [styles.itemFocused]: isFocused && theme === 'light',
+          [styles.itemFocusedDark]: isFocused && theme === 'dark',
         },
         itemClassName,
         {

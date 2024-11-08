@@ -79,8 +79,13 @@ export interface ChipsterContextType {
   setFocusedItemIndex: (index: number | null) => void;
 }
 
+export interface FontConfig {
+  family?: string;
+}
+
 export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange' | 'validationRules' | 'maxItems' | 'allowDuplicates' | 'transform'> {
   children?: React.ReactNode
+  font?: FontConfig;
   theme?: 'light' | 'dark'
   disabled?: boolean
   className?: string
