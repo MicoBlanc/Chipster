@@ -224,6 +224,7 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
     containerRef,
     inputRef,
     focusedItemIndex,
-    setFocusedItemIndex
+    setFocusedItemIndex,
+    joiner: props.joiner
   }
 }

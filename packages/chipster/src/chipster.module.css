@@ -7,7 +7,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  padding: 2px;
+  padding: 0.25rem;
   border: 1px solid #c7c7c7;
   background-color: #ffffff;
   border-radius: 0.5rem;
@@ -107,6 +107,7 @@
 .item {
   display: inline-flex;
   align-items: center;
+  height: 100%;
   background-color: #f0f0f0;
   color: #303030;
   font-weight: 500;
@@ -116,9 +117,18 @@
   font-style: normal;
   font-family: var(--chipster-font-family);
   font-size: 0.75rem;
-  margin: 0.125rem;
+  min-height: 1.75rem;
+  box-sizing: border-box;
   outline: none;
   transition: all 0.2s ease;
+}
+
+.itemList {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  gap: 0.25rem;
+  align-items: stretch;
 }
 
 .itemDisabled {
@@ -128,6 +138,18 @@
 
 .itemIcon {
   margin-right: 0.25rem;
+  display: flex;  
+  align-items: center;  
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.itemIcon img,
+.itemIcon svg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .itemRemove {

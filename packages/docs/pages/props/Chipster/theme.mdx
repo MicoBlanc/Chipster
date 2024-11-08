@@ -1,0 +1,136 @@
+# theme
+
+The `theme` prop allows you to switch between light and dark modes in the Chipster component. It affects the appearance of all child components including items, input, suggestions, and validation messages.
+
+## Type Definition
+```typescript
+type Theme = 'light' | 'dark';
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+
+export default function BasicExample() {
+  return (
+    <Chipster theme="dark">
+      <Chipster.ItemList />
+      <Chipster.Input placeholder="Type and press Enter" />
+    </Chipster>
+  )
+}
+```
+
+## Advanced Usage with Theme Switching
+
+```tsx filename="ThemeSwitcherExample.tsx" copy
+export default function ThemeSwitcherExample() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light')
+  }
+
+  return (
+    <div className={theme === 'dark' ? 'bg-gray-900' : 'bg-white'}>
+      <button onClick={toggleTheme}>
+        Toggle Theme
+      </button>
+      <Chipster theme={theme}>
+        <Chipster.ItemList 
+          removeIcon={<XMarkIcon className="h-4 w-4" />}
+        />
+        <Chipster.Input placeholder="Add item..." />
+        <Chipster.Suggestions getSuggestions={getSuggestions} />
+      </Chipster>
+    </div>
+  )
+}
+```
+
+## With Custom Styling
+
+```tsx filename="CustomThemeExample.tsx" copy
+export default function CustomThemeExample() {
+  return (
+    <Chipster theme="dark">
+      <Chipster.ItemList 
+        itemClassName="!bg-indigo-900 !text-white" // Override dark theme styles
+        removeButtonClassName="!text-indigo-300 hover:!text-indigo-100"
+        iconClassName="!text-indigo-400"
+      />
+      <Chipster.Input 
+        placeholder="Type here..." 
+        className="!bg-indigo-950 !text-white"
+      />
+      <Chipster.Suggestions 
+        className="!bg-indigo-950 !border-indigo-800"
+      />
+    </Chipster>
+  )
+}
+```
+
+## Important Notes
+
+- The theme affects all Chipster components automatically
+- Default styles can be overridden using the `!` modifier in className props
+- Theme changes trigger smooth transitions
+- Theme affects:
+  - Background colors
+  - Text colors
+  - Border colors
+  - Hover states
+  - Focus states
+  - Icon colors
+  - Suggestion styles
+
+## Common Use Cases
+
+- System theme integration
+- User preference persistence
+- Dynamic theme switching
+- Custom theme extensions
+- Branded theming
+- Context-aware theming
+- Accessibility improvements
+- Color scheme consistency
+
+## Theme Specifics
+
+### Light Theme (Default)
+- Items: Light gray background (`#f3f4f6`)
+- Text: Dark gray (`#303030`)
+- Borders: Light gray (`#d1d5db`)
+- Icons: Medium gray (`#6b7280`)
+
+### Dark Theme
+- Items: Dark background (`#222222`)
+- Text: White (`#ffffff`)
+- Borders: Dark gray (`#5e5e5e`)
+- Icons: Light gray (`#9ca3af`)
+
+## Component-Specific Theming
+
+Each component can be individually styled while maintaining theme consistency:
+
+```tsx filename="ComponentTheming.tsx" copy
+<Chipster theme="dark">
+  {/* Items styling */}
+  <Chipster.ItemList 
+    itemClassName="!bg-gray-800"
+    removeButtonClassName="!text-gray-400"
+  />
+  
+  {/* Input styling */}
+  <Chipster.Input 
+    className="!bg-gray-900 !text-white"
+  />
+  
+  {/* Suggestions styling */}
+  <Chipster.Suggestions 
+    className="!bg-gray-900 !border-gray-700"
+  />
+</Chipster>
+```
