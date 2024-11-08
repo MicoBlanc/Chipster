@@ -17,12 +17,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '21'
+          node-version: '18'
           
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -31,18 +31,13 @@ jobs:
           run_install: false
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Clean
-        run: pnpm clean
-
-      - name: Install dependencies (after clean)
         run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Build packages
         run: pnpm run build --filter=@micoblanc/chipster
 
       - name: Run Playwright tests
-        run: |
-          pnpm exec playwright install --with-deps
-          pnpm test:e2e
+        run: cd packages/chipster && pnpm test:e2e
