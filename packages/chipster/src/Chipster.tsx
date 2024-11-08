@@ -23,9 +23,10 @@ export const Chipster: React.FC<ChipsterProps> & ChipsterComposition = ({
   className, 
   theme = 'light',
   font,
+  joiner,
   ...props 
 }) => {
-  const chipsterState = useChipster({ theme, ...props })
+  const chipsterState = useChipster({ theme, joiner, ...props })
   const { error, containerRef } = chipsterState
 
   const fontFamily = font?.family || 'var(--font-sans, system-ui, -apple-system, sans-serif)'

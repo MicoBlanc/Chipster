@@ -28,7 +28,10 @@ export const ChipsterInput = ({
     setError,
     validationConfig,
     mode,
+    joiner = [',', 'Enter'],
   } = useChipsterContext()
+
+  const joiners = Array.isArray(joiner) ? joiner : [joiner]
 
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -47,6 +50,20 @@ export const ChipsterInput = ({
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
+    const lastChar = newValue.slice(-1)
+    
+    // Check if the last character is a joiner
+    if (joiners.includes(lastChar) && newValue.trim().length > 1) {
+      const valueToAdd = newValue.slice(0, -1).trim()
+      if (valueToAdd) {
+        if (addItem(valueToAdd)) {
+          setInputValue('')
+          onInputChange?.('')
+          return
+        }
+      }
+    }
+
     setInputValue(newValue)
     onInputChange?.(newValue)
     
@@ -58,12 +75,36 @@ export const ChipsterInput = ({
       setError(null)
       setShowSuggestions(false)
     }
-  }, [updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError, validateInput])
+  }, [joiners, addItem, updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError, validateInput])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return
 
     const currentValue = inputValue || ''
+
+    // Handle Enter key as a joiner
+    if (joiners.includes(e.key) && currentValue.trim()) {
+      e.preventDefault()
+          
+      // Handle suggestion selection
+      if (selectedSuggestionIndex >= 0 && suggestions.length > 0) {
+        const selectedSuggestion = suggestions[selectedSuggestionIndex]
+        const value = typeof selectedSuggestion === 'string' 
+          ? selectedSuggestion 
+          : selectedSuggestion.label
+        addItem(value, selectedSuggestion)
+        setSelectedSuggestionIndex(-1)
+        setInputValue('')
+        return
+      }
+
+      // Handle free input mode
+      if (mode === 'free') {
+        if (addItem(currentValue.trim())) {
+          setInputValue('')
+        }
+      }
+    }
 
     switch (e.key) {
       // Suggestions navigation
@@ -118,32 +159,6 @@ export const ChipsterInput = ({
             } else {
               highlightItem(null)
               inputRef.current?.focus()
-            }
-          }
-        }
-        break
-
-      // Suggestion selection
-      case 'Enter':
-        if (currentValue.trim()) {
-          e.preventDefault()
-          
-          // Handle suggestion selection
-          if (selectedSuggestionIndex >= 0 && suggestions.length > 0) {
-            const selectedSuggestion = suggestions[selectedSuggestionIndex]
-            const value = typeof selectedSuggestion === 'string' 
-              ? selectedSuggestion 
-              : selectedSuggestion.label
-            addItem(value, selectedSuggestion)
-            setSelectedSuggestionIndex(-1)
-            setInputValue('')
-            return
-          }
-
-          // Handle free input mode
-          if (mode === 'free') {
-            if (addItem(currentValue.trim())) {
-              setInputValue('')
             }
           }
         }

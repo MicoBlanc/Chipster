@@ -72,11 +72,12 @@ export interface ChipsterContextType {
   setSelectedSuggestionIndex: (index: number | ((prev: number) => number)) => void
   suggestions: ChipsterSuggestion[]
   setSuggestions: (suggestions: ChipsterSuggestion[]) => void
-  mode: 'free' | 'suggestions-only';
-  containerRef: React.RefObject<HTMLDivElement>;
-  inputRef: React.RefObject<HTMLInputElement>;
-  focusedItemIndex: number | null;
-  setFocusedItemIndex: (index: number | null) => void;
+  mode: 'free' | 'suggestions-only'
+  containerRef: React.RefObject<HTMLDivElement>
+  inputRef: React.RefObject<HTMLInputElement>
+  focusedItemIndex: number | null
+  setFocusedItemIndex: (index: number | null) => void
+  joiner?: string | string[]
 }
 
 export interface FontConfig {
@@ -92,6 +93,7 @@ export interface ChipsterProps extends Omit<UseChipsterOptions, 'onItemsChange' 
   onAdd?: (value: string) => void
   onRemove?: (id: string) => void
   mode?: 'free' | 'suggestions-only'
+  joiner?: string | string[]
 }
 
 export interface ChipsterInputProps {

@@ -1,54 +1,13 @@
 import { Chipster } from '@micoblanc/chipster';
-import { useCallback } from 'react';
 import { Disclosure } from '@headlessui/react';
 import { CodeBracketIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const teamMembers = [
-  { email: 'john@example.com', name: 'John Doe', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John' },
-  { email: 'jane@example.com', name: 'Jane Smith', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jane' },
-  { email: 'bob@example.com', name: 'Bob Johnson', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob' },
-  { email: 'alice@example.com', name: 'Alice Williams', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice' },
-  { email: 'charlie@example.com', name: 'Charlie Brown', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie' },
-  { email: 'emma@example.com', name: 'Emma Davis', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma' },
-  { email: 'david@example.com', name: 'David Wilson', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David' },
-  { email: 'olivia@example.com', name: 'Olivia Taylor', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia' },
-];
-
 const codeSnippet = `import { Chipster } from '@micoblanc/chipster';
 
-const teamMembers = [
-  { email: 'john@example.com', name: 'John Doe', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John' },
-  // ... more team members
-];
-
 export default function EmailShare() {
-  const getSuggestions = (input: string) => {
-    const lowercasedInput = input.toLowerCase();
-    return teamMembers
-      .filter(member => 
-        member.email.toLowerCase().includes(lowercasedInput) || 
-        member.name.toLowerCase().includes(lowercasedInput)
-      )
-      .map(member => ({
-        label: member.email,
-        icon: (
-          <div className="flex items-center gap-2">
-            <img 
-              src={member.avatar} 
-              alt={member.name} 
-              width={20} 
-              height={20} 
-              className="rounded-full" 
-            />
-            <span className="text-sm text-neutral-500">{member.name}</span>
-          </div>
-        )
-      }));
-  };
-
   return (
-    <Chipster>
+     <Chipster mode='free' joiner={[',', 'Tab', 'Enter']}>
       <Chipster.ItemList />
       <Chipster.Input 
         className="bg-white shadow-sm rounded-lg"
@@ -64,43 +23,16 @@ export default function EmailShare() {
         allowDuplicates={false}
         onError={(error) => console.log('Validation error:', error)}
       />
-      <Chipster.Suggestions
-        getSuggestions={getSuggestions}
-        style="minimal"
-      />
     </Chipster>
   );
 }`;
 
 export default function DemoEmailShare() {
-  const getSuggestions = useCallback((input: string) => {
-    const lowercasedInput = input.toLowerCase();
-    return teamMembers
-      .filter(member => 
-        member.email.toLowerCase().includes(lowercasedInput) || 
-        member.name.toLowerCase().includes(lowercasedInput)
-      )
-      .map(member => ({
-        label: member.email,
-        icon: (
-          <div className="flex items-center gap-1">
-            <img 
-              src={member.avatar} 
-              alt={member.name} 
-              width={20} 
-              height={20} 
-              className="rounded-full" 
-            />
-          </div>
-        )
-      }));
-  }, []);
-
   return (
     <div className='font-sans flex flex-col items-center gap-2 justify-center w-full h-full'>
       <div className="px-3 py-6 w-full bg-neutral-50 max-w-xl border border-neutral-200 rounded-xl">
         <h2 className="text-base font-semibold mb-1 text-black">Share with your team</h2>
-        <Chipster>
+        <Chipster mode='free' joiner={[',', 'Tab', 'Enter']}>
           <Chipster.ItemList />
           <Chipster.Input 
             className="bg-white shadow-sm rounded-lg"
@@ -109,15 +41,15 @@ export default function DemoEmailShare() {
           <Chipster.Validation
             validationRules={[
               { 
-                test: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 
-                message: 'Write a valid email' 
+                test: (v) => {
+                  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+                  return emailRegex.test(v)
+                },
+                message: 'Please enter a valid email address'
               }
             ]}
             allowDuplicates={false}
             onError={(error) => console.log('Validation error:', error)}
-          />
-          <Chipster.Suggestions
-            getSuggestions={getSuggestions}
           />
         </Chipster>
       </div>

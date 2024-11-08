@@ -1,0 +1,53 @@
+# joiner
+
+The `joiner` prop defines which characters will trigger item addition in Chipster. It supports both single characters and arrays of characters, allowing flexible input handling.
+
+## Type Definition
+```typescript
+type Joiner = string | string[];
+```
+
+## Basic Usage
+
+```tsx filename="BasicExample.tsx" copy
+import { Chipster } from '@micoblanc/chipster'
+export default function BasicExample() {
+return (
+<Chipster joiner={[',', 'Enter']}>
+<Chipster.ItemList />
+<Chipster.Input placeholder="Type and press Enter or comma..." />
+</Chipster>
+)
+}
+```
+
+## Custom Joiners
+
+```tsx filename="CustomJoinersExample.tsx" copy
+export default function CustomJoinersExample() {
+return (
+<Chipster joiner={[';', 'Tab', 'Enter']}>
+<Chipster.ItemList />
+<Chipster.Input placeholder="Use semicolon, Tab, or Enter..." />
+</Chipster>
+)
+}
+```
+
+## Joiner Behaviors
+
+### Default Behavior
+- Default joiners are `[',', 'Enter']`
+- Items are added when:
+  - User types a joiner character
+  - The input has content before the joiner
+  - Validation passes (if configured)
+
+
+## Important Notes
+- Joiners are processed before validation
+- The input is trimmed before processing
+- Empty inputs are ignored
+- Joiners work in 'free' mode only
+- In 'suggestions-only' mode, joiners are disabled
+- The joiner character is removed from the final value
