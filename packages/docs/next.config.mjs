@@ -14,5 +14,14 @@ export default withNextra({
     }
     return config
   },
-  pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts']
+  pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
+  swcMinify: true,
+  compress: true,
+  optimizeFonts: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
+  experimental: {
+    optimizeCss: true,
+    legacyBrowsers: false
+  }
 })
