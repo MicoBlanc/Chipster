@@ -8,12 +8,10 @@ const withNextra = nextra({
 export default withNextra({
   transpilePackages: ['@micoblanc/chipster'],
   webpack: (config, { isServer }) => {
-    // Force case sensitivity
+    // Preserve the original resolve configuration
     config.resolve = {
       ...config.resolve,
-      enforceExtensions: true,
-      enforceModuleExtension: true,
-      caseSensitive: true
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mdx'],
     }
     return config
   }
