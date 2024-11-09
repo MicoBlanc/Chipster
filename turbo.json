@@ -6,6 +6,11 @@
       "outputs": ["dist/**", ".next/**"],
       "env": ["NODE_ENV", "NEXT_PUBLIC_*"]
     },
+    "docs#build": {
+      "dependsOn": ["packages/docs"],
+      "outputs": [".next/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*", "PORT"]
+    },
     "start": {
       "dependsOn": ["build"]
     },

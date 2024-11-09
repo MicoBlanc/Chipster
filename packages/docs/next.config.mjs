@@ -6,22 +6,12 @@ const withNextra = nextra({
 })
 
 export default withNextra({
+  output: 'standalone',
   transpilePackages: ['@micoblanc/chipster'],
-  webpack: (config) => {
-    config.resolve = {
-      ...config.resolve,
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mdx'],
-    }
-    return config
+  images: {
+    unoptimized: true
   },
-  pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts'],
-  swcMinify: true,
-  compress: true,
-  optimizeFonts: true,
-  poweredByHeader: false,
-  reactStrictMode: true,
   experimental: {
-    optimizeCss: true,
-    legacyBrowsers: false
+    optimizeCss: false
   }
 })
