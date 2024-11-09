@@ -7,12 +7,12 @@ const withNextra = nextra({
 
 export default withNextra({
   transpilePackages: ['@micoblanc/chipster'],
-  webpack: (config, { isServer }) => {
-    // Preserve the original resolve configuration
+  webpack: (config) => {
     config.resolve = {
       ...config.resolve,
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mdx'],
     }
     return config
-  }
+  },
+  pageExtensions: ['mdx', 'md', 'jsx', 'js', 'tsx', 'ts']
 })

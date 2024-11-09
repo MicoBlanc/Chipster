@@ -1,7 +1,7 @@
 {
   "chipster": "Chipster",
-  "chipsterinput": "Chipster.Input",
-  "chipsteritemlist": "Chipster.ItemList",
-  "chipstervalidation": "Chipster.Validation",
-  "chipstersuggestions": "Chipster.Suggestions"
+  "chipster-input": "Chipster.Input",
+  "chipster-item-list": "Chipster.ItemList",
+  "chipster-validation": "Chipster.Validation",
+  "chipster-suggestions": "Chipster.Suggestions"
 }
