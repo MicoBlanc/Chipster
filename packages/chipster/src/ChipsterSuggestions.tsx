@@ -26,6 +26,7 @@ export const ChipsterSuggestions = ({
   } = useChipsterContext()
   
   const listRef = useRef<HTMLUListElement>(null)
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([])
 
   const getSuggestionLabel = useCallback((suggestion: ChipsterSuggestion): string => {
     return typeof suggestion === 'string' ? suggestion : suggestion.label
@@ -47,6 +48,26 @@ export const ChipsterSuggestions = ({
       setSuggestions([])
     }
   }, [getSuggestions, inputValue, items, allowDuplicates, setSuggestions, getSuggestionLabel])
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (selectedSuggestionIndex >= 0 && showSuggestions) {
+      const selectedItem = itemRefs.current[selectedSuggestionIndex]
+      if (selectedItem && listRef.current) {
+        const container = listRef.current
+        const itemTop = selectedItem.offsetTop
+        const itemBottom = itemTop + selectedItem.offsetHeight
+        const containerTop = container.scrollTop
+        const containerBottom = containerTop + container.offsetHeight
+
+        if (itemTop < containerTop) {
+          container.scrollTop = itemTop
+        } else if (itemBottom > containerBottom) {
+          container.scrollTop = itemBottom - container.offsetHeight
+        }
+      }
+    }
+  }, [selectedSuggestionIndex, showSuggestions])
 
   const handleSelect = useCallback((suggestion: ChipsterSuggestion) => {
     const label = getSuggestionLabel(suggestion)
@@ -81,6 +102,7 @@ export const ChipsterSuggestions = ({
       {suggestions.map((suggestion, index) => (
         <li
           key={index}
+          ref={el => itemRefs.current[index] = el}
           role="option"
           aria-selected={index === selectedSuggestionIndex}
           className={classNames(
