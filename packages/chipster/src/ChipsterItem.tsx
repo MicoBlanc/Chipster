@@ -19,28 +19,41 @@ export const ChipsterItem = ({
   removeIcon?: React.ReactNode
 }): JSX.Element => {
   const { 
-    removeItem, 
     highlightedIndex, 
     disabled, 
     theme,
     highlightItem,
-    inputRef 
+    removeItem,
   } = useChipsterContext()
 
   const itemRef = useRef<HTMLSpanElement>(null)
   const isHighlighted = highlightedIndex === index
-  console.log('isHighlighted', isHighlighted)
-  console.log('index', index)
 
   // Focus management
   useEffect(() => {
     if (isHighlighted && itemRef.current) {
+      console.log('Focusing item:', {
+        itemId: item.id,
+        itemText: item.text,
+      })
       itemRef.current.focus()
     }
   }, [isHighlighted])
 
-  if (render) {
-    return <>{render(item, isHighlighted)}</>
+  // Handle item removal
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent event bubbling
+    if (typeof index === 'number') {     
+      removeItem(item.id)
+      // Clear highlight if we're removing the highlighted item
+      if (index === highlightedIndex) {
+        console.log('ChipsterItem - Clearing highlight after removal:', {
+          removedIndex: index,
+          wasHighlighted: true
+        })
+        highlightItem(null)
+      }
+    }
   }
 
   return (
@@ -63,30 +76,12 @@ export const ChipsterItem = ({
         )}
         data-highlighted={isHighlighted || undefined}
         data-disabled={disabled || undefined}
-        tabIndex={isHighlighted ? 0 : -1} // Only allow focus when highlighted
+        tabIndex={isHighlighted ? 0 : -1}
         role="button"
         aria-selected={isHighlighted}
         onFocus={() => {
           if (typeof index === 'number') {
             highlightItem(index)
-          }
-        }}
-        onBlur={(e) => {
-          // Only remove highlight if we're not moving to another chip
-          if (!e.relatedTarget?.closest(`.${styles.item}`)) {
-            highlightItem(null)
-          }
-        }}
-        onKeyDown={(e) => {
-          // Handle keyboard events at the item level
-          switch (e.key) {
-            case 'Delete':
-            case 'Backspace':
-              e.preventDefault()
-              removeItem(item.id)
-              highlightItem(null)
-              inputRef.current?.focus()
-              break
           }
         }}
       >
@@ -101,7 +96,7 @@ export const ChipsterItem = ({
         )}
         {item.text}
         <button 
-          onClick={() => removeItem(item.id)} 
+          onClick={handleRemove}
           className={classNames(
             styles.itemRemove,
             theme === 'dark' ? styles.itemRemoveDark : '',

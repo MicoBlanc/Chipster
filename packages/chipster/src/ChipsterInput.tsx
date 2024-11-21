@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useRef, useEffect } from 'react'
 import classNames from 'classnames'
 import styles from './chipster.module.css'
 import { ChipsterInputProps } from './types'
@@ -29,6 +29,7 @@ export const ChipsterInput = ({
     validationConfig,
     mode,
     joiner = [',', 'Enter'],
+    containerRef,
   } = useChipsterContext()
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -85,46 +86,47 @@ export const ChipsterInput = ({
   }, [joiners, handleAddItem, updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError, validateInput])
 
   // Handle keyboard navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (disabled) return
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (disabled) return
+      const currentValue = inputValue || ''
+      const isInputFocused = document.activeElement === inputRef.current
 
-    const currentValue = inputValue || ''
-
-    // Handle item addition
-    if (joiners.includes(e.key) && currentValue.trim()) {
-      e.preventDefault()
-          
-      if (selectedSuggestionIndex >= 0 && suggestions.length > 0) {
-        const selectedSuggestion = suggestions[selectedSuggestionIndex]
-        const value = typeof selectedSuggestion === 'string' 
-          ? selectedSuggestion 
-          : selectedSuggestion.label
-        handleAddItem(value, selectedSuggestion)
-        return
-      }
-
-      if (mode === 'free') {
-        handleAddItem(currentValue)
-      }
-      return
-    }
-
-    // Only handle navigation when input is empty
-    if (currentValue === '') {
       switch (e.key) {
+        case 'Backspace':
+          if (currentValue === '') {
+            e.preventDefault()
+            if (highlightedIndex !== null) {
+              const highlightedItem = items[highlightedIndex]
+              console.log('Deleting highlighted item:', {
+                id: highlightedItem.id,
+                text: highlightedItem.text,
+                index: highlightedIndex
+              })
+              removeItem(highlightedItem.id)
+            } else if (items.length > 0) {
+              highlightItem(items.length - 1)
+            }
+          }
+          break
+
         case 'ArrowLeft':
-          e.preventDefault()
-          if (highlightedIndex === null && items.length > 0) {
-            highlightItem(items.length - 1)
-          } else if (highlightedIndex !== null && highlightedIndex > 0) {
-            highlightItem(highlightedIndex - 1)
+          if (currentValue === '') {
+            e.preventDefault()
+            if (highlightedIndex === null && items.length > 0) {
+              highlightItem(items.length - 1)
+            } else if (highlightedIndex !== null && highlightedIndex > 0) {
+              highlightItem(highlightedIndex - 1)
+            }
           }
           break
 
         case 'ArrowRight':
-          e.preventDefault()
-          if (highlightedIndex !== null) {
-            if (highlightedIndex < items.length - 1) {
+          if (currentValue === '') {
+            e.preventDefault()
+            if (highlightedIndex === null) {
+              highlightItem(0)
+            } else if (highlightedIndex < items.length - 1) {
               highlightItem(highlightedIndex + 1)
             } else {
               highlightItem(null)
@@ -133,44 +135,17 @@ export const ChipsterInput = ({
           }
           break
 
-        case 'Backspace':
+        case 'Escape':
           e.preventDefault()
-          if (highlightedIndex !== null) {
-            removeItem(items[highlightedIndex].id)
-            highlightItem(null)
-          } else if (items.length > 0) {
-            highlightItem(items.length - 1)
-          }
+          highlightItem(null)
+          inputRef.current?.focus()
           break
       }
-      return
     }
 
-    // Handle suggestions navigation
-    switch (e.key) {
-      case 'ArrowDown':
-        if (suggestions.length > 0) {
-          e.preventDefault()
-          setSelectedSuggestionIndex(prev => 
-            prev < suggestions.length - 1 ? prev + 1 : prev
-          )
-        }
-        break
-      case 'ArrowUp':
-        if (suggestions.length > 0) {
-          e.preventDefault()
-          setSelectedSuggestionIndex(prev => 
-            prev > 0 ? prev - 1 : 0
-          )
-        }
-        break
-      case 'Escape':
-        setSelectedSuggestionIndex(-1)
-        setShowSuggestions(false)
-        highlightItem(null)
-        break
-    }
-  }, [mode, disabled, inputValue, suggestions, selectedSuggestionIndex, items, highlightedIndex, handleAddItem])
+    window.addEventListener('keydown', handleGlobalKeyDown)
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+  }, [disabled, inputValue, items, highlightedIndex, removeItem, highlightItem])
 
   return (
     <input
@@ -178,7 +153,6 @@ export const ChipsterInput = ({
       type="text"
       value={inputValue || ''}
       onChange={handleInputChange}
-      onKeyDown={handleKeyDown}
       onFocus={() => setShowSuggestions(true)}
       onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
       placeholder={typeof placeholder === 'string' ? placeholder : ''}
