@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
-  "style": "dist/styles.css", 
+  "style": "dist/styles.css",
   "files": [
     "dist"
   ],
@@ -45,28 +45,30 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
-    "classnames": "^2.3.2"
+    "classnames": "^2.3.2",
+    "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.2.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^4.9.5",
-    "@testing-library/dom": "^9.3.3",
     "@playwright/test": "^1.40.0",
-    "vite": "^5.0.0",
-    "@vitejs/plugin-react": "^4.3.3",
     "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-node-resolve": "^15.2.0",
+    "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.0",
+    "@testing-library/dom": "^9.3.3",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/react-transition-group": "^4.4.11",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.0",
+    "cssnano": "^6.0.1",
+    "postcss": "^8.4.12",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "rollup": "^3.28.0",
     "rollup-plugin-postcss": "^4.0.2",
-    "postcss": "^8.4.12",
-    "cssnano": "^6.0.1",
-    "autoprefixer": "^10.4.0",
-    "@rollup/plugin-terser": "^0.4.3"
+    "ts-node": "^10.9.2",
+    "typescript": "^4.9.5",
+    "vite": "^5.0.0"
   },
   "packageManager": "pnpm@9.12.2",
   "type": "module",

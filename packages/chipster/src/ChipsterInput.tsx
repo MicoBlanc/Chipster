@@ -31,13 +31,13 @@ export const ChipsterInput = ({
     joiner = [',', 'Enter'],
   } = useChipsterContext()
 
+  const inputRef = useRef<HTMLInputElement>(null)
   const joiners = Array.isArray(joiner) ? joiner : [joiner]
 
-  const inputRef = useRef<HTMLInputElement>(null)
-
+  // Input validation
   const validateInput = useCallback((value: string) => {
     if (!validationConfig?.validationRules) return true
-
+    
     for (const rule of validationConfig.validationRules) {
       if (!rule.test(value)) {
         setError(rule.message || 'Invalid input')
@@ -48,19 +48,26 @@ export const ChipsterInput = ({
     return true
   }, [validationConfig, setError])
 
+  // Handle item addition
+  const handleAddItem = useCallback((value: string, suggestion?: any) => {
+    if (addItem(value.trim(), suggestion)) {
+      setInputValue('')
+      onInputChange?.('')
+      setSelectedSuggestionIndex(-1)
+      return true
+    }
+    return false
+  }, [addItem, setInputValue, onInputChange, setSelectedSuggestionIndex])
+
+  // Handle input changes
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
     const lastChar = newValue.slice(-1)
     
-    // Check if the last character is a joiner
     if (joiners.includes(lastChar) && newValue.trim().length > 1) {
       const valueToAdd = newValue.slice(0, -1).trim()
-      if (valueToAdd) {
-        if (addItem(valueToAdd)) {
-          setInputValue('')
-          onInputChange?.('')
-          return
-        }
+      if (valueToAdd && handleAddItem(valueToAdd)) {
+        return
       }
     }
 
@@ -75,39 +82,72 @@ export const ChipsterInput = ({
       setError(null)
       setShowSuggestions(false)
     }
-  }, [joiners, addItem, updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError, validateInput])
+  }, [joiners, handleAddItem, updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError, validateInput])
 
+  // Handle keyboard navigation
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return
 
     const currentValue = inputValue || ''
 
-    // Handle Enter key as a joiner
+    // Handle item addition
     if (joiners.includes(e.key) && currentValue.trim()) {
       e.preventDefault()
           
-      // Handle suggestion selection
       if (selectedSuggestionIndex >= 0 && suggestions.length > 0) {
         const selectedSuggestion = suggestions[selectedSuggestionIndex]
         const value = typeof selectedSuggestion === 'string' 
           ? selectedSuggestion 
           : selectedSuggestion.label
-        addItem(value, selectedSuggestion)
-        setSelectedSuggestionIndex(-1)
-        setInputValue('')
+        handleAddItem(value, selectedSuggestion)
         return
       }
 
-      // Handle free input mode
       if (mode === 'free') {
-        if (addItem(currentValue.trim())) {
-          setInputValue('')
-        }
+        handleAddItem(currentValue)
       }
+      return
     }
 
+    // Only handle navigation when input is empty
+    if (currentValue === '') {
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault()
+          if (highlightedIndex === null && items.length > 0) {
+            highlightItem(items.length - 1)
+          } else if (highlightedIndex !== null && highlightedIndex > 0) {
+            highlightItem(highlightedIndex - 1)
+          }
+          break
+
+        case 'ArrowRight':
+          e.preventDefault()
+          if (highlightedIndex !== null) {
+            if (highlightedIndex < items.length - 1) {
+              highlightItem(highlightedIndex + 1)
+            } else {
+              highlightItem(null)
+              inputRef.current?.focus()
+            }
+          }
+          break
+
+        case 'Backspace':
+          e.preventDefault()
+          if (highlightedIndex !== null) {
+            removeItem(items[highlightedIndex].id)
+            highlightItem(null)
+          } else if (items.length > 0) {
+            highlightItem(items.length - 1)
+          }
+          break
+      }
+      return
+    }
+
+    // Handle suggestions navigation
     switch (e.key) {
-      // Suggestions navigation
       case 'ArrowDown':
         if (suggestions.length > 0) {
           e.preventDefault()
@@ -124,63 +164,13 @@ export const ChipsterInput = ({
           )
         }
         break
-
-      // Item deletion and navigation
-      case 'Backspace':
-        if (currentValue === '') {
-          e.preventDefault()
-          if (highlightedIndex !== null) {
-            const itemToRemove = items[highlightedIndex]
-            removeItem(itemToRemove.id)
-            highlightItem(null)
-          } else if (items.length > 0) {
-            highlightItem(items.length - 1)
-          }
-        }
-        break
-
-      case 'ArrowLeft':
-        if (currentValue === '') {
-          e.preventDefault()
-          if (highlightedIndex === null && items.length > 0) {
-            highlightItem(items.length - 1)
-          } else if (highlightedIndex !== null && highlightedIndex > 0) {
-            highlightItem(highlightedIndex - 1)
-          }
-        }
-        break
-
-      case 'ArrowRight':
-        if (currentValue === '') {
-          e.preventDefault()
-          if (highlightedIndex !== null) {
-            if (highlightedIndex < items.length - 1) {
-              highlightItem(highlightedIndex + 1)
-            } else {
-              highlightItem(null)
-              inputRef.current?.focus()
-            }
-          }
-        }
-        break
-
       case 'Escape':
         setSelectedSuggestionIndex(-1)
         setShowSuggestions(false)
         highlightItem(null)
         break
     }
-  }, [mode, disabled, inputValue, suggestions, selectedSuggestionIndex, addItem])
-
-  const handleFocus = useCallback(() => {
-    setShowSuggestions(true)
-  }, [setShowSuggestions])
-
-  const handleBlur = useCallback(() => {
-    setTimeout(() => {
-      setShowSuggestions(false)
-    }, 200)
-  }, [setShowSuggestions])
+  }, [mode, disabled, inputValue, suggestions, selectedSuggestionIndex, items, highlightedIndex, handleAddItem])
 
   return (
     <input
@@ -189,8 +179,8 @@ export const ChipsterInput = ({
       value={inputValue || ''}
       onChange={handleInputChange}
       onKeyDown={handleKeyDown}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
+      onFocus={() => setShowSuggestions(true)}
+      onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
       placeholder={typeof placeholder === 'string' ? placeholder : ''}
       className={classNames(
         styles.input,

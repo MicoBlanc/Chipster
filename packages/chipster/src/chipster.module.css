@@ -174,9 +174,16 @@
   cursor: not-allowed;
 }
 
-.itemFocused {
+.itemHighlighted {
   outline: 2px solid var(--focus-ring-color, #222222);
   outline-offset: 1px;
+  background-color: #0042c7;
+}
+
+.itemHighlightedDark {
+  outline: 2px solid var(--focus-ring-color, #fcfcfc);
+  outline-offset: 1px;
+  background-color: #374151;
 }
 
 /* Dark mode styles */
@@ -252,9 +259,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.itemFocusedDark {
-  outline: 2px solid var(--focus-ring-color, #fcfcfc);
-  outline-offset: 1px;
 }
