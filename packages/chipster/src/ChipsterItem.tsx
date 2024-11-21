@@ -32,10 +32,6 @@ export const ChipsterItem = ({
   // Focus management
   useEffect(() => {
     if (isHighlighted && itemRef.current) {
-      console.log('Focusing item:', {
-        itemId: item.id,
-        itemText: item.text,
-      })
       itemRef.current.focus()
     }
   }, [isHighlighted])
@@ -47,10 +43,6 @@ export const ChipsterItem = ({
       removeItem(item.id)
       // Clear highlight if we're removing the highlighted item
       if (index === highlightedIndex) {
-        console.log('ChipsterItem - Clearing highlight after removal:', {
-          removedIndex: index,
-          wasHighlighted: true
-        })
         highlightItem(null)
       }
     }

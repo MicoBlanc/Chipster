@@ -97,13 +97,12 @@ export const ChipsterInput = ({
           if (currentValue === '') {
             e.preventDefault()
             if (highlightedIndex !== null) {
-              const highlightedItem = items[highlightedIndex]
-              console.log('Deleting highlighted item:', {
-                id: highlightedItem.id,
-                text: highlightedItem.text,
-                index: highlightedIndex
-              })
-              removeItem(highlightedItem.id)
+              if (highlightedIndex >= 0 && highlightedIndex < items.length) {
+                const highlightedItem = items[highlightedIndex]
+                removeItem(highlightedItem.id)
+              } else {
+                highlightItem(null)
+              }
             } else if (items.length > 0) {
               highlightItem(items.length - 1)
             }

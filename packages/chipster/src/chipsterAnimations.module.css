@@ -6,8 +6,8 @@
 .chipEnterActive {
   opacity: 1 !important;
   transform: scale(1) translateX(0) !important;
-  transition: opacity 120ms cubic-bezier(0.4, 0, 0.2, 1),
-              transform 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 80ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 80ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chipAppear {
@@ -18,8 +18,8 @@
 .chipAppearActive {
   opacity: 1 !important;
   transform: scale(1) translateX(0) !important;
-  transition: opacity 120ms cubic-bezier(0.4, 0, 0.2, 1),
-              transform 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 80ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 80ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chipExit {
@@ -30,6 +30,6 @@
 .chipExitActive {
   opacity: 0;
   transform: translateX(-16px);
-  transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
-              transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 } 

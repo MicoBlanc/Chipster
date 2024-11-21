@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useMemo } from 'react'
 import classNames from 'classnames'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import styles from './chipster.module.css'
@@ -16,6 +16,15 @@ export const ChipsterItemList: React.FC<ChipsterItemListProps> = ({
   animationDuration = 200
 }) => {
   const { items } = useChipsterContext()
+  
+  // Create refs array outside of the map function
+  const nodeRefs = useMemo(() => 
+    Array(items.length)
+      .fill(null)
+      .map(() => React.createRef<HTMLDivElement>()),
+    [items.length]
+  )
+
   if (!items?.length) return null
 
   return (
@@ -24,6 +33,7 @@ export const ChipsterItemList: React.FC<ChipsterItemListProps> = ({
         {items.map((item, index) => (
           <CSSTransition
             key={item.id}
+            nodeRef={nodeRefs[index]}
             timeout={animationDuration}
             classNames={{
               enter: animationStyles['chipEnter'],
@@ -34,14 +44,16 @@ export const ChipsterItemList: React.FC<ChipsterItemListProps> = ({
             appear={true}
             unmountOnExit
           >
-            <ChipsterItem
-              item={item}
-              index={index}
-              itemClassName={itemClassName}
-              removeButtonClassName={removeButtonClassName}
-              removeIcon={removeIcon}
-              iconClassName={iconClassName}
-            />
+            <div ref={nodeRefs[index]}>
+              <ChipsterItem
+                item={item}
+                index={index}
+                itemClassName={itemClassName}
+                removeButtonClassName={removeButtonClassName}
+                removeIcon={removeIcon}
+                iconClassName={iconClassName}
+              />
+            </div>
           </CSSTransition>
         ))}
       </TransitionGroup>
