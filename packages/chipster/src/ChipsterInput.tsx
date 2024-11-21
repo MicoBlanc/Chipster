@@ -19,11 +19,12 @@ export const ChipsterInput = ({
     highlightItem,
     removeItem,
     updateSuggestions,
+    showSuggestions,
     setShowSuggestions,
     inputValue,
     setInputValue,
-    setSelectedSuggestionIndex,
     selectedSuggestionIndex,
+    setSelectedSuggestionIndex,
     suggestions,
     setError,
     validationConfig,
@@ -139,12 +140,61 @@ export const ChipsterInput = ({
           highlightItem(null)
           inputRef.current?.focus()
           break
+
+        case 'ArrowDown':
+          if (showSuggestions && suggestions.length > 0) {
+            e.preventDefault()
+            const nextIndex = selectedSuggestionIndex >= suggestions.length - 1 
+              ? 0 
+              : selectedSuggestionIndex + 1
+            setSelectedSuggestionIndex(nextIndex)
+          }
+          break
+
+        case 'ArrowUp':
+          if (showSuggestions && suggestions.length > 0) {
+            e.preventDefault()
+            const prevIndex = selectedSuggestionIndex <= 0 
+              ? suggestions.length - 1 
+              : selectedSuggestionIndex - 1
+            setSelectedSuggestionIndex(prevIndex)
+          }
+          break
+
+        case 'Enter':
+          if (showSuggestions && selectedSuggestionIndex >= 0) {
+            e.preventDefault()
+            const selectedSuggestion = suggestions[selectedSuggestionIndex]
+            if (selectedSuggestion) {
+              handleAddItem(
+                typeof selectedSuggestion === 'string' 
+                  ? selectedSuggestion 
+                  : selectedSuggestion.label,
+                selectedSuggestion
+              )
+              setShowSuggestions(false)
+              setSelectedSuggestionIndex(-1)
+            }
+          }
+          break
       }
     }
 
     window.addEventListener('keydown', handleGlobalKeyDown)
     return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-  }, [disabled, inputValue, items, highlightedIndex, removeItem, highlightItem])
+  }, [
+    disabled, 
+    inputValue, 
+    items, 
+    highlightedIndex, 
+    removeItem, 
+    highlightItem,
+    suggestions,
+    selectedSuggestionIndex,
+    showSuggestions,
+    setSelectedSuggestionIndex,
+    handleAddItem
+  ])
 
   return (
     <input
