@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { addItem } from './helpers'
 
 test.describe('Chipster ItemList Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -15,10 +16,7 @@ test.describe('Chipster ItemList Tests', () => {
 
   test('adds items to the list', async ({ page }) => {
     const itemListChipster = page.getByTestId('itemlist-chipster')
-    const input = itemListChipster.getByPlaceholder('Add list items')
-    
-    await input.type('test item')
-    await input.press('Enter')
+    await addItem(page, 'itemlist-chipster', 'test item', 'Add list items')
     
     const list = itemListChipster.locator('.custom-list-class')
     await expect(list).toBeVisible()
@@ -27,31 +25,23 @@ test.describe('Chipster ItemList Tests', () => {
 
   test('removes items with custom remove icon', async ({ page }) => {
     const itemListChipster = page.getByTestId('itemlist-chipster')
-    const input = itemListChipster.getByPlaceholder('Add list items')
+    await addItem(page, 'itemlist-chipster', 'test item', 'Add list items')
     
-    // Add an item
-    await input.type('test item')
-    await input.press('Enter')
-    
-    // Find and click remove button
-    const removeButton = itemListChipster.getByText('×')
+    // Find and click remove button using the custom class
+    const removeButton = itemListChipster.locator('.custom-remove-button')
+    await expect(removeButton).toBeVisible()
     await removeButton.click()
     
-    // Verify item was removed
+    // Verify item is removed
     await expect(itemListChipster.getByText('test item')).not.toBeVisible()
   })
 
   test('applies custom classes to items', async ({ page }) => {
     const itemListChipster = page.getByTestId('itemlist-chipster')
-    const input = itemListChipster.getByPlaceholder('Add list items')
+    await addItem(page, 'itemlist-chipster', 'test item', 'Add list items')
     
-    await input.type('test item')
-    await input.press('Enter')
-    
-    // Check for custom classes
-    const item = itemListChipster.locator('.custom-item-class')
-    await expect(item).toBeVisible()
-    const removeButton = itemListChipster.locator('.custom-remove-button')
-    await expect(removeButton).toBeVisible()
+    // Verify custom classes are applied
+    await expect(itemListChipster.locator('.custom-item-class')).toBeVisible()
+    await expect(itemListChipster.locator('.custom-remove-button')).toBeVisible()
   })
 }) 

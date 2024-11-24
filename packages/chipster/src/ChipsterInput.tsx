@@ -87,113 +87,79 @@ export const ChipsterInput = ({
   }, [joiners, handleAddItem, updateSuggestions, setShowSuggestions, onInputChange, setInputValue, setError, validateInput])
 
   // Handle keyboard navigation
-  useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if (disabled) return
-      const currentValue = inputValue || ''
-      const isInputFocused = document.activeElement === inputRef.current
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (disabled) return
+    const value = e.currentTarget.value.trim()
+    const currentValue = e.currentTarget.value
 
-      switch (e.key) {
-        case 'Backspace':
-          if (currentValue === '') {
-            e.preventDefault()
-            if (highlightedIndex !== null) {
-              if (highlightedIndex >= 0 && highlightedIndex < items.length) {
-                const highlightedItem = items[highlightedIndex]
-                removeItem(highlightedItem.id)
-              } else {
-                highlightItem(null)
-              }
-            } else if (items.length > 0) {
-              highlightItem(items.length - 1)
-            }
+    switch (e.key) {
+      case 'Enter':
+        e.preventDefault()
+        if (showSuggestions && selectedSuggestionIndex >= 0) {
+          const selectedSuggestion = suggestions[selectedSuggestionIndex]
+          if (selectedSuggestion) {
+            handleAddItem(
+              typeof selectedSuggestion === 'string' 
+                ? selectedSuggestion 
+                : selectedSuggestion.label,
+              selectedSuggestion
+            )
+            setShowSuggestions(false)
+            setSelectedSuggestionIndex(-1)
           }
-          break
+        } else if (value && validateInput(value)) {
+          handleAddItem(value)
+        }
+        break
 
-        case 'ArrowLeft':
-          if (currentValue === '') {
-            e.preventDefault()
-            if (highlightedIndex === null && items.length > 0) {
-              highlightItem(items.length - 1)
-            } else if (highlightedIndex !== null && highlightedIndex > 0) {
-              highlightItem(highlightedIndex - 1)
-            }
-          }
-          break
-
-        case 'ArrowRight':
-          if (currentValue === '') {
-            e.preventDefault()
-            if (highlightedIndex === null) {
-              highlightItem(0)
-            } else if (highlightedIndex < items.length - 1) {
-              highlightItem(highlightedIndex + 1)
+      case 'Backspace':
+        if (currentValue === '' && items.length > 0) {
+          e.preventDefault()
+          if (highlightedIndex !== null) {
+            if (highlightedIndex >= 0 && highlightedIndex < items.length) {
+              removeItem(items[highlightedIndex].id)
             } else {
               highlightItem(null)
-              inputRef.current?.focus()
             }
+          } else {
+            removeItem(items[items.length - 1].id)
           }
-          break
+        }
+        break
 
-        case 'Escape':
+      case 'ArrowDown':
+        if (showSuggestions && suggestions.length > 0) {
           e.preventDefault()
-          highlightItem(null)
-          inputRef.current?.focus()
-          break
+          const nextIndex = selectedSuggestionIndex >= suggestions.length - 1 
+            ? 0 
+            : selectedSuggestionIndex + 1
+          setSelectedSuggestionIndex(nextIndex)
+        }
+        break
 
-        case 'ArrowDown':
-          if (showSuggestions && suggestions.length > 0) {
-            e.preventDefault()
-            const nextIndex = selectedSuggestionIndex >= suggestions.length - 1 
-              ? 0 
-              : selectedSuggestionIndex + 1
-            setSelectedSuggestionIndex(nextIndex)
-          }
-          break
-
-        case 'ArrowUp':
-          if (showSuggestions && suggestions.length > 0) {
-            e.preventDefault()
-            const prevIndex = selectedSuggestionIndex <= 0 
-              ? suggestions.length - 1 
-              : selectedSuggestionIndex - 1
-            setSelectedSuggestionIndex(prevIndex)
-          }
-          break
-
-        case 'Enter':
-          if (showSuggestions && selectedSuggestionIndex >= 0) {
-            e.preventDefault()
-            const selectedSuggestion = suggestions[selectedSuggestionIndex]
-            if (selectedSuggestion) {
-              handleAddItem(
-                typeof selectedSuggestion === 'string' 
-                  ? selectedSuggestion 
-                  : selectedSuggestion.label,
-                selectedSuggestion
-              )
-              setShowSuggestions(false)
-              setSelectedSuggestionIndex(-1)
-            }
-          }
-          break
-      }
+      case 'ArrowUp':
+        if (showSuggestions && suggestions.length > 0) {
+          e.preventDefault()
+          const prevIndex = selectedSuggestionIndex <= 0 
+            ? suggestions.length - 1 
+            : selectedSuggestionIndex - 1
+          setSelectedSuggestionIndex(prevIndex)
+        }
+        break
     }
-
-    window.addEventListener('keydown', handleGlobalKeyDown)
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
   }, [
-    disabled, 
-    inputValue, 
-    items, 
-    highlightedIndex, 
-    removeItem, 
-    highlightItem,
+    disabled,
+    items,
+    highlightedIndex,
     suggestions,
     selectedSuggestionIndex,
     showSuggestions,
-    setSelectedSuggestionIndex,
-    handleAddItem
+    validateInput,
+    handleAddItem,
+    removeItem,
+    highlightItem,
+    setShowSuggestions,
+    setSelectedSuggestionIndex
   ])
 
   return (
@@ -202,6 +168,7 @@ export const ChipsterInput = ({
       type="text"
       value={inputValue || ''}
       onChange={handleInputChange}
+      onKeyDown={handleKeyDown}
       onFocus={() => setShowSuggestions(true)}
       onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
       placeholder={typeof placeholder === 'string' ? placeholder : ''}

@@ -5,6 +5,7 @@ export function InputChipster() {
   return (
     <div data-testid="input-chipster">
       <Chipster>
+        <Chipster.ItemList />
         <Chipster.Input 
           placeholder="Custom placeholder"
           className="custom-input-class"

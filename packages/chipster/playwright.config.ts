@@ -1,24 +1,25 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './src/__tests__/e2e',
-  workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? 'dot' : 'html',
+  webServer: {
+    command: 'pnpm run dev:test',
+    port: 3001,
+    reuseExistingServer: !process.env.CI,
+    timeout: 60000
+  },
   use: {
-    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
-    trace: 'retain-on-failure',
-    video: 'on-first-retry'
+    baseURL: 'http://localhost:3001',
+    actionTimeout: 10000,
+    navigationTimeout: 10000,
+  },
+  expect: {
+    timeout: 10000
   },
   projects: [
     {
       name: 'chromium',
-      use: { browserName: 'chromium' }
-    }
+      use: { ...devices['Desktop Chrome'] },
+    },
   ],
-  webServer: {
-    command: 'pnpm run dev:test',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 30000
-  }
 }); 

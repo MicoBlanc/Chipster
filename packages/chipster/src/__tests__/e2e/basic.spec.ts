@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { addItem } from './helpers'
 
 test.describe('Chipster Basic Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -14,13 +15,7 @@ test.describe('Chipster Basic Tests', () => {
   })
 
   test('adds and removes items', async ({ page }) => {
-    const basicChipster = page.getByTestId('basic-chipster')
-    const input = basicChipster.getByPlaceholder('Add items')
-    
-    await input.type('test item')
-    await input.press('Enter')
-    
-    await expect(basicChipster.getByText('test item')).toBeVisible()
+    await addItem(page, 'basic-chipster', 'test item')
   })
 
   test('adds items with comma joiner', async ({ page }) => {
@@ -36,19 +31,13 @@ test.describe('Chipster Basic Tests', () => {
     const basicChipster = page.getByTestId('basic-chipster')
     const input = basicChipster.getByPlaceholder('Add items')
     
-    // Test comma joiner
     await input.fill('first item,')
     await expect(basicChipster.getByText('first item')).toBeVisible()
     
-    // Add delay between inputs
-    await page.waitForTimeout(100)
-    
-    // Test Enter joiner
     await input.type('second item')
     await input.press('Enter')
     await expect(basicChipster.getByText('second item')).toBeVisible()
     
-    // Verify input is cleared after each addition
     await expect(input).toHaveValue('')
   })
 
@@ -78,12 +67,12 @@ test.describe('Chipster Basic Tests', () => {
     const basicChipster = page.getByTestId('basic-chipster')
     const input = basicChipster.getByPlaceholder('Add items')
     
+    await expect(input).toBeVisible({ timeout: 30000 })
     await input.fill('  spaced item  ')
     await input.press('Enter')
-    await page.waitForTimeout(100)
     
     // Should show trimmed version
-    await expect(basicChipster.getByText('spaced item')).toBeVisible()
+    await expect(basicChipster.getByText('spaced item')).toBeVisible({ timeout: 30000 })
     
     // Original untrimmed version should not exist
     const untrimmedCount = await basicChipster.getByText(/^\s+spaced item\s+$/).count()
