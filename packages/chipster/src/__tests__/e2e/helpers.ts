@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test'
 
-const DEFAULT_TIMEOUT = 5000
+const DEFAULT_TIMEOUT = 500
 const DEFAULT_PLACEHOLDER = 'Add items'
 
 export async function addItem(page: Page, selector: string, text: string, placeholder?: string) {

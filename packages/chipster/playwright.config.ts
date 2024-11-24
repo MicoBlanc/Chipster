@@ -4,14 +4,14 @@ export default defineConfig({
   testDir: './src/__tests__/e2e',
   webServer: {
     command: 'pnpm run dev:test',
-    port: 3001,
+    port: 3000,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
     stdout: 'pipe',
     stderr: 'pipe'
   },
   use: {
-    baseURL: 'http://localhost:3001',
+    baseURL: 'http://localhost:3000',
     actionTimeout: 15000,
     navigationTimeout: 15000,
   },
