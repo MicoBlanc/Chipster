@@ -9,7 +9,7 @@ export function ItemListChipster() {
           className="custom-list-class"
           itemClassName="custom-item-class"
           removeButtonClassName="custom-remove-button"
-          removeIcon="×"
+          removeIcon="remove"
         />
         <Chipster.Input placeholder="Add list items" />
       </Chipster>

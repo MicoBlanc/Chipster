@@ -19,90 +19,89 @@ export const ChipsterItem = ({
   removeIcon?: React.ReactNode
 }): JSX.Element => {
   const { 
-    removeItem, 
     highlightedIndex, 
     disabled, 
     theme,
-    focusedItemIndex,
-    setFocusedItemIndex,
-    inputRef 
+    highlightItem,
+    removeItem,
   } = useChipsterContext()
 
   const itemRef = useRef<HTMLSpanElement>(null)
   const isHighlighted = highlightedIndex === index
-  const isFocused = focusedItemIndex === index
 
+  // Focus management
   useEffect(() => {
-    if (isFocused && itemRef.current) {
+    if (isHighlighted && itemRef.current) {
       itemRef.current.focus()
-    } else if (!isFocused && itemRef.current === document.activeElement) {
-      inputRef.current?.focus()
     }
-  }, [isFocused, inputRef])
+  }, [isHighlighted])
 
-  if (render) {
-    return <>{render(item, isHighlighted)}</>
+  // Handle item removal
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent event bubbling
+    if (typeof index === 'number') {     
+      removeItem(item.id)
+      // Clear highlight if we're removing the highlighted item
+      if (index === highlightedIndex) {
+        highlightItem(null)
+      }
+    }
   }
 
   return (
-    <span
-      ref={itemRef}
-      className={classNames(
-        styles.item,
-        theme === 'dark' ? styles.itemDark : '',
-        {
-          [styles.itemHighlighted]: isHighlighted && theme === 'light',
-          [styles.itemHighlightedDark]: isHighlighted && theme === 'dark',
-          [styles.itemDisabled]: disabled,
-          [styles.itemFocused]: isFocused && theme === 'light',
-          [styles.itemFocusedDark]: isFocused && theme === 'dark',
-        },
-        itemClassName,
-        {
-          [highlightedClassName || '']: isHighlighted,
-          [disabledClassName || '']: disabled,
-        }
-      )}
-      data-highlighted={isHighlighted || undefined}
-      data-disabled={disabled || undefined}
-      tabIndex={isFocused ? 0 : -1}
-      role="button"
-      aria-selected={isHighlighted}
-      onFocus={() => {
-        if (typeof index === 'number' && focusedItemIndex !== index) {
-          setFocusedItemIndex(index)
-        }
-      }}
-      onBlur={(e) => {
-        if (!e.relatedTarget?.closest(`.${styles.item}`)) {
-          setFocusedItemIndex(null)
-        }
-      }}
-    >
-      {item.icon && (
-        <span className={classNames(
-          styles.itemIcon,
-          theme === 'dark' ? styles.itemIconDark : '',
-          iconClassName
-        )}>
-          {item.icon}
-        </span>
-      )}
-      {item.text}
-      <button 
-        onClick={() => removeItem(item.id)} 
+    <div className={styles.itemWrapper}>
+      <span
+        ref={itemRef}
         className={classNames(
-          styles.itemRemove,
-          theme === 'dark' ? styles.itemRemoveDark : '',
-          removeButtonClassName,
-          'flex items-center justify-center'
+          styles.item,
+          theme === 'dark' ? styles.itemDark : '',
+          {
+            [styles.itemHighlighted]: isHighlighted && theme === 'light',
+            [styles.itemHighlightedDark]: isHighlighted && theme === 'dark',
+            [styles.itemDisabled]: disabled,
+          },
+          itemClassName,
+          {
+            [highlightedClassName || '']: isHighlighted,
+            [disabledClassName || '']: disabled,
+          }
         )}
-        disabled={disabled}
-        tabIndex={-1}
-        aria-label={`Remove ${item.text}`}
+        data-highlighted={isHighlighted || undefined}
+        data-disabled={disabled || undefined}
+        tabIndex={isHighlighted ? 0 : -1}
+        role="button"
+        aria-selected={isHighlighted}
+        onFocus={() => {
+          if (typeof index === 'number') {
+            highlightItem(index)
+          }
+        }}
       >
-        {removeIcon || '×'}
-      </button>
-    </span>
+        {item.icon && (
+          <span className={classNames(
+            styles.itemIcon,
+            theme === 'dark' ? styles.itemIconDark : '',
+            iconClassName
+          )}>
+            {item.icon}
+          </span>
+        )}
+        {item.text}
+        <button 
+          onClick={handleRemove}
+          className={classNames(
+            styles.itemRemove,
+            theme === 'dark' ? styles.itemRemoveDark : '',
+            removeButtonClassName,
+            'flex items-center justify-center'
+          )}
+          disabled={disabled}
+          tabIndex={-1}
+          aria-label={`Remove ${item.text}`}
+        >
+          {removeIcon || '×'}
+        </button>
+      </span>
+    </div>
   )
 } 

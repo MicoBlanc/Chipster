@@ -11,13 +11,18 @@ npm install @micoblanc/chipster
 ## Basic Usage
 Here's a simple example of how to use Chipster:
 
-<iframe
-  src="https://codesandbox.io/embed/chipster-basic-example-xyz123"
-  style={{ width: '100%', height: '500px', border: 0, borderRadius: '4px', overflow: 'hidden' }}
-  title="Chipster Basic Example"
+<iframe src="https://codesandbox.io/embed/29skhh?view=preview&module=%2Fsrc%2FApp.tsx&hidenavigation=1"
+ style={{
+    width: '100%',
+    height: '300px',
+    border: 0,
+    borderRadius: '4px',
+    overflow: 'hidden'
+  }}
+  title="Chipster Mode Free v1.2.4"
   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
   sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-/>
+   ></iframe>
 
 ```tsx filename="BasicExample.tsx" copy
 import { Chipster } from '@micoblanc/chipster'
@@ -44,44 +49,77 @@ export default function BasicExample() {
 
 Here's how to implement Chipster with suggestions and custom icons:
 
+<iframe src="https://codesandbox.io/embed/p3rsxz?view=preview&module=%2Fsrc%2FApp.tsx&hidenavigation=1"
+ style={{
+    width: '100%',
+    height: '400px',
+    border: 0,
+    borderRadius: '4px',
+    overflow: 'hidden'
+  }}
+  title="Chipster Mode Free v1.2.4"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+
 ```tsx filename="AdvancedExample.tsx" copy
-const suggestions = [
-  { label: 'JavaScript', icon: '🟨' },
-  { label: 'TypeScript', icon: '🔷' },
-  { label: 'React', icon: '⚛️' }
-]
+import { Chipster } from "@micoblanc/chipster";
 
-export default function AdvancedExample() {
-  const getSuggestions = useCallback((input: string) => {
-    return suggestions
-      .filter(item => 
-        item.label.toLowerCase().includes(input.toLowerCase())
-      )
-      .map(item => ({
-        label: item.label,
-        icon: item.icon,
-        data: item
-      }))
-  }, [])
+// Sample email suggestions with icons
+const emailSuggestions = [
+  { label: "john.doe@company.com", icon: "👨‍💼" },
+  { label: "jane.smith@company.com", icon: "👩‍💼" },
+  { label: "alex.wilson@company.com", icon: "👨‍💻" },
+  { label: "sarah.parker@company.com", icon: "👩‍💻" },
+  { label: "mike.brown@company.com", icon: "👨‍💼" },
+  { label: "emma.davis@company.com", icon: "👩‍💼" },
+  { label: "chris.taylor@company.com", icon: "👨‍💻" },
+  { label: "lisa.anderson@company.com", icon: "👩‍💻" },
+];
 
+export default function EmailSuggestionsExample() {
   return (
-    <Chipster>
-      <Chipster.ItemList />
-      <Chipster.Input 
-        placeholder="Search technologies..."
-        className="bg-white rounded-lg"
-      />
-      <Chipster.Validation
-        validationRules={[
-          { test: (v) => v.length >= 2, message: 'Min 2 characters' },
-          { test: (v) => v.length <= 20, message: 'Max 20 characters' }
-        ]}
-        maxItems={5}
-        transform={(v) => v.toLowerCase().trim()}
-      />
-      <Chipster.Suggestions getSuggestions={getSuggestions} />
-    </Chipster>
-  )
+    <div
+      style={{ fontFamily: "'Roboto', sans-serif" }}
+      className="font-sans flex flex-col items-center gap-2 justify-center w-full h-full min-h-screen p-4 bg-black"
+    >
+      <div className="px-3 py-6 w-full max-w-xl border border-neutral-200 rounded-xl">
+        <h2 className="text-xs font-semibold mb-1 text-white">
+          Share with your team
+        </h2>
+        <Chipster mode="suggestions-only" joiner={[",", "Tab", "Enter"]}>
+          <Chipster.ItemList />
+          <Chipster.Input
+            className="bg-neutral-900 text-white"
+            placeholder="Search team members..."
+          />
+          <Chipster.Suggestions
+            getSuggestions={(input) =>
+              emailSuggestions.filter((suggestion) =>
+                suggestion.label.toLowerCase().includes(input.toLowerCase())
+              )
+            }
+          />
+          <Chipster.Validation
+            validationRules={[
+              {
+                test: (v) => {
+                  const emailRegex =
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                  return emailRegex.test(v);
+                },
+                message: "Please enter a valid email address",
+              },
+            ]}
+            allowDuplicates={false}
+            maxItems={5}
+            maxItemsMessage="Maximum of 5 team members allowed"
+            onError={(error) => console.log("Validation error:", error)}
+          />
+        </Chipster>
+      </div>
+    </div>
+  );
 }
 ```
 

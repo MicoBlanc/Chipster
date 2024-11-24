@@ -121,6 +121,7 @@
   box-sizing: border-box;
   outline: none;
   transition: all 0.2s ease;
+  position: relative;
 }
 
 .itemList {
@@ -174,9 +175,19 @@
   cursor: not-allowed;
 }
 
-.itemFocused {
-  outline: 2px solid var(--focus-ring-color, #222222);
+.itemHighlighted {
+  outline: 2px solid #070707 !important; 
+  outline-offset: 0px !important;
+  background-color: #e5e7eb;
+  z-index: 1;
+}
+
+.itemHighlightedDark {
+  outline: 2px solid #ffffff;
   outline-offset: 1px;
+  background-color: #374151;
+  color: #ffffff;
+  z-index: 1;
 }
 
 /* Dark mode styles */
@@ -252,9 +263,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.itemFocusedDark {
-  outline: 2px solid var(--focus-ring-color, #fcfcfc);
-  outline-offset: 1px;
 }

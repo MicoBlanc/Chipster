@@ -60,7 +60,7 @@ export interface ChipsterContextType {
   } | null
   setValidationConfig: (config: ChipsterContextType['validationConfig']) => void
   highlightedIndex: number | null
-  highlightItem: (index: number | null) => void  
+  highlightItem: (index: number | null) => void
   disabled?: boolean
   theme?: 'light' | 'dark'
   allowDuplicates?: boolean
@@ -75,8 +75,6 @@ export interface ChipsterContextType {
   mode: 'free' | 'suggestions-only'
   containerRef: React.RefObject<HTMLDivElement>
   inputRef: React.RefObject<HTMLInputElement>
-  focusedItemIndex: number | null
-  setFocusedItemIndex: (index: number | null) => void
   joiner?: string | string[]
 }
 
@@ -131,6 +129,7 @@ export interface ChipsterItemProps {
   removeButtonClassName?: string
   removeIcon?: React.ReactNode
   render?: (item: ChipsterItem, highlighted: boolean) => React.ReactNode
+  inProp?: boolean;
 }
 
 export interface ChipsterValidationProps {
@@ -145,10 +144,15 @@ export interface ChipsterValidationProps {
   onError?: (error: string) => void
 }
 
-export interface ChipsterItemListProps {
-  className?: string
-  itemClassName?: string
-  removeButtonClassName?: string
-  removeIcon?: React.ReactNode
-  iconClassName?: string
+export interface ChipsterAnimationProps {
+  animationDuration?: number;
+  animationClassName?: string;
+}
+
+export interface ChipsterItemListProps extends ChipsterAnimationProps {
+  className?: string;
+  itemClassName?: string;
+  removeButtonClassName?: string;
+  removeIcon?: React.ReactNode;
+  iconClassName?: string;
 }

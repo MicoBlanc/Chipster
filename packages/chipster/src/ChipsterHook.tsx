@@ -12,7 +12,7 @@ const isObjectSuggestion = (suggestion: ChipsterSuggestion): suggestion is {
 export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const [focusedItemIndex, setFocusedItemIndex] = useState<number | null>(null)
+  const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
 
   const {
     mode = 'free',
@@ -32,7 +32,6 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
       : []
   )
   const [error, setError] = useState<string | null>(null)
-  const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [suggestions, setSuggestions] = useState<ChipsterSuggestion[]>([])
@@ -116,23 +115,19 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
       const itemIndex = prev.findIndex(item => item.id === id)
       const newItems = prev.filter(item => item.id !== id)
       
-      // Set focus to previous item if available, otherwise next item
-      if (newItems.length > 0) {
-        const newFocusIndex = Math.min(itemIndex, newItems.length - 1)
-        setFocusedItemIndex(newFocusIndex)
-      } else {
-        setFocusedItemIndex(null)
-        inputRef.current?.focus()
-      }
-      
       const removedItem = prev.find(item => item.id === id)
       if (removedItem) {
         onRemove?.(removedItem.id)
       }
+
+      if (newItems.length === 0) {
+        setHighlightedIndex(null)
+        inputRef.current?.focus()
+      }
+
       return newItems
     })
-    setHighlightedIndex(null)
-  }, [onRemove, setFocusedItemIndex])
+  }, [onRemove])
 
   const highlightItem = useCallback((index: number | null) => {
     setHighlightedIndex(index)
@@ -148,54 +143,6 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
   const clearSuggestions = useCallback(() => {
     setShowSuggestions(false)
   }, [])
-
-  const handleContainerKeyDown = useCallback((e: KeyboardEvent) => {
-    if (!containerRef.current?.contains(document.activeElement)) return
-
-    switch (e.key) {
-      case 'Backspace':
-        if (!inputValue) {
-          e.preventDefault()
-          if (focusedItemIndex !== null) {
-            removeItem(items[focusedItemIndex].id)
-            setFocusedItemIndex(null)
-          } else if (items.length > 0) {
-            setFocusedItemIndex(items.length - 1)
-          }
-        }
-        break
-
-      case 'ArrowLeft':
-        if (!inputValue) {
-          e.preventDefault()
-          if (focusedItemIndex === null && items.length > 0) {
-            setFocusedItemIndex(items.length - 1)
-          } else if (focusedItemIndex !== null && focusedItemIndex > 0) {
-            setFocusedItemIndex(focusedItemIndex - 1)
-          }
-        }
-        break
-
-      case 'ArrowRight':
-        if (!inputValue) {
-          e.preventDefault()
-          if (focusedItemIndex !== null) {
-            if (focusedItemIndex < items.length - 1) {
-              setFocusedItemIndex(focusedItemIndex + 1)
-            } else {
-              setFocusedItemIndex(null)
-              inputRef.current?.focus()
-            }
-          }
-        }
-        break
-    }
-  }, [items, inputValue, focusedItemIndex])
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleContainerKeyDown)
-    return () => document.removeEventListener('keydown', handleContainerKeyDown)
-  }, [handleContainerKeyDown])
 
   return {
     mode,
@@ -223,8 +170,6 @@ export function useChipster(props: ChipsterProps = {}): ChipsterContextType {
     setValidationConfig,
     containerRef,
     inputRef,
-    focusedItemIndex,
-    setFocusedItemIndex,
     joiner: props.joiner
   }
 }

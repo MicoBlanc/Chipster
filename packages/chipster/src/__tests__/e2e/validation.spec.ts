@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { addItem } from './helpers'
 
 test.describe('Chipster Validation Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -27,30 +28,18 @@ test.describe('Chipster Validation Tests', () => {
   })
 
   test('allows valid input', async ({ page }) => {
-    const validationChipster = page.getByTestId('validation-chipster')
-    const input = validationChipster.getByPlaceholder('Add items')
-    
-    await input.type('valid item')
-    await input.press('Enter')
-    
-    // Item should be added
-    await expect(validationChipster.getByText('valid item')).toBeVisible()
-    // Input should be cleared
-    await expect(input).toHaveValue('')
-    // No error message should be visible
-    await expect(validationChipster.getByText('Min 3 characters')).not.toBeVisible()
+    await addItem(page, 'validation-chipster', 'valid item')
   })
 
   test('clears error when input becomes valid', async ({ page }) => {
     const validationChipster = page.getByTestId('validation-chipster')
     const input = validationChipster.getByPlaceholder('Add items')
     
-    // First try invalid input
+    await expect(input).toBeVisible()
     await input.type('ab')
     await input.press('Enter')
     await expect(validationChipster.getByText('Min 3 characters')).toBeVisible()
     
-    // Then make it valid
     await input.type('c')
     await input.press('Enter')
     await expect(validationChipster.getByText('Min 3 characters')).not.toBeVisible()
