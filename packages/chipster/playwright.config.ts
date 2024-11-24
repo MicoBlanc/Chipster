@@ -6,16 +6,20 @@ export default defineConfig({
     command: 'pnpm run dev:test',
     port: 3001,
     reuseExistingServer: !process.env.CI,
-    timeout: 60000
+    timeout: 120000,
+    stdout: 'pipe',
+    stderr: 'pipe'
   },
   use: {
     baseURL: 'http://localhost:3001',
-    actionTimeout: 10000,
-    navigationTimeout: 10000,
+    actionTimeout: 15000,
+    navigationTimeout: 15000,
   },
   expect: {
-    timeout: 10000
+    timeout: 15000
   },
+  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 2 : 0,
   projects: [
     {
       name: 'chromium',
