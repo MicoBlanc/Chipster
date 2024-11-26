@@ -2,7 +2,7 @@
 
 ![chipster1](https://github.com/user-attachments/assets/7f7f09be-6e80-4d0e-81f5-fb395a92a0ff)
 
-Chipster is a composable and flexible multi-entry input component for React. Perfect for managing tags, email addresses, or any list-based input scenario with built-in validation and suggestions support.
+Chipster is a flexible multi-entry input component for React. Perfect for managing tags, email addresses, or any list-based input scenario with built-in validation and suggestions support.
 
 ## Installation
 
